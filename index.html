@@ -1,60 +1,128 @@
 <!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>CS171 - Boilerplate</title>
 
-		<!-- Load CSS libraries -->
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-		<link rel="stylesheet" href="css/style.css">
+<html lang="en">
+<head>
+	<meta charset="utf-8">
 
-		<!-- GOOGLE FONTS -->
-		<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,400italic,300italic' rel='stylesheet' type='text/css'>
-	</head>
+	<title>Harvard Faculty Connections</title>
 
-	<!-- SOME SAMPLE HTML HERE - DELETE EVERYTHING INSIDE THE BODY EXCEPT THE SCRIPTS ON THE BOTTOM TO START FROM SCRATCH -->
-	<!-- DON'T WRITE CSS IN YOUR HTML LIKE WE DID HERE - THE INLINE CSS SHOULD HELP YOU TO UNDERSTAND THE BEHAVIOR OF THE ELEMENTS BETTER -
-		 WHEN SUBMITTING, WE ALWAYS EXPECT CLEAR SEPARATION OF HTML, CSS, AND JS INTO THE PROPER FILES -->
-	<body>
-	<div class="container-fluid">
-		<div class="row justify-content-center">
-			<div class="align-self-center">
-				<h1>CS 171 Boilerplate</h1>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-6">
-				<div class="row justify-content-center">
-					<div class="align-self-center">
-						<p>left</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-6">
-				<div class="row justify-content-center">
-					<div class="align-self-center">
-						<p>right</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<!--including bootstrap for demo purposes only-->
+	<link rel="stylesheet" href="css/bootstrap.css">
 
+	<!--styles needed for demo-->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/styles.css">
 
+	<!--required stylesheet for plugin-->
+	<link rel="stylesheet" href="css/jq-vertical-dot-navigation.css">
 
-
-
-	<!-- embedding JS libraries -->
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
+	<script src="js/libraries/jquery.min.js"></script>
+	<script src="js/libraries/jq-vertical-dot-nav.js"></script>
+	<script>
+		$(document).ready(function(){
+			$('section').verticalDotNav({
+				align : "right"
+			});
+		})
+	</script>
+
+
+	<!-- GOOGLE FONTS -->
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,400italic,300italic' rel='stylesheet' type='text/css'>
+</head>
+<body>
+	<section id="section-1" class="row">
+
+		<div class="col-xs-10 col-xs-offset-1">
+			<h1>Harvard Faculty Connections</h1>
+			<h3>Explore the connections between Harvard faculty!</h3>
+		</div>
+	</section>
+	<section id="section-2" class="row">
+
+		<div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="align-self-center">
+					<h1>(Visualization: Group dots of faculty and research areas)</h1>
+				</div>
+			</div>
+
+		</div>
+	</section>
+
+	<section id="section-3" class="row">
+
+		<div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="align-self-center">
+					<h1>(Visualization: Adjacency matrix/heat map to see faculty and research connections)</h1>
+				</div>
+			</div>
+
+		</div>
+	</section>
+
+	<section id="section-4" class="row">
+
+		<div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="align-self-center">
+					<h1>(Visualization: Parallel coordinates of faculty, centers, research areas)</h1>
+				</div>
+			</div>
+
+		</div>
+
+	</section>
+
+	<section id="section-5" class="row">
+		<div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="align-self-center">
+					<h1>(Visualization: Adjacency matrix to show faculty-to-faculty connections via published papers, etc.)</h1>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="section-6" class="row">
+		<div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="align-self-center">
+					<h1>(Visualization: Network of faculty-to-faculty connections)</h1>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="section-7" class="row">
+		<div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="align-self-center">
+					<h1>(Visualization: Map on Harvard campus with dots on research buildings)</h1>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="section-8" class="row">
+		<div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="align-self-center">
+					<h1>Fin!</h1>
+				</div>
+			</div>
+		</div>
+	</section>
+
 	<!-- d3 -->
 	<script src="https://d3js.org/d3.v6.min.js"></script>
 
-	<!-- own js files -->
+	<!-- Main file (put visualization classes above this) -->
 	<script src="js/main.js"></script>
-	</body>
+</body>
 </html>
