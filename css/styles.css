@@ -65,3 +65,7 @@ section {
 	background-color: crimson;
 }
 
+#network-graph {
+	height: 500px;
+}
+
