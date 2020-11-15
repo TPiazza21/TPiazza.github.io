@@ -21,4 +21,6 @@ function initMainPage(dataArray) {
 
     // initialize the visualizations here
     //myMatrixVis = new MatrixVis('matrixDiv', dataArray[0], dataMarriages, dataBusiness)
+
+    myNetworkVis = new NetworkGraph("network-graph", nodeData)
 }
