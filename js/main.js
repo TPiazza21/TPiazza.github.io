@@ -18,9 +18,14 @@ function initMainPage(dataArray) {
 
     // log data
     console.log('Check out the data', dataArray);
+    let facultyCoauthorMatrix = dataArray[0];
+    let perPaperVals = dataArray[1];
+    let peopleData = dataArray[2];
+    let coursesData = dataArray[3];
+    let newsData = dataArray[4];
+    let programsData = dataArray[5];
 
     // initialize the visualizations here
-    //myMatrixVis = new MatrixVis('matrixDiv', dataArray[0], dataMarriages, dataBusiness)
-
-    myNetworkVis = new NetworkGraph("network-graph", nodeData)
+    myNetworkVis = new NetworkGraph("network-graph", nodeData);
+    myFacultyAdjVis = new adjMatrixVis("faculty-adj-matrix", peopleData, perPaperVals);
 }
