@@ -44,6 +44,19 @@ class adjMatrixVis {
         vis.yShift = 100;
         vis.xShift = 100;
 
+        vis.allFaculty = vis.peopleInfo.map((x) => x.Title);
+        console.log(vis.allFaculty);
+
+        // we may decide to filter this list for one reason or another, but for now use all
+        vis.displayFaculty = vis.allFaculty;
+        vis.createMatrixData();
+
+        // then, let's get some basic info on the adjacency info for the publications
+
+
+
+
+
         vis.allFamilyData = [];
         vis.allFamilyDict = {};
 
@@ -168,6 +181,8 @@ class adjMatrixVis {
     }
 
 
+
+
     updateVis(){
         /*
         let vis = this;
@@ -187,5 +202,43 @@ class adjMatrixVis {
             .attr("class","matrix-row");
 
          */
+    }
+
+    createMatrixData() {
+        let vis = this;
+        // this function will use some names of faculty (vis.displayFaculty), and some dataset, and create an adjacency matrix to use
+
+        // using publication data
+        //vis.displayFaculty
+        console.log(vis.perPaperInfo);
+        let facultyPapersDict = {};
+        vis.displayFaculty.forEach((name) => {
+            facultyPapersDict[name] = {};
+            vis.displayFaculty.forEach((name2) => {
+                // create a mapping where we store a list of common papers between the two authors
+                // then, we can extract info (namely, the length of this list
+                facultyPapersDict[name][name2] = [];
+            });
+        });
+
+        vis.perPaperInfo.forEach((paper) => {
+            vis.displayFaculty.forEach((name) => {
+                // the fact that it's a string... might need to be changed at some point
+                if(paper[name] == "1") {
+                    vis.displayFaculty.forEach((name2) => {
+                        // note that name and name2 could be the same, which is fine
+                        if(paper[name2] == "1") {
+                            // we will be most interested in the LENGTH of this list
+                            // but we may want to display a list of abstracts, titles, etc.
+                            facultyPapersDict[name][name2].push(paper);
+                        }
+                    });
+                }
+            });
+        });
+
+
+        vis.matrixData = facultyPapersDict;
+        console.log(vis.matrixData);
     }
 }
