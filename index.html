@@ -79,11 +79,19 @@
 
 	</section>
 
-	<section id="section-5" class="row">
+	<section id="section-faculty-adj" class="row">
 		<div class="container-fluid">
 			<div class="row justify-content-center">
 				<div class="align-self-center">
 					<h1>(Visualization: Adjacency matrix to show faculty-to-faculty connections via published papers, etc.)</h1>
+					<select id='faculty-adj-sort-selector' class="custom-select align-self-center" style="width: 50%" onchange="sortChangeFacultyAdj()">
+						<option value="index" selected>Default Ordering</option>
+						<option value="numPapers">Number of Papers</option>
+						<option value="numPaperCoauthor">Number of Papers with Coauthors</option>
+						<option value="numCoauthor">Number of Coauthors</option>
+						<option value="numPaperSolo">Number of Papers (alone)</option>
+					</select>
+					<div id="faculty-adj-matrix"></div>
 				</div>
 			</div>
 		</div>
@@ -123,6 +131,7 @@
 	<!-- d3 -->
 	<script src="https://d3js.org/d3.v6.min.js"></script>
 
+	<script src="js/adjMatrixVis.js"></script>
 	<!-- Main file (put visualization classes above this) -->
 	<script src="js/main.js"></script>
 	<script src="js/nodeData.js"></script>

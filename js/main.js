@@ -18,9 +18,25 @@ function initMainPage(dataArray) {
 
     // log data
     console.log('Check out the data', dataArray);
+    let facultyCoauthorMatrix = dataArray[0];
+    let perPaperVals = dataArray[1];
+    let peopleData = dataArray[2];
+    let coursesData = dataArray[3];
+    let newsData = dataArray[4];
+    let programsData = dataArray[5];
 
     // initialize the visualizations here
-    //myMatrixVis = new MatrixVis('matrixDiv', dataArray[0], dataMarriages, dataBusiness)
+    myNetworkVis = new NetworkGraph("network-graph", nodeData);
+    myFacultyAdjVis = new adjMatrixVis("faculty-adj-matrix", peopleData, perPaperVals);
+}
 
-    myNetworkVis = new NetworkGraph("network-graph", nodeData)
+// handle buttons, sorting, selecting etc. down here
+
+// for the faculty adjacency matrix
+selectedFacultyAdjSort = $('#faculty-adj-sort-selector').val();
+function sortChangeFacultyAdj() {
+    // update matrix once we've changed sorted values
+    // TODO: actually implement some kind of sorting/filtering
+    selectedFacultyAdjSort = $('#faculty-adj-sort-selector').val();
+    myFacultyAdjVis.updateVis();
 }
