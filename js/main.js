@@ -29,3 +29,14 @@ function initMainPage(dataArray) {
     myNetworkVis = new NetworkGraph("network-graph", nodeData);
     myFacultyAdjVis = new adjMatrixVis("faculty-adj-matrix", peopleData, perPaperVals);
 }
+
+// handle buttons, sorting, selecting etc. down here
+
+// for the faculty adjacency matrix
+selectedFacultyAdjSort = $('#faculty-adj-sort-selector').val();
+function sortChangeFacultyAdj() {
+    // update matrix once we've changed sorted values
+    // TODO: actually implement some kind of sorting/filtering
+    selectedFacultyAdjSort = $('#faculty-adj-sort-selector').val();
+    myFacultyAdjVis.updateVis();
+}

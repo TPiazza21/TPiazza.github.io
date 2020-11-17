@@ -39,9 +39,9 @@ class adjMatrixVis {
             .attr('text-anchor', 'middle');
 
         // intrinsic properties of the adjacency matrix
-        vis.cellWidth = 18;
-        vis.cellPadding = 5;
-        vis.yShift = 100;
+        vis.cellWidth = 2;
+        vis.cellPadding = 1;
+        vis.yShift = 50;
         vis.xShift = 100;
 
         vis.allFaculty = vis.peopleInfo.map((x) => x.Title);
@@ -49,47 +49,19 @@ class adjMatrixVis {
 
         // we may decide to filter this list for one reason or another, but for now use all
         vis.displayFaculty = vis.allFaculty;
+        vis.displayPaperInfo = vis.perPaperInfo;
+        // create vis.matrixData to use
         vis.createMatrixData();
-
-        // then, let's get some basic info on the adjacency info for the publications
-
-
-
-
-
-        vis.allFamilyData = [];
-        vis.allFamilyDict = {};
-
-        /*
-        // collect data in one structure
-        for(let i = 0; i < vis.numFamilies; i++) {
-            let family = {};
-            family["index"] = i;
-            family["name"] = vis.familyInfo[i]["Family"];
-            family["businessValues"] = vis.businessMatrix[i];
-            family["businessTies"] = vis.businessMatrix[i].reduce((a,b) => a + b);
-            family["marriageValues"] = vis.marriageMatrix[i];
-            family["marriageTies"] = vis.marriageMatrix[i].reduce((a,b) => a + b);
-            family["allRelations"] = family["businessTies"] + family["marriageTies"];
-            // I might want to handle this with the NA values...
-            if (vis.familyInfo[i]["Priorates"] == "NA") {
-                family["numberPriorates"] = 0;
-            } else {
-                family["numberPriorates"] = +vis.familyInfo[i]["Priorates"];
-            }
-            family["wealth"] = +vis.familyInfo[i]["Wealth"];
-            vis.allFamilyData.push(family);
-            vis.allFamilyDict[i] = family;
-        }
 
         // put everything in row objects, so they can move later
         vis.rows = vis.svg
-            .selectAll(".matrix-row").data(vis.allFamilyData, (d) => d["name"])
+            .selectAll(".matrix-row").data(vis.matrixData, (d) => d.name)
             .enter()
             .append("g")
             .attr("transform",(d,i) => "translate(0," + ((vis.cellPadding + vis.cellWidth) * i + vis.yShift) + ")")
             .attr("class","matrix-row");
 
+        // see how the row labels appear?
         vis.rows
             .append("text")
             .attr("x", vis.xShift)
@@ -98,45 +70,33 @@ class adjMatrixVis {
             .text(d=>d.name);
 
         // populate the triangles
-        vis.marriageTriangles = vis.rows
-            .selectAll(".matrix-triangle-marriage")
-            .data(d=>d["marriageValues"])
+        vis.relationSquares = vis.rows
+            .selectAll(".matrix-relation-squares")
+            .data(d=>d.relations, (d)=>d.name2) // I may want to be picky about how I ID these things...
             .enter()
-            .append("path")
+            .append("rect")
             .attr("class","matrix-triangle-marriage")
             .attr("fill", function(d) {
-                if (d == 0) {
-                    return "grey";
-                } else {
+                // I may want to toggle opacity, for example
+                if (d.valueLen > 0) {
                     return "purple";
-                }
-            })
-            .attr("d", function(d,i) {
-                let x = (vis.cellPadding + vis.cellWidth) * i + vis.xShift;
-                let y = 0;
-                return 'M ' + x +' '+ y + ' l ' + vis.cellWidth + ' 0 l 0 ' + vis.cellWidth + ' z';
-            });
-
-        vis.businessTriangles = vis.rows
-            .selectAll(".matrix-triangle-business")
-            .data(d=>d["businessValues"])
-            .enter()
-            .append("path")
-            .attr("class","matrix-triangle-business")
-            .attr("fill", function(d) {
-                if (d == 0) {
-                    return "grey";
                 } else {
-                    return "orange";
+                    return "gray";
                 }
             })
-            .attr("d", function(d,i) {
-                let x = (vis.cellPadding + vis.cellWidth) * i + vis.xShift;
-                let y = 0;
-                return 'M ' + x +' '+ y + ' l 0 ' + vis.cellWidth + ' l ' + vis.cellWidth + ' 0 z';
-            });
+            .attr("opacity", function(d) {
+                if (d.valueLen > 0) {
+                    return 1.0;
+                }
+                else {
+                    return 0.0;
+                }
+            })
+            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * i + vis.xShift)
+            .attr("width", vis.cellWidth)
+            .attr("height", vis.cellWidth);
 
-        // these might just be static
+        /*
         vis.columnLabels = vis.svg
             .selectAll(".matrix-column-label")
             .data(vis.allFamilyData, (d) => d["name"])
@@ -149,6 +109,9 @@ class adjMatrixVis {
             .attr("class","matrix-column-label")
             .text(d=>d.name);
 
+         */
+
+        /*
         vis.svg
             .append("rect")
             .attr("x", ((vis.cellPadding + vis.cellWidth) * vis.numFamilies + vis.xShift + vis.cellWidth))
@@ -175,15 +138,13 @@ class adjMatrixVis {
             .attr("y", ((vis.cellPadding + vis.cellWidth) * (vis.numFamilies-2) + vis.yShift + vis.cellWidth))
             .text("Business");
 
-        console.log("Display data is ",vis.allFamilyData);
-
          */
+
     }
 
-
-
-
     updateVis(){
+        // TODO: implement the changing/sorting/filtering
+        console.log(selectedFacultyAdjSort);
         /*
         let vis = this;
 
@@ -210,7 +171,8 @@ class adjMatrixVis {
 
         // using publication data
         //vis.displayFaculty
-        console.log(vis.perPaperInfo);
+        //vis.displayPaperInfo
+
         let facultyPapersDict = {};
         vis.displayFaculty.forEach((name) => {
             facultyPapersDict[name] = {};
@@ -221,7 +183,7 @@ class adjMatrixVis {
             });
         });
 
-        vis.perPaperInfo.forEach((paper) => {
+        vis.displayPaperInfo.forEach((paper) => {
             vis.displayFaculty.forEach((name) => {
                 // the fact that it's a string... might need to be changed at some point
                 if(paper[name] == "1") {
@@ -237,8 +199,24 @@ class adjMatrixVis {
             });
         });
 
+        // now create a list of objects, each object containing a list of objects, each of those objects with papers and names of two authors
+        let facultyListOfLists = [];
+        vis.displayFaculty.forEach((name) => {
+            let facultyObj = {};
+            facultyObj.name = name;
+            facultyObj.relations = [];
+            vis.displayFaculty.forEach((name2) => {
+                let facultyPairObj = {};
+                facultyPairObj.name1 = name;
+                facultyPairObj.name2 = name2;
+                facultyPairObj.values = facultyPapersDict[name][name2];
+                facultyPairObj.valueLen = facultyPapersDict[name][name2].length;
+                facultyObj.relations.push(facultyPairObj);
+            });
+            facultyListOfLists.push(facultyObj);
+        });
 
-        vis.matrixData = facultyPapersDict;
+        vis.matrixData = facultyListOfLists;
         console.log(vis.matrixData);
     }
 }

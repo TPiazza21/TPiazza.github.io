@@ -70,6 +70,11 @@ section {
 }
 
 #faculty-adj-matrix {
-	height: 500px;
+	height: 800px;
+	width: 100%;
+}
+
+#section-faculty-adj {
+	height: 800px;
 }
 
