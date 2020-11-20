@@ -13,7 +13,7 @@ class adjMatrixVis {
     }
 
     initVis(){
-        console.log("Init Vis of adjMatrixVis");
+        //console.log("Init Vis of adjMatrixVis");
         let vis = this;
 
         vis.margin = {top: 40, right: 60, bottom: 60, left: 60};
@@ -28,14 +28,6 @@ class adjMatrixVis {
             .append('g')
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
-        // add title
-        vis.svg.append('g')
-            .attr('class', 'title matrix-title')
-            .append('text')
-            .text("Relationship Matrix")
-            .attr('transform', `translate(${vis.width / 2}, 0)`)
-            .attr('text-anchor', 'middle');
-
         vis.allFaculty = vis.peopleInfo.map((x) => x.Title);
 
         // intrinsic properties of the adjacency matrix
@@ -46,14 +38,15 @@ class adjMatrixVis {
         vis.cellWidth = d3.max([vis.cellScalar * ((vis.minDim - d3.max([vis.xShift, vis.yShift])) / vis.allFaculty.length),2]);
         vis.cellPadding = 1;
 
-
-
-        console.log(vis.allFaculty);
+        //console.log(vis.allFaculty);
 
         // we may decide to filter this list for one reason or another, but for now use all
         vis.displayFaculty = vis.allFaculty;
         vis.displayPaperInfo = vis.perPaperInfo;
-        // create vis.matrixData to use
+
+        // populate/update with relevant new info. Use to sort later
+        vis.facultySortInfoDict = {};
+
         vis.basicRelationData();
         vis.createMatrixData();
 
@@ -61,90 +54,13 @@ class adjMatrixVis {
         vis.displayLabelsThreshold = 40;
         vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
 
-
-        // put everything in row objects, so they can move later
-        /*
-        vis.relationSquares = vis.svg
-            .selectAll(".matrix-relation-squares")
-            .data(vis.matrixLongList, (d) => d.nameKey)
-            .enter()
-            .append("rect")
-            .attr("class","matrix-relation-squares")
-            .attr("fill", function(d) {
-                if (d.valueLen > 0) {
-                    // at some point I may want color scales...
-                    return "purple";
-                } else {
-                    return "gray";
-                }
-            })
-            .attr("opacity", function(d) {
-                // display if we have small enough graph, or if values are important
-                if(vis.displayLabelsBoolean || d.valueLen > 0){
-                    return 1.0;
-                }
-                else {
-                    return 0.0;
-                }
-            })
-            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * d.xpos + vis.xShift)
-            .attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * d.ypos + vis.yShift)
-            .attr("width", vis.cellWidth)
-            .attr("height", vis.cellWidth);
-
-        // row labels
-        vis.svg
-            .selectAll(".matrix-row-labels")
-            .data(vis.displayFaculty)
-            .enter()
-            .append("text")
-            .attr("class","matrix-row-labels")
-            .attr("text-anchor","end")
-            .attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * (i+1) + vis.yShift)
-            .attr("x", vis.xShift-5)
-            .attr("opacity", function(d) {
-                if(vis.displayLabelsBoolean){
-                    return 1.0;
-                }
-                else {
-                    return 0.0;
-                }
-            })
-            .text(d => d);
-
-        // column labels
-        vis.columnLabels = vis.svg
-            .selectAll(".matrix-column-labels")
-            .data(vis.displayFaculty)
-            .enter()
-            .append("text")
-            .attr("class","matrix-column-labels")
-            .attr("text-anchor","start")
-            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift)
-            .attr("y",vis.yShift-5)
-            .attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
-            .attr("opacity", function(d) {
-                if(vis.displayLabelsBoolean){
-                    return 1.0;
-                }
-                else {
-                    return 0.0;
-                }
-            })
-            .text(d=>d);
-
-         */
-
-        vis.tooltipDiv = vis.svg.append("div")
-            .attr("class", "tooltip-adjacency-matrix")
-            .style("opacity", 0);
-
+        // actually create the squares (and labels, maybe)
         vis.updateVis();
 
     }
 
     basicRelationData() {
-        console.log("At basicRelationData!");
+        //console.log("At basicRelationData!");
         // create n by n dictionary, mapping pairs to their papers
         let vis = this;
 
@@ -152,9 +68,6 @@ class adjMatrixVis {
         vis.peopleInfo.forEach((x) => {
             vis.departmentMap[x["Title"]] = {'researchInterest': x["Research Interests"], 'teachingArea': x["Teaching Areas"]};
         });
-
-        console.log("department map");
-        console.log(vis.departmentMap);
 
         vis.facultyPapersDict = {};
         vis.displayFaculty.forEach((name) => {
@@ -181,8 +94,6 @@ class adjMatrixVis {
                 }
             });
         });
-        console.log("Finished up vis.facultyPapersDict creation");
-
     }
 
     createMatrixData() {
@@ -193,6 +104,7 @@ class adjMatrixVis {
         // now create a list of objects, each object containing a list of objects, each of those objects with papers and names of two authors
         let facultyListOfLists = [];
         let matrixLongList = [];
+        //let facultySortInfoDict = {};
         let xpos = 0;
         vis.displayFaculty.forEach((name) => {
 
@@ -216,40 +128,42 @@ class adjMatrixVis {
             facultyObj.researchInterest = vis.departmentMap[name].researchInterest;
             facultyObj.teachingArea = vis.departmentMap[name].teachingArea;
             facultyListOfLists.push(facultyObj);
+            vis.facultySortInfoDict[name] = facultyObj;
             xpos = xpos+1;
         });
 
-        vis.matrixData = facultyListOfLists;
+        //vis.matrixData = facultyListOfLists;
         vis.matrixLongList = matrixLongList;
-        console.log(vis.matrixData);
+        //vis.facultySortInfoDict = facultySortInfoDict;
     }
 
     sortAndFilterValues() {
         let vis = this;
-        console.log(selectedFacultyAdjSort);
 
         // ok, it has a new value of selectedFacultyAdjSort
-        vis.displayFaculty = [];
 
-        // here is where we sort and filter, because we updated the visualization for a reason
-        vis.matrixData.sort(function(a, b){return a[selectedFacultyAdjSort].localeCompare(b[selectedFacultyAdjSort])});
-        vis.matrixData.forEach((x) => vis.displayFaculty.push(x.name));
-
-        // then for filtering
-
-        // eventually make this list bigger. You might filter by different things, so have different behavior
-        let researchInterestList = ["Artificial Intelligence"];
+        // filter FIRST
+        // eventually make these lists bigger. You might filter by different things, so have different behavior
+        let researchInterestList = ["Artificial Intelligence", "Theory of Computation", "Materials"];
+        let teachingAreaList = ["Applied Mathematics", "Computer Science"];
         if (researchInterestList.includes(selectedFacultyAdjFilter)) {
-            let filteredFaculty = vis.displayFaculty.filter(name => vis.departmentMap[name].researchInterest.includes(selectedFacultyAdjFilter));
+            let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].researchInterest.includes(selectedFacultyAdjFilter));
+            vis.displayFaculty = filteredFaculty;
+        } else if (teachingAreaList.includes(selectedFacultyAdjFilter)) {
+            console.log("teaching area list")
+            let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].teachingArea.includes(selectedFacultyAdjFilter));
             vis.displayFaculty = filteredFaculty;
         }
         // this is the case where we JUST clicked on filtering back
         else if (newFilterBack) {
-            // in the original order. Maybe reset the buttons too
             vis.displayFaculty = vis.allFaculty;
             newFilterBack = false;
         }
 
+        // THEN sort
+        vis.displayFaculty.sort(function(a, b){return vis.facultySortInfoDict[a][selectedFacultyAdjSort].localeCompare(vis.facultySortInfoDict[b][selectedFacultyAdjSort])})
+
+        // update the cell widths so it scales, and maybe update whether or not text is shown
         vis.cellWidth = d3.max([vis.cellScalar * ((vis.minDim - d3.max([vis.xShift, vis.yShift])) / vis.displayFaculty.length),2])
         vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
 
@@ -268,11 +182,6 @@ class adjMatrixVis {
     updateVis(){
         let vis = this;
 
-        //vis.sortAndFilterValues();
-        //vis.createMatrixData();
-        //console.log("New matrix data here");
-        //console.log(vis.matrixData);
-
         let trans = d3.transition()
             .duration(800);
 
@@ -286,15 +195,16 @@ class adjMatrixVis {
             .remove();
 
         relationSquares
-            //.selectAll(".matrix-relation-squares")
-            //.data(vis.matrixLongList, (d) => d.nameKey)
             .enter() // ENTER
             .append("rect")
             .attr("class","matrix-relation-squares")
+            .on("click", function(event, d) {
+                // show info on the "sticky note"
+                vis.clickFacts(d);
+            })
             .merge(relationSquares) // ENTER + UPDATE
             .transition(trans)
             .attr("fill", function(d) {
-                // I may want to toggle opacity, for example
                 if (d.valueLen > 0) {
                     return "purple";
                 } else {
@@ -306,7 +216,7 @@ class adjMatrixVis {
                     return 1.0;
                 }
                 else {
-                    return 0.0;
+                    return 0.5;
                 }
             })
             .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * d.xpos + vis.xShift)
@@ -371,22 +281,24 @@ class adjMatrixVis {
             })
             .attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
             .text(d => d);
-
     }
 
-    mouseoverFunction(event, d) {
-        // tooltip from https://bl.ocks.org/d3noob/a22c42db65eb00d4e369
-        let xpos = d3.pointer(event)[0];
-        let ypos = d3.pointer(event)[1];
-        // show tooltip
-        vis.tooltipDiv
-            .style("left", (xpos + 20) + vis.margin.left + "px")
-            .style("top", (ypos + 20) + vis.margin.top + "px")
-            .transition()
-            .duration(200)
-            .style("opacity", .9);
+    clickFacts(d) {
+        let vis = this;
+        // fill the string with facts for this relation
+        let formatString = "";
+        formatString += "Number of common papers: " + d.valueLen +  "<br/>";
 
-        // display interesting facts
-        vis.tooltipDiv.html(d.nameKey);
+        formatString += "Row faculty: " + d.name1 +  "<br/>";
+        formatString += "Teaching Area: " + vis.departmentMap[d.name1].teachingArea +  "<br/>";
+        //formatString += "Research Interest: " + vis.departmentMap[d.name1].researchInterest +  "<br/>";
+
+        formatString += "Col faculty: " + d.name2 +  "<br/>";
+        formatString += "Teaching Area: " + vis.departmentMap[d.name2].teachingArea +  "<br/>";
+        //formatString += "Research Interest: " + vis.departmentMap[d.name2].researchInterest +  "<br/>";
+
+        document.getElementById('click-facts-adjacency-matrix')
+            .innerHTML = formatString;
     }
+
 }

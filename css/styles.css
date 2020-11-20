@@ -78,3 +78,10 @@ section {
 	height: 800px;
 }
 
+#click-facts-adjacency-matrix {
+	font: 13px sans-serif;
+	background: lightgoldenrodyellow;
+	width: 200px;
+	height: 130px;
+}
+
