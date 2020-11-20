@@ -36,7 +36,15 @@ function initMainPage(dataArray) {
 selectedFacultyAdjSort = $('#faculty-adj-sort-selector').val();
 function sortChangeFacultyAdj() {
     // update matrix once we've changed sorted values
-    // TODO: actually implement some kind of sorting/filtering
     selectedFacultyAdjSort = $('#faculty-adj-sort-selector').val();
-    myFacultyAdjVis.updateVis();
+    myFacultyAdjVis.wrangleData();
+}
+
+selectedFacultyAdjFilter = $('#faculty-adj-filter-selector').val();
+let newFilterBack = false;
+function filterChangeFacultyAdj() {
+    // filter matrix by these values
+    selectedFacultyAdjFilter = $('#faculty-adj-filter-selector').val();
+    newFilterBack = (selectedFacultyAdjFilter == "All");
+    myFacultyAdjVis.wrangleData();
 }
