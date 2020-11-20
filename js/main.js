@@ -28,6 +28,7 @@ function initMainPage(dataArray) {
     // initialize the visualizations here
     myNetworkVis = new NetworkGraph("network-graph", nodeData);
     myFacultyAdjVis = new adjMatrixVis("faculty-adj-matrix", peopleData, perPaperVals);
+    myFacultyManyTableVis = new manyTableVis("faculty-interest-table", peopleData, coursesData);
 }
 
 // handle buttons, sorting, selecting etc. down here

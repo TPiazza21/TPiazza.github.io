@@ -1,18 +1,21 @@
 /* * * * * * * * * * * * * *
-*      class adjMatrixVis        *
+*      class manyTableVis        *
 * * * * * * * * * * * * * */
 
+// TODO: implement manyTableVis!
 
-class adjMatrixVis {
-    constructor(parentElement, peopleInfo, perPaperInfo){
+class manyTableVis {
+    constructor(parentElement, peopleInfo, coursesInfo){
         this.parentElement = parentElement;
         this.peopleInfo = peopleInfo;
-        this.perPaperInfo = perPaperInfo;
+        this.coursesInfo = coursesInfo;
 
-        this.initVis();
+        //this.initVis();
     }
 
+    /*
     initVis(){
+        //console.log("Init Vis of adjMatrixVis");
         let vis = this;
 
         vis.margin = {top: 40, right: 60, bottom: 60, left: 60};
@@ -37,6 +40,8 @@ class adjMatrixVis {
         vis.cellWidth = d3.max([vis.cellScalar * ((vis.minDim - d3.max([vis.xShift, vis.yShift])) / vis.allFaculty.length),2]);
         vis.cellPadding = 1;
 
+        //console.log(vis.allFaculty);
+
         // we may decide to filter this list for one reason or another, but for now use all
         vis.displayFaculty = vis.allFaculty;
         vis.displayPaperInfo = vis.perPaperInfo;
@@ -52,12 +57,12 @@ class adjMatrixVis {
         vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
 
         // actually create the squares (and labels, maybe)
-        vis.wrangleData()
         vis.updateVis();
 
     }
 
     basicRelationData() {
+        //console.log("At basicRelationData!");
         // create n by n dictionary, mapping pairs to their papers
         let vis = this;
 
@@ -147,6 +152,7 @@ class adjMatrixVis {
             let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].researchInterest.includes(selectedFacultyAdjFilter));
             vis.displayFaculty = filteredFaculty;
         } else if (teachingAreaList.includes(selectedFacultyAdjFilter)) {
+            console.log("teaching area list")
             let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].teachingArea.includes(selectedFacultyAdjFilter));
             vis.displayFaculty = filteredFaculty;
         }
@@ -296,5 +302,7 @@ class adjMatrixVis {
         document.getElementById('click-facts-adjacency-matrix')
             .innerHTML = formatString;
     }
+
+     */
 
 }
