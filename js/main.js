@@ -29,6 +29,7 @@ function initMainPage(dataArray) {
     myNetworkVis = new NetworkGraph("network-graph", nodeData);
     myFacultyAdjVis = new adjMatrixVis("faculty-adj-matrix", peopleData, perPaperVals);
     myFacultyManyTableVis = new manyTableVis("faculty-interest-table", peopleData, coursesData);
+    myFacultyDotsVis = new groupDotsVis("faculty-dots", peopleData, coursesData);
 }
 
 // handle buttons, sorting, selecting etc. down here

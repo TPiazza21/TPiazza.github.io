@@ -87,12 +87,21 @@ section {
 
 #section-faculty-interest-table {
 	height: 600px;
-
 }
 
 #faculty-interest-table {
 	height: 600px;
 	width: 800px;
 
+}
+
+#section-faculty-dots {
+	height: 600px;
+	background-color: crimson;
+}
+
+#faculty-dots {
+	height: 600px;
+	width: 800px;
 }
 

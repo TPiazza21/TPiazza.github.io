@@ -1,11 +1,12 @@
 /* * * * * * * * * * * * * *
-*      class manyTableVis        *
+*      class groupDotsVis        *
 * * * * * * * * * * * * * */
 
-// TODO: maybe use an actual scale, instead of adjusting with scaling myself...
-// TODO: maybe have something interesting happen on click
+// https://bl.ocks.org/ocarneiro/42286298b683c490ff74cdbf3800241e
 
-class manyTableVis {
+// TODO: implement
+
+class groupDotsVis {
     constructor(parentElement, peopleInfo, coursesInfo){
         this.parentElement = parentElement;
         this.peopleInfo = peopleInfo;
@@ -22,13 +23,15 @@ class manyTableVis {
         vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
 
-        vis.minDim = d3.min([vis.width, vis.height]);
+        //vis.minDim = d3.min([vis.width, vis.height]);
         // init drawing area
         vis.svg = d3.select("#" + vis.parentElement).append("svg")
             .attr("width", vis.width + vis.margin.left + vis.margin.right)
             .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
             .append('g')
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
+
+        vis.svg.append("text").text("This is in progress. See https://bl.ocks.org/ocarneiro/42286298b683c490ff74cdbf3800241e to know what I'm trying to do").attr("x",50).attr("y",50);
 
         // eventually may narrow this down, but it's fine here
         vis.allFaculty = vis.peopleInfo.map((x) => x.Title);
@@ -39,60 +42,35 @@ class manyTableVis {
         let allTeachingAreasDup = vis.peopleInfo.map((x) => x["Teaching Areas"]).join("|").split("|");
         vis.allTeachingAreas = [...new Set(allTeachingAreasDup)].filter((x) => x.length > 0);
 
-        // add options to the select item for filtering
-        let selectDiv = document.getElementById('faculty-table-filter-selector');
-        vis.allTeachingAreas.forEach((teachingArea) => {
-            let opt = document.createElement('option');
-            opt.value = teachingArea;
-            opt.innerHTML = "Filter: Teaching Area: " + teachingArea;
-            selectDiv.appendChild(opt);
-        });
-        vis.allResearchInterests.forEach((r) => {
-            let opt = document.createElement('option');
-            opt.value = r;
-            opt.innerHTML = "Filter: Research Interest: " + r;
-            // just so that something is set
-            if (r == vis.allResearchInterests[0]) {
-                opt.selected = true;
-                selectedFacultyTableFilter = r;
-            }
-            selectDiv.appendChild(opt);
-        });
+
+        vis.color = d3.scaleOrdinal(d3.schemeCategory10);
+        vis.circleRadius = 8;
+        vis.groups = 10; // I don't know, will have to change
+        vis.currentData = []; // what to put here?
+        vis.labels = [];
+        vis.nodes = [];
 
         // intrinsic properties of the adjacency matrix
         //vis.cellWidth = 2;
-        vis.yShift = 100;
-        vis.xShift = 240;
+        //vis.yShift = 100;
+        //vis.xShift = 240;
 
-        vis.cellScalar = 0.85;
-        vis.cellPadding = 1;
+        //vis.cellScalar = 0.85;
+        //vis.cellPadding = 1;
 
 
         // I will define cellWidth later, dynamically
 
-        // we may decide to filter this list for one reason or another, but for now use all
-        vis.displayFaculty = vis.allFaculty;
-        vis.displayResearchInterests = vis.allResearchInterests;
 
-        // populate/update with relevant new info. Use to sort later
-        vis.facultySortInfoDict = {};
-        vis.researchInterestSortInfoDict = {};
-        vis.allResearchInterests.forEach((r) => {
-            // I may want more exciting sortable features, but this is a start
-            vis.researchInterestSortInfoDict[r] = {};
-            vis.researchInterestSortInfoDict[r].interestedFaculty = 0;
-            vis.researchInterestSortInfoDict[r].researchInterest = r;
-        })
-
-        vis.basicRelationData();
-        vis.createMatrixData();
+        //vis.basicRelationData();
+        //vis.createMatrixData();
 
         // decide whether or not to display text based on how many are here
-        vis.displayLabelsThreshold = 50;
-        vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
+        //vis.displayLabelsThreshold = 50;
+        //vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
 
         // actually create the squares (and labels)
-        vis.wrangleData();
+        //vis.wrangleData();
 
     }
 
@@ -333,26 +311,11 @@ class manyTableVis {
             .text((d) => d);
     }
 
-    clickFacts(d) {
-        // maybe eventually I will do something interesting if we click on a box
-        /*
+    killAll() {
         let vis = this;
-        // fill the string with facts for this relation
-        let formatString = "";
-        formatString += "Number of common papers: " + d.valueLen +  "<br/>";
-
-        formatString += "Row faculty: " + d.name1 +  "<br/>";
-        formatString += "Teaching Area: " + vis.departmentMap[d.name1].teachingArea +  "<br/>";
-        //formatString += "Research Interest: " + vis.departmentMap[d.name1].researchInterest +  "<br/>";
-
-        formatString += "Col faculty: " + d.name2 +  "<br/>";
-        formatString += "Teaching Area: " + vis.departmentMap[d.name2].teachingArea +  "<br/>";
-        //formatString += "Research Interest: " + vis.departmentMap[d.name2].researchInterest +  "<br/>";
-
-        document.getElementById('click-facts-adjacency-matrix')
-            .innerHTML = formatString;
-
-         */
+        vis.svg.selectAll("circle").data(new Array()).exit().remove();
+        vis.svg.selectAll("rect").data(new Array()).exit().remove();
+        vis.svg.selectAll("text").data(new Array()).exit().remove();
     }
 
 
