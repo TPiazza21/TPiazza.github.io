@@ -49,3 +49,27 @@ function filterChangeFacultyAdj() {
     newFilterBack = (selectedFacultyAdjFilter == "All");
     myFacultyAdjVis.wrangleData();
 }
+
+// for the faculty heatmap table for research interests
+
+selectedFacultyTableFilter = $('#faculty-table-filter-selector').val();
+//let newFilterBack = false;
+function filterChangeFacultyTable() {
+    // filter matrix by these values
+    selectedFacultyTableFilter = $('#faculty-table-filter-selector').val();
+    //newFilterBack = (selectedFacultyAdjFilter == "All");
+    myFacultyManyTableVis.wrangleData();
+}
+selectedFacultyTableFacultySort = $('#faculty-table-faculty-sort-selector').val();
+function sortFacultyChangeFacultyTable() {
+    // sort table, via the faculty
+    selectedFacultyTableFacultySort = $('#faculty-table-faculty-sort-selector').val();
+    myFacultyManyTableVis.wrangleData();
+}
+
+selectedFacultyTableResearchSort = $('#faculty-table-research-sort-selector').val();
+function sortResearchChangeFacultyTable() {
+    // sort table, via research interests
+    selectedFacultyTableResearchSort = $('#faculty-table-research-sort-selector').val();
+    myFacultyManyTableVis.wrangleData();
+}

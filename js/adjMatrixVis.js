@@ -29,6 +29,34 @@ class adjMatrixVis {
 
         vis.allFaculty = vis.peopleInfo.map((x) => x.Title);
 
+        // I also want some big list of research areas... and teaching areas while we're at it
+        let allResearchInterestsDup = vis.peopleInfo.map((x) => x["Research Interests"]).join("|").split("|");
+        vis.allResearchInterests = [...new Set(allResearchInterestsDup)].filter((x) => x.length > 0);
+        //console.log(vis.allResearchInterests);
+
+        let allTeachingAreasDup = vis.peopleInfo.map((x) => x["Teaching Areas"]).join("|").split("|");
+        vis.allTeachingAreas = [...new Set(allTeachingAreasDup)].filter((x) => x.length > 0);
+
+        //'faculty-table-filter-selector'
+        let selectDiv = document.getElementById('faculty-adj-filter-selector');
+        vis.allTeachingAreas.forEach((teachingArea) => {
+            let opt = document.createElement('option');
+            opt.value = teachingArea;
+            opt.innerHTML = "Filter: Teaching Area: " + teachingArea;
+            selectDiv.appendChild(opt);
+        });
+        vis.allResearchInterests.forEach((r) => {
+            let opt = document.createElement('option');
+            opt.value = r;
+            opt.innerHTML = "Filter: Research Interest: " + r;
+            // just so that something is set
+            if (r == vis.allResearchInterests[0]) {
+                opt.selected = true;
+                selectedFacultyAdjFilter = r;
+            }
+            selectDiv.appendChild(opt);
+        });
+
         // intrinsic properties of the adjacency matrix
         //vis.cellWidth = 2;
         vis.yShift = 60;
@@ -141,12 +169,12 @@ class adjMatrixVis {
 
         // filter FIRST
         // eventually make these lists bigger. You might filter by different things, so have different behavior
-        let researchInterestList = ["Artificial Intelligence", "Theory of Computation", "Materials"];
-        let teachingAreaList = ["Applied Mathematics", "Computer Science"];
-        if (researchInterestList.includes(selectedFacultyAdjFilter)) {
+        //let researchInterestList = ["Artificial Intelligence", "Theory of Computation", "Materials"];
+        //let teachingAreaList = ["Applied Mathematics", "Computer Science"];
+        if (vis.allResearchInterests.includes(selectedFacultyAdjFilter)) {
             let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].researchInterest.includes(selectedFacultyAdjFilter));
             vis.displayFaculty = filteredFaculty;
-        } else if (teachingAreaList.includes(selectedFacultyAdjFilter)) {
+        } else if (vis.allTeachingAreas.includes(selectedFacultyAdjFilter)) {
             let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].teachingArea.includes(selectedFacultyAdjFilter));
             vis.displayFaculty = filteredFaculty;
         }

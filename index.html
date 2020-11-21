@@ -54,12 +54,25 @@
 		</div>
 	</section>
 
-	<section id="section-3" class="row">
+	<section id="section-faculty-interest-table" class="row">
 
 		<div class="container-fluid">
 			<div class="row justify-content-center">
 				<div class="align-self-center">
-					<h1>(Visualization: Adjacency matrix/heat map to see faculty and research connections)</h1>
+					<h1>Faculty Research Interest Table</h1>
+					<select  id='faculty-table-filter-selector' class="custom-select align-self-center" style="width: 20%" onchange="filterChangeFacultyTable()">
+						<option value="All">Include All</option>
+						<!-- Include the rest programmatically -->
+					</select>
+					<select id='faculty-table-faculty-sort-selector' class="custom-select align-self-center" style="width: 20%" onchange="sortFacultyChangeFacultyTable()">
+						<option value="name" selected>Sort Faculty: Default Ordering</option>
+						<option value="teachingAreas">Sort Faculty: By Teaching Area</option>
+						<option value="numResearchInterests">Sort Faculty: By Most Research Interests</option>
+					</select>
+					<select id='faculty-table-research-sort-selector' class="custom-select align-self-center" style="width: 20%" onchange="sortResearchChangeFacultyTable()">
+						<option value="researchInterest" selected>Sort Research Interests: Default Ordering</option>
+						<option value="interestedFaculty">Sort Research Interests: By Number of Interested Faculty</option>
+					</select>
 					<div id="faculty-interest-table"></div>
 				</div>
 			</div>
@@ -97,15 +110,7 @@
 					</select>
 					<select id='faculty-adj-filter-selector' class="custom-select align-self-center" style="width: 20%" onchange="filterChangeFacultyAdj()">
 						<option value="All">Include All</option>
-						<!-- Research Interests-->
-						<option value="Artificial Intelligence">Filter: Artificial Intelligence</option>
-						<option value="Theory of Computation">Filter: Theory of Computation</option>
-						<option value="Materials" selected>Filter: Materials</option>
-						<!-- Teaching Areas -->
-						<option value="Applied Mathematics">Filter: Applied Mathematics</option>
-						<option value="Computer Science">Filter: Computer Science</option>
-
-
+						<!-- Populate the rest automatically-->
 					</select>
 					<div id="click-facts-adjacency-matrix">Click on box to see info!</div>
 					<div id="faculty-adj-matrix"></div>
