@@ -7,10 +7,11 @@
 // TODO: implement
 
 class groupDotsVis {
-    constructor(parentElement, peopleInfo, coursesInfo){
+    constructor(parentElement, peopleInfo, coursesInfo, latestPeopleInfo){
         this.parentElement = parentElement;
         this.peopleInfo = peopleInfo;
         this.coursesInfo = coursesInfo;
+        this.latestPeopleInfo = latestPeopleInfo;
 
         this.initVis();
     }
@@ -33,15 +34,15 @@ class groupDotsVis {
 
         vis.svg.append("text").text("This is in progress. See https://bl.ocks.org/ocarneiro/42286298b683c490ff74cdbf3800241e to know what I'm trying to do").attr("x",50).attr("y",50);
 
-        // eventually may narrow this down, but it's fine here
-        vis.allFaculty = vis.peopleInfo.map((x) => x.Title);
+        vis.latestAllFaculty = vis.latestPeopleInfo.map((x) => x.Title);
+        vis.allFaculty = vis.peopleInfo.map((x) => x.Title).filter((x) => vis.latestAllFaculty.includes(x));
+
         // I also want some big list of research areas... and teaching areas while we're at it
         let allResearchInterestsDup = vis.peopleInfo.map((x) => x["Research Interests"]).join("|").split("|");
         vis.allResearchInterests = [...new Set(allResearchInterestsDup)].filter((x) => x.length > 0);
 
         let allTeachingAreasDup = vis.peopleInfo.map((x) => x["Teaching Areas"]).join("|").split("|");
         vis.allTeachingAreas = [...new Set(allTeachingAreasDup)].filter((x) => x.length > 0);
-
 
         vis.color = d3.scaleOrdinal(d3.schemeCategory10);
         vis.circleRadius = 8;

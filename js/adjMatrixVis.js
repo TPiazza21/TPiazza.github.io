@@ -4,10 +4,11 @@
 
 
 class adjMatrixVis {
-    constructor(parentElement, peopleInfo, perPaperInfo){
+    constructor(parentElement, peopleInfo, perPaperInfo, latestPeopleInfo){
         this.parentElement = parentElement;
         this.peopleInfo = peopleInfo;
         this.perPaperInfo = perPaperInfo;
+        this.latestPeopleInfo = latestPeopleInfo;
 
         this.initVis();
     }
@@ -27,7 +28,8 @@ class adjMatrixVis {
             .append('g')
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
-        vis.allFaculty = vis.peopleInfo.map((x) => x.Title);
+        vis.latestAllFaculty = vis.latestPeopleInfo.map((x) => x.Title);
+        vis.allFaculty = vis.peopleInfo.map((x) => x.Title).filter((x) => vis.latestAllFaculty.includes(x));
 
         // I also want some big list of research areas... and teaching areas while we're at it
         let allResearchInterestsDup = vis.peopleInfo.map((x) => x["Research Interests"]).join("|").split("|");

@@ -6,10 +6,11 @@
 // TODO: maybe have something interesting happen on click
 
 class manyTableVis {
-    constructor(parentElement, peopleInfo, coursesInfo){
+    constructor(parentElement, peopleInfo, coursesInfo, latestPeopleInfo){
         this.parentElement = parentElement;
         this.peopleInfo = peopleInfo;
         this.coursesInfo = coursesInfo;
+        this.latestPeopleInfo = latestPeopleInfo;
 
         this.initVis();
     }
@@ -30,8 +31,10 @@ class manyTableVis {
             .append('g')
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
-        // eventually may narrow this down, but it's fine here
-        vis.allFaculty = vis.peopleInfo.map((x) => x.Title);
+        // we seem to be narrowing who we include, so here it is
+        vis.latestAllFaculty = vis.latestPeopleInfo.map((x) => x.Title);
+        vis.allFaculty = vis.peopleInfo.map((x) => x.Title).filter((x) => vis.latestAllFaculty.includes(x));
+
         // I also want some big list of research areas... and teaching areas while we're at it
         let allResearchInterestsDup = vis.peopleInfo.map((x) => x["Research Interests"]).join("|").split("|");
         vis.allResearchInterests = [...new Set(allResearchInterestsDup)].filter((x) => x.length > 0);

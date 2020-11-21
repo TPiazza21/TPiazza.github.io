@@ -5,7 +5,8 @@ let promises = [
     d3.csv('data/Visualization Data_People.csv'),
     d3.csv('data/Visualization Data_Courses.csv'),
     d3.csv('data/Visualization Data_News.csv'),
-    d3.csv('data/Visualization Data_Programs.csv')
+    d3.csv('data/Visualization Data_Programs.csv'),
+    d3.csv('data/Final Visualization Data_People.csv')
     // please add additional data AFTER these, so that people's indexing isn't messed up...
 ];
 
@@ -20,16 +21,17 @@ function initMainPage(dataArray) {
     console.log('Check out the data', dataArray);
     let facultyCoauthorMatrix = dataArray[0];
     let perPaperVals = dataArray[1];
-    let peopleData = dataArray[2];
+    let peopleData = dataArray[2]; // this is outdated (info is ok, but too many faculty)
     let coursesData = dataArray[3];
     let newsData = dataArray[4];
     let programsData = dataArray[5];
+    let latestPeopleData = dataArray[6];  // this is latest list of faculty (as of 11/21)
 
     // initialize the visualizations here
     myNetworkVis = new NetworkGraph("network-graph", nodeData);
-    myFacultyAdjVis = new adjMatrixVis("faculty-adj-matrix", peopleData, perPaperVals);
-    myFacultyManyTableVis = new manyTableVis("faculty-interest-table", peopleData, coursesData);
-    myFacultyDotsVis = new groupDotsVis("faculty-dots", peopleData, coursesData);
+    myFacultyAdjVis = new adjMatrixVis("faculty-adj-matrix", peopleData, perPaperVals, latestPeopleData);
+    myFacultyManyTableVis = new manyTableVis("faculty-interest-table", peopleData, coursesData, latestPeopleData);
+    myFacultyDotsVis = new groupDotsVis("faculty-dots", peopleData, coursesData, latestPeopleData);
 }
 
 // handle buttons, sorting, selecting etc. down here
