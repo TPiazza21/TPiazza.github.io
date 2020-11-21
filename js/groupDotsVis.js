@@ -44,161 +44,138 @@ class groupDotsVis {
         let allTeachingAreasDup = vis.peopleInfo.map((x) => x["Teaching Areas"]).join("|").split("|");
         vis.allTeachingAreas = [...new Set(allTeachingAreasDup)].filter((x) => x.length > 0);
 
-        vis.color = d3.scaleOrdinal(d3.schemeCategory10);
-        vis.circleRadius = 8;
-        vis.groups = 10; // I don't know, will have to change
-        vis.currentData = []; // what to put here?
-        vis.labels = [];
-        vis.nodes = [];
-
-        // intrinsic properties of the adjacency matrix
-        //vis.cellWidth = 2;
-        //vis.yShift = 100;
-        //vis.xShift = 240;
-
-        //vis.cellScalar = 0.85;
-        //vis.cellPadding = 1;
-
-
-        // I will define cellWidth later, dynamically
-
-
-        //vis.basicRelationData();
-        //vis.createMatrixData();
-
-        // decide whether or not to display text based on how many are here
-        //vis.displayLabelsThreshold = 50;
-        //vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
-
-        // actually create the squares (and labels)
-        //vis.wrangleData();
-
-    }
-
-    basicRelationData() {
-        let vis = this;
 
         vis.departmentMap = {};
         vis.peopleInfo.forEach((x) => {
             vis.departmentMap[x["Title"]] = {'researchInterests': x["Research Interests"], 'teachingAreas': x["Teaching Areas"]};
         });
 
-    }
+        vis.color = d3.scaleOrdinal(d3.schemeCategory10);
+        vis.circleRadius = 15;
+        vis.displayFaculty = vis.allFaculty;
+        //vis.groups = 10; // I don't know, will have to change
+        //vis.currentData = []; // what to put here?
+        //vis.labels = [];
+        //vis.nodes = [];
 
-    createMatrixData() {
-        let vis = this;
-        // this function will use some names of faculty (vis.displayFaculty), and some dataset, and creates data in the table
 
-        let matrixLongList = [];
-
-        vis.allResearchInterests.forEach((r) => {
-            vis.researchInterestSortInfoDict[r].interestedFaculty = 0;
-        });
-
-        let xpos = 0;
-        vis.displayFaculty.forEach((name) => {
-            let facultyObj = {};
-            facultyObj.name = name;
-            facultyObj.researchInterests = [];
-            let ypos = 0;
-            let interestCounter = 0;
-            vis.displayResearchInterests.forEach((r) => {
-                let facultyResearchInterestObj = {};
-                // keep track of the name
-                facultyResearchInterestObj.name = name;
-                facultyResearchInterestObj.researchInterest = r;
-                facultyResearchInterestObj.isInterested = (vis.departmentMap[name].researchInterests.includes(r));
-                if (facultyResearchInterestObj.isInterested) {
-                    interestCounter = interestCounter + 1;
-                    vis.researchInterestSortInfoDict[r].interestedFaculty = vis.researchInterestSortInfoDict[r].interestedFaculty + 1;
-                }
-                facultyResearchInterestObj.xpos = xpos;
-                facultyResearchInterestObj.ypos = ypos;
-                facultyResearchInterestObj.nameKey = name + ";" + r;
-                facultyObj.researchInterests.push(facultyResearchInterestObj);
-                matrixLongList.push(facultyResearchInterestObj);
-
-                ypos = ypos+1;
-            });
-
-            // save this info so you can sort using it, later
-            facultyObj.researchInterests = vis.departmentMap[name].researchInterests;
-            facultyObj.teachingAreas = vis.departmentMap[name].teachingAreas;
-            facultyObj.numResearchInterests = interestCounter;
-
-            vis.facultySortInfoDict[name] = facultyObj;
-
-            xpos = xpos+1;
-        });
-
-        vis.matrixLongList = matrixLongList;
-    }
-
-    sortAndFilterValues() {
-        let vis = this;
-
-        // filter FIRST
-
-        // filtering the faculty
-        if (vis.allResearchInterests.includes(selectedFacultyTableFilter)) {
-            let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].researchInterests.includes(selectedFacultyTableFilter));
-            vis.displayFaculty = filteredFaculty;
-            vis.xShift = 240;
-            vis.cellScalar = 0.85;
-        } else if (vis.allTeachingAreas.includes(selectedFacultyTableFilter)) {
-            let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].teachingAreas.includes(selectedFacultyTableFilter));
-            vis.displayFaculty = filteredFaculty;
-            vis.xShift = 240;
-            vis.cellScalar = 0.85;
-        }
-        else if (selectedFacultyTableFilter == "All") {
-            vis.displayFaculty = vis.allFaculty;
-            vis.xShift = 50;
-            vis.cellScalar = 0.6;
-        }
-
-        // once you've filtered the faculty, filter out research areas that are unnecessary
-        let allRelevantResearchInterestStr = vis.displayFaculty.map((name) => vis.departmentMap[name].researchInterests).join("|");
-        let relevantResearchInterests = vis.allResearchInterests.filter((r) => allRelevantResearchInterestStr.includes(r));
-        vis.displayResearchInterests = relevantResearchInterests;
-
-        // just so the data is still fresh
-        vis.createMatrixData();
-
-        // THEN sort
-
-        // sorting of faculty
-        let stringFacultyInclusionSorts = ["name", "teachingAreas"];
-        if (stringFacultyInclusionSorts.includes(selectedFacultyTableFacultySort)) {
-            // compare strings
-            vis.displayFaculty.sort(function(a, b){return vis.facultySortInfoDict[a][selectedFacultyTableFacultySort].localeCompare(vis.facultySortInfoDict[b][selectedFacultyTableFacultySort])});
-        }
-        else {
-            // compare numbers (counts)
-            vis.displayFaculty.sort(function(a, b){return vis.facultySortInfoDict[b][selectedFacultyTableFacultySort] - vis.facultySortInfoDict[a][selectedFacultyTableFacultySort]});
-        }
-
-        // sorting of research areas
-        let stringResearchInclusionSorts = ["researchInterest"];
-        if (stringResearchInclusionSorts.includes(selectedFacultyTableResearchSort)) {
-            vis.displayResearchInterests.sort(function(a, b){return vis.researchInterestSortInfoDict[a][selectedFacultyTableResearchSort].localeCompare(vis.researchInterestSortInfoDict[b][selectedFacultyTableResearchSort])});
-        }
-        else {
-            vis.displayResearchInterests.sort(function(a, b){return vis.researchInterestSortInfoDict[b][selectedFacultyTableResearchSort] - vis.researchInterestSortInfoDict[a][selectedFacultyTableResearchSort]});
-        }
-
-        // update the cell widths so it scales, and maybe update whether or not text is shown
-        let tempScaleShift = vis.cellScalar * d3.min([((vis.width - vis.xShift) / vis.displayFaculty.length), ((vis.height - vis.yShift) / vis.displayResearchInterests.length)]);
-        vis.cellWidth = d3.max([tempScaleShift,3]);
-        vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
+        vis.wrangleData();
 
     }
+
+    nodeGen(data, labels) {
+
+        // initial dot for each group
+        let nodes = new Array();
+        for (let i=0; i < labels.length; i++){
+            nodes.push({id:i, group:i})
+        }
+
+        // additional dots
+        for (let i=0; i < labels.length; i++){
+            if (data[i] > 0) {
+                let n = d3.range(data[i]-1)
+                    .map(function(d) {return {id: nodes.length + d,
+                        group: i};})
+                nodes = nodes.concat(n)
+            }
+        }
+        return nodes;
+    }
+
 
     wrangleData() {
         let vis = this;
+        vis.killAll();
 
-        vis.sortAndFilterValues();
-        vis.createMatrixData();
+
+        // I will want to modify this, at some point
+        vis.jsonData = [40, 3, 5, 10, 2, 1];
+        vis.labels = ["Survey","Field Research", "Case Study",
+            "Lab Experiment", "Secondary Data",
+            "Content Analysis"
+        ];
+
+        // if I'm grouping by teaching area
+        //let teachingAreaStrings = [...new Set(vis.displayFaculty.map((x) => vis.departmentMap[x]["teachingAreas"]))];
+        function smartTeachingAreaMap(teachingAreaString) {
+            if (teachingAreaString.includes("|")) {
+                return "Multiple";
+            }
+            else {
+                return teachingAreaString;
+            }
+        }
+
+        vis.nodeLabels = vis.displayFaculty.map((x) => smartTeachingAreaMap(vis.departmentMap[x]["teachingAreas"]));
+        vis.labels = [...new Set(vis.nodeLabels)];
+        vis.groups = vis.labels.length;
+
+        // I just need to create nodes, which is a list of {id, group} objects. Maybe they can contain more than just that?
+        vis.groupIdMap = {};
+        vis.groupInstanceCounter = {};
+        vis.groupFirstIdMap = {};
+        for(let i = 0; i<vis.groups; i++) {
+            vis.groupIdMap[vis.labels[i]] = i;
+            vis.groupInstanceCounter[vis.labels[i]] = 0;
+        }
+
+        let i = 0;
+        let nodeObjects = [];
+            vis.displayFaculty.forEach((name) => {
+            let nodeObj = {};
+            nodeObj.name = name;
+            nodeObj.label = vis.nodeLabels[i];
+            //nodeObj.group = vis.groupIdMap[nodeObj.label];
+            //nodeObj.id = i;
+            nodeObj.groupInstanceCount = vis.groupInstanceCounter[nodeObj.label];
+            if (vis.groupInstanceCounter[nodeObj.label] == 0) {
+                // record that this was the first of its type
+                //vis.groupFirstIdMap[nodeObj.label] = nodeObj.id;
+                // and increment the count
+                vis.groupInstanceCounter[nodeObj.label] = vis.groupInstanceCounter[nodeObj.label] + 1;
+            }
+
+            nodeObjects.push(nodeObj);
+            i = i + 1;
+        });
+
+        i = 0;
+        nodeObjects.sort((a,b) => a.groupInstanceCount - b.groupInstanceCount);
+        let newNodeObjects = [];
+        nodeObjects.forEach((nodeObj) => {
+            nodeObj.id = i;
+            if (nodeObj.groupInstanceCount == 0) {
+                vis.groupFirstIdMap[nodeObj.label] = nodeObj.id;
+            }
+            nodeObj.group = vis.groupFirstIdMap[nodeObj.label];
+
+            newNodeObjects.push(nodeObj);
+            i = i + 1;
+        });
+
+
+        vis.nodes = newNodeObjects;
+        // keep track of which were the first ids, so you know which one to display for labels/rectangles
+        vis.groupFirstIds = vis.labels.map((l) => vis.groupFirstIdMap[l]);
+
+
+
+
+        //vis.groups = vis.labels.length;
+        //vis.currentData = vis.jsonData;
+
+        //vis.nodes = vis.nodeGen(vis.currentData, vis.labels);
+        vis.range = vis.nodes.length;
+
+        vis.data = {
+            nodes:vis.nodes,
+            links:vis.nodes.map(function(i) {
+                return {
+                    source: i.group, //vis.groupFirstIdMap[i.group],
+                    target: i.id
+                };
+            })};
 
         vis.updateVis();
 
@@ -207,109 +184,77 @@ class groupDotsVis {
     updateVis(){
         let vis = this;
 
-        let trans = d3.transition()
-            .duration(800);
+        vis.simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function(d) { return d.index })
+                .distance(20)) // .distance(20))
+            .force("collide",d3.forceCollide(vis.circleRadius + 2)) // originally just vis.circleRadius
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(vis.width / 2, vis.height / 2))
+            .force("y", d3.forceY(0))
+            .force("x", d3.forceX(0));
 
-        let relationSquares = vis.svg
-            .selectAll(".matrix-relation-squares")
-            .data(vis.matrixLongList, (d) => d.nameKey);
+        // circles
+        let circles = vis.svg.append("g")
+            .attr("class", "nodes")
+            .selectAll("circle")
+            .data(vis.data.nodes)
+            .enter().append("circle")
+            .attr("r", vis.circleRadius)
+            .style("fill", function(d, i) { return vis.color(d.group); });
 
-        relationSquares.exit() // EXIT
-            .style("opacity", 0.0)
-            .transition(trans)
-            .remove();
-
-        relationSquares
-            .enter() // ENTER
-            .append("rect")
-            .attr("class","matrix-relation-squares")
+        let rects = vis.svg.append("g")
+            .attr("class", "rects")
+            .selectAll("rect")
+            .data(vis.data.nodes)
+            .enter().append("rect")
             .on("click", function(event, d) {
-                // maybe do more with this later
-                console.log("Clicking!");
+                // show info on the "sticky note"
                 console.log(d);
                 console.log(vis.departmentMap[d.name]);
             })
-            .merge(relationSquares) // ENTER + UPDATE
-            .transition(trans)
-            .attr("fill", function(d) {
-                if (d.isInterested) {
-                    return "purple";
-                } else {
-                    return "gray";
-                }
-            })
-            .attr("opacity", function(d) {
-                if (vis.displayLabelsBoolean || d.isInterested){
-                    return 1.0;
-                }
-                else {
-                    return 0.5;
-                }
-            })
-            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * d.xpos + vis.xShift)
-            .attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * d.ypos + vis.yShift)
-            .attr("width", vis.cellWidth)
-            .attr("height", vis.cellWidth);
+            .attr("fill", "white")
+            .attr("fill-opacity", 0.4)
+            .attr("width", 75)
+            .attr("height", 25);
 
-        // rows are for research interests
-        let rowLabels = vis.svg
-            .selectAll(".matrix-row-labels")
-            .data(vis.displayResearchInterests);
 
-        rowLabels.exit() // EXIT
-            .style("opacity", 0.0)
-            .transition(trans)
-            .remove();
+        let texts = vis.svg.append("g")
+            .attr("class", "labels")
+            .selectAll("text")
+            .data(vis.data.nodes)
+            .enter().append("text")
+            .style("font-size", 12)
+            .attr("dx", 12)
+            .attr("dy", ".35em")
+            .text(function(d) { return vis.labels[d.id] });
 
-        rowLabels
-            .enter() // ENTER
-            .append("text")
-            .attr("class","matrix-row-labels")
-            .merge(rowLabels)
-            .transition(trans) // ENTER + UPDATE
-            .attr("text-anchor","end")
-            .attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * (i+1) + vis.yShift)
-            .attr("x", vis.xShift-5)
-            .attr("opacity", function(d) {
-                if (vis.displayLabelsBoolean){
-                    return 1.0;
-                }
-                else {
-                    return 0.0;
-                }
-            })
-            .text(d => d);
 
-        // column labels are for the faculty
+        function ticked() {
+            circles
+                .attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; });
+            texts
+                .attr("x", function(d) { return d.x - 30; })
+                .attr("y", function(d) { return d.y; });
+            rects
+                .attr("x", function(d) { return d.x - 30; })
+                .attr("y", function(d) { return d.y - 12; })
+                .attr("fill-opacity", function(d) {
+                    let opacity = 0.0;
+                    // previous condition: d.id < vis.labels.length
+                    if (vis.groupFirstIds.includes(d.id)) {
+                        // only if this is a label node. Maybe it doesn't have to be in this particular structure
+                        opacity = 0.4
+                    }
+                    return opacity;
+                });
 
-        let columnLabels = vis.svg
-            .selectAll(".matrix-column-labels")
-            .data(vis.displayFaculty);
+        }
 
-        columnLabels.exit() // EXIT
-            .style("opacity", 0.0)
-            .transition(trans)
-            .remove();
+        vis.simulation.nodes(vis.data.nodes).on("tick", ticked);
 
-        columnLabels
-            .enter() // ENTER
-            .append("text")
-            .attr("class","matrix-column-labels")
-            .merge(columnLabels)
-            .transition(trans) // ENTER + UPDATE
-            .attr("text-anchor","start")
-            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift)
-            .attr("y", vis.yShift-5)
-            .attr("opacity", function(d) {
-                if (vis.displayLabelsBoolean){
-                    return 1.0;
-                }
-                else {
-                    return 0.0;
-                }
-            })
-            .attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
-            .text((d) => d);
+        //ties the circles together
+        vis.simulation.force("link").links(vis.data.links);
     }
 
     killAll() {

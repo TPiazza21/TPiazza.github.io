@@ -96,12 +96,12 @@ section {
 }
 
 #section-faculty-dots {
-	height: 600px;
-	background-color: crimson;
+	height: 800px;
+	background-color: lightslategray;
 }
 
 #faculty-dots {
-	height: 600px;
+	height: 700px;
 	width: 800px;
 }
 
