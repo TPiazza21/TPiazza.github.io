@@ -4,8 +4,6 @@
 
 // https://bl.ocks.org/ocarneiro/42286298b683c490ff74cdbf3800241e
 
-// TODO: implement
-
 class groupDotsVis {
     constructor(parentElement, peopleInfo, coursesInfo, latestPeopleInfo){
         this.parentElement = parentElement;
@@ -50,39 +48,21 @@ class groupDotsVis {
             vis.departmentMap[x["Title"]] = {'researchInterests': x["Research Interests"], 'teachingAreas': x["Teaching Areas"]};
         });
 
+        vis.officeMap = {};
+        vis.peopleInfo.forEach((x) => {
+            vis.officeMap[x["Title"]] = x["Office"];
+        })
+
         vis.color = d3.scaleOrdinal(d3.schemeCategory10);
         vis.circleRadius = 15;
         vis.displayFaculty = vis.allFaculty;
-        //vis.groups = 10; // I don't know, will have to change
-        //vis.currentData = []; // what to put here?
-        //vis.labels = [];
-        //vis.nodes = [];
+
+        vis.circleDiv = vis.svg.append("g").attr("class","nodes");
 
 
         vis.wrangleData();
 
     }
-
-    nodeGen(data, labels) {
-
-        // initial dot for each group
-        let nodes = new Array();
-        for (let i=0; i < labels.length; i++){
-            nodes.push({id:i, group:i})
-        }
-
-        // additional dots
-        for (let i=0; i < labels.length; i++){
-            if (data[i] > 0) {
-                let n = d3.range(data[i]-1)
-                    .map(function(d) {return {id: nodes.length + d,
-                        group: i};})
-                nodes = nodes.concat(n)
-            }
-        }
-        return nodes;
-    }
-
 
     wrangleData() {
         let vis = this;
@@ -96,19 +76,65 @@ class groupDotsVis {
             "Content Analysis"
         ];
 
-        // if I'm grouping by teaching area
-        //let teachingAreaStrings = [...new Set(vis.displayFaculty.map((x) => vis.departmentMap[x]["teachingAreas"]))];
-        function smartTeachingAreaMap(teachingAreaString) {
-            if (teachingAreaString.includes("|")) {
-                return "Multiple";
+        if (selectedFacultyDotGrouping == "teachingAreas") {
+            function smartTeachingAreaMap(teachingAreaString) {
+                if (teachingAreaString.includes("|")) {
+                    return "Multiple";
+                }
+                else {
+                    return teachingAreaString;
+                }
             }
-            else {
-                return teachingAreaString;
-            }
+            vis.nodeLabels = vis.displayFaculty.map((x) => smartTeachingAreaMap(vis.departmentMap[x]["teachingAreas"]));
+            vis.labels = [...new Set(vis.nodeLabels)];
+        } else if (selectedFacultyDotGrouping == "officeBuilding") {
+            let interestingOfficeLocations = ["LISE","Hoffman","Pierce","Maxwell Dworkin",
+                "Geo", "Mallinckrodt", "Northwest", "MCZ", "Cruft", "Lyman"];
+
+            let locationCount = {};
+            interestingOfficeLocations.forEach((loc) => {
+                locationCount[loc] = 0;
+            });
+
+            vis.displayFaculty.forEach((name) => {
+                let foundIt = false;
+                for(let i = 0; i < interestingOfficeLocations.length; i++) {
+                    if(vis.officeMap[name].includes(interestingOfficeLocations[i])) {
+                        locationCount[interestingOfficeLocations[i]] = locationCount[interestingOfficeLocations[i]] + 1;
+                        i += 2 * interestingOfficeLocations.length;
+                        foundIt = true;
+                    }
+                }
+            });
+
+            let updatedInterestingOfficeLocations = interestingOfficeLocations.filter((loc) => locationCount[loc]>3);
+
+            let locationLabels = [];
+            vis.displayFaculty.forEach((name) => {
+                let foundIt = false;
+                let locStr = "";
+                for(let i = 0; i < updatedInterestingOfficeLocations.length; i++) {
+                    if(vis.officeMap[name].includes(updatedInterestingOfficeLocations[i])) {
+                        foundIt = true;
+                        locStr = updatedInterestingOfficeLocations[i];
+                        // break out of for loop
+                        i += 2 * updatedInterestingOfficeLocations.length;
+                    }
+                }
+                if (foundIt == false) {
+                    locStr = "Miscellaneous";
+                }
+
+                if (locStr == "Geo") {
+                    locStr = "Geological Museum";
+                }
+                locationLabels.push(locStr);
+            });
+
+            vis.nodeLabels = locationLabels;
+            vis.labels = [...new Set(vis.nodeLabels)];
         }
 
-        vis.nodeLabels = vis.displayFaculty.map((x) => smartTeachingAreaMap(vis.departmentMap[x]["teachingAreas"]));
-        vis.labels = [...new Set(vis.nodeLabels)];
         vis.groups = vis.labels.length;
 
         // I just need to create nodes, which is a list of {id, group} objects. Maybe they can contain more than just that?
@@ -126,13 +152,9 @@ class groupDotsVis {
             let nodeObj = {};
             nodeObj.name = name;
             nodeObj.label = vis.nodeLabels[i];
-            //nodeObj.group = vis.groupIdMap[nodeObj.label];
-            //nodeObj.id = i;
             nodeObj.groupInstanceCount = vis.groupInstanceCounter[nodeObj.label];
             if (vis.groupInstanceCounter[nodeObj.label] == 0) {
-                // record that this was the first of its type
-                //vis.groupFirstIdMap[nodeObj.label] = nodeObj.id;
-                // and increment the count
+
                 vis.groupInstanceCounter[nodeObj.label] = vis.groupInstanceCounter[nodeObj.label] + 1;
             }
 
@@ -184,6 +206,9 @@ class groupDotsVis {
     updateVis(){
         let vis = this;
 
+        let trans = d3.transition()
+            .duration(800);
+
         vis.simulation = d3.forceSimulation()
             .force("link", d3.forceLink().id(function(d) { return d.index })
                 .distance(20)) // .distance(20))
@@ -193,11 +218,60 @@ class groupDotsVis {
             .force("y", d3.forceY(0))
             .force("x", d3.forceX(0));
 
+        /*
+        let columnLabels = vis.svg
+            .selectAll(".matrix-column-labels")
+            .data(vis.displayFaculty);
+
+        columnLabels.exit() // EXIT
+            .style("opacity", 0.0)
+            .transition(trans)
+            .remove();
+
+        columnLabels
+            .enter() // ENTER
+            .append("text")
+            .attr("class","matrix-column-labels")
+            .merge(columnLabels)
+            .transition(trans) // ENTER + UPDATE
+            .attr("text-anchor","start")
+            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift)
+            .attr("y", vis.yShift-5)
+            .attr("opacity", function(d) {
+                if (vis.displayLabelsBoolean){
+                    return 1.0;
+                }
+                else {
+                    return 0.0;
+                }
+            })
+            .attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
+            .text(d => d);
+
+         */
+
+
+        /*
+        let circles = vis.circleDiv
+            .selectAll(".node-circles")
+            .data(vis.data.nodes, (d) => d.name);
+
+        circles.exit() // EXIT
+            .style("opacity", 0.0)
+            .transition(trans)
+            .remove();
+
+        circles.enter().append("circle")
+            .attr("class", "node-circles")
+            .attr("r", vis.circleRadius)
+            .style("fill", function(d, i) { return vis.color(d.group); });
+         */
+
         // circles
         let circles = vis.svg.append("g")
             .attr("class", "nodes")
             .selectAll("circle")
-            .data(vis.data.nodes)
+            .data(vis.data.nodes, (d) => d.name) // can I do a smooth transition?
             .enter().append("circle")
             .attr("r", vis.circleRadius)
             .style("fill", function(d, i) { return vis.color(d.group); });
@@ -208,7 +282,7 @@ class groupDotsVis {
             .data(vis.data.nodes)
             .enter().append("rect")
             .on("click", function(event, d) {
-                // show info on the "sticky note"
+                // show info on the "sticky note"?
                 console.log(d);
                 console.log(vis.departmentMap[d.name]);
             })
@@ -216,7 +290,6 @@ class groupDotsVis {
             .attr("fill-opacity", 0.4)
             .attr("width", 75)
             .attr("height", 25);
-
 
         let texts = vis.svg.append("g")
             .attr("class", "labels")
@@ -236,6 +309,7 @@ class groupDotsVis {
             texts
                 .attr("x", function(d) { return d.x - 30; })
                 .attr("y", function(d) { return d.y; });
+
             rects
                 .attr("x", function(d) { return d.x - 30; })
                 .attr("y", function(d) { return d.y - 12; })
@@ -263,7 +337,4 @@ class groupDotsVis {
         vis.svg.selectAll("rect").data(new Array()).exit().remove();
         vis.svg.selectAll("text").data(new Array()).exit().remove();
     }
-
-
-
 }

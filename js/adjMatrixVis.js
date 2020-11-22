@@ -33,11 +33,15 @@ class adjMatrixVis {
 
         // I also want some big list of research areas... and teaching areas while we're at it
         let allResearchInterestsDup = vis.peopleInfo.map((x) => x["Research Interests"]).join("|").split("|");
-        vis.allResearchInterests = [...new Set(allResearchInterestsDup)].filter((x) => x.length > 0);
+        vis.allResearchInterests = [...new Set(allResearchInterestsDup)]
+            .filter((x) => x.length > 0)
+            .sort(function(a, b){return a.localeCompare(b)});
         //console.log(vis.allResearchInterests);
 
         let allTeachingAreasDup = vis.peopleInfo.map((x) => x["Teaching Areas"]).join("|").split("|");
-        vis.allTeachingAreas = [...new Set(allTeachingAreasDup)].filter((x) => x.length > 0);
+        vis.allTeachingAreas = [...new Set(allTeachingAreasDup)]
+            .filter((x) => x.length > 0)
+            .sort(function(a, b){return a.localeCompare(b)});
 
         //'faculty-table-filter-selector'
         let selectDiv = document.getElementById('faculty-adj-filter-selector');

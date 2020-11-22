@@ -33,14 +33,19 @@ class manyTableVis {
 
         // we seem to be narrowing who we include, so here it is
         vis.latestAllFaculty = vis.latestPeopleInfo.map((x) => x.Title);
-        vis.allFaculty = vis.peopleInfo.map((x) => x.Title).filter((x) => vis.latestAllFaculty.includes(x));
+        vis.allFaculty = vis.peopleInfo.map((x) => x.Title)
+            .filter((x) => vis.latestAllFaculty.includes(x));
 
         // I also want some big list of research areas... and teaching areas while we're at it
         let allResearchInterestsDup = vis.peopleInfo.map((x) => x["Research Interests"]).join("|").split("|");
-        vis.allResearchInterests = [...new Set(allResearchInterestsDup)].filter((x) => x.length > 0);
+        vis.allResearchInterests = [...new Set(allResearchInterestsDup)]
+            .filter((x) => x.length > 0)
+            .sort(function(a, b){return a.localeCompare(b)});
 
         let allTeachingAreasDup = vis.peopleInfo.map((x) => x["Teaching Areas"]).join("|").split("|");
-        vis.allTeachingAreas = [...new Set(allTeachingAreasDup)].filter((x) => x.length > 0);
+        vis.allTeachingAreas = [...new Set(allTeachingAreasDup)]
+            .filter((x) => x.length > 0)
+            .sort(function(a, b){return a.localeCompare(b)});
 
         // add options to the select item for filtering
         let selectDiv = document.getElementById('faculty-table-filter-selector');

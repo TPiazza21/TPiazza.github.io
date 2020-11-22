@@ -76,3 +76,12 @@ function sortResearchChangeFacultyTable() {
     selectedFacultyTableResearchSort = $('#faculty-table-research-sort-selector').val();
     myFacultyManyTableVis.wrangleData();
 }
+
+// for the group faculty dots
+selectedFacultyDotGrouping = $('#faculty-dots-group-selector').val();
+
+function groupFacultyDotsSelector() {
+    selectedFacultyDotGrouping = $('#faculty-dots-group-selector').val();
+    myFacultyDotsVis.wrangleData();
+
+}
