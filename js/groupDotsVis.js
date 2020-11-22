@@ -54,6 +54,19 @@ class groupDotsVis {
         })
 
         vis.color = d3.scaleOrdinal(d3.schemeCategory10);
+        vis.departmentColors = {
+            "Applied Mathematics": "#00aaad",
+            "Applied Physics": "#cbdb2a",
+            "Bioengineering": "#fcb315",
+            "Computer Science": "#4e88c7",
+            "Electrical Engineering": "#ffde2d",
+            "Environmental Science & Engineering":  "#77ced9",
+            "Materials Science & Mechanical Engineering": "#bb89ca",
+            "Multiple": "Pink", // this is a bit of a cheat
+            "Applied Computation": "Red" // this is a bit of a cheat
+        };
+
+
         vis.circleRadius = 15;
         vis.displayFaculty = vis.allFaculty;
 
@@ -76,6 +89,8 @@ class groupDotsVis {
             "Content Analysis"
         ];
 
+        // depending on how you group them, do different label procedures
+        // (in general, map some feature to a nice list of labels)
         if (selectedFacultyDotGrouping == "teachingAreas") {
             function smartTeachingAreaMap(teachingAreaString) {
                 if (teachingAreaString.includes("|")) {
@@ -88,6 +103,9 @@ class groupDotsVis {
             vis.nodeLabels = vis.displayFaculty.map((x) => smartTeachingAreaMap(vis.departmentMap[x]["teachingAreas"]));
             vis.labels = [...new Set(vis.nodeLabels)];
         } else if (selectedFacultyDotGrouping == "officeBuilding") {
+            // I want to display faculty office locations, but only for places with enough faculty there
+
+            // I will filter this list for values with at least 4 people
             let interestingOfficeLocations = ["LISE","Hoffman","Pierce","Maxwell Dworkin",
                 "Geo", "Mallinckrodt", "Northwest", "MCZ", "Cruft", "Lyman"];
 
@@ -107,6 +125,7 @@ class groupDotsVis {
                 }
             });
 
+            // filter locations if too few people there
             let updatedInterestingOfficeLocations = interestingOfficeLocations.filter((loc) => locationCount[loc]>3);
 
             let locationLabels = [];
@@ -122,6 +141,7 @@ class groupDotsVis {
                     }
                 }
                 if (foundIt == false) {
+                    // anything not easily classified (or if there are too few faculty there) is here
                     locStr = "Miscellaneous";
                 }
 
@@ -137,10 +157,12 @@ class groupDotsVis {
 
         vis.groups = vis.labels.length;
 
-        // I just need to create nodes, which is a list of {id, group} objects. Maybe they can contain more than just that?
+
         vis.groupIdMap = {};
         vis.groupInstanceCounter = {};
         vis.groupFirstIdMap = {};
+
+        // now I go through machinery of making nodes, where there is one central node per each group that tugs everything else
         for(let i = 0; i<vis.groups; i++) {
             vis.groupIdMap[vis.labels[i]] = i;
             vis.groupInstanceCounter[vis.labels[i]] = 0;
@@ -176,18 +198,11 @@ class groupDotsVis {
             i = i + 1;
         });
 
-
         vis.nodes = newNodeObjects;
         // keep track of which were the first ids, so you know which one to display for labels/rectangles
         vis.groupFirstIds = vis.labels.map((l) => vis.groupFirstIdMap[l]);
 
 
-
-
-        //vis.groups = vis.labels.length;
-        //vis.currentData = vis.jsonData;
-
-        //vis.nodes = vis.nodeGen(vis.currentData, vis.labels);
         vis.range = vis.nodes.length;
 
         vis.data = {
@@ -218,55 +233,6 @@ class groupDotsVis {
             .force("y", d3.forceY(0))
             .force("x", d3.forceX(0));
 
-        /*
-        let columnLabels = vis.svg
-            .selectAll(".matrix-column-labels")
-            .data(vis.displayFaculty);
-
-        columnLabels.exit() // EXIT
-            .style("opacity", 0.0)
-            .transition(trans)
-            .remove();
-
-        columnLabels
-            .enter() // ENTER
-            .append("text")
-            .attr("class","matrix-column-labels")
-            .merge(columnLabels)
-            .transition(trans) // ENTER + UPDATE
-            .attr("text-anchor","start")
-            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift)
-            .attr("y", vis.yShift-5)
-            .attr("opacity", function(d) {
-                if (vis.displayLabelsBoolean){
-                    return 1.0;
-                }
-                else {
-                    return 0.0;
-                }
-            })
-            .attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
-            .text(d => d);
-
-         */
-
-
-        /*
-        let circles = vis.circleDiv
-            .selectAll(".node-circles")
-            .data(vis.data.nodes, (d) => d.name);
-
-        circles.exit() // EXIT
-            .style("opacity", 0.0)
-            .transition(trans)
-            .remove();
-
-        circles.enter().append("circle")
-            .attr("class", "node-circles")
-            .attr("r", vis.circleRadius)
-            .style("fill", function(d, i) { return vis.color(d.group); });
-         */
-
         // circles
         let circles = vis.svg.append("g")
             .attr("class", "nodes")
@@ -274,34 +240,87 @@ class groupDotsVis {
             .data(vis.data.nodes, (d) => d.name) // can I do a smooth transition?
             .enter().append("circle")
             .attr("r", vis.circleRadius)
-            .style("fill", function(d, i) { return vis.color(d.group); });
+            .style("fill", function(d, i) {
+                // for special colors
+                if (selectedFacultyDotGrouping == "teachingAreas") {
+                    return vis.departmentColors[d.label];
+                }
+                else {
+                    return vis.color(d.group);
+                }
+            });
 
-        let rects = vis.svg.append("g")
-            .attr("class", "rects")
-            .selectAll("rect")
-            .data(vis.data.nodes)
-            .enter().append("rect")
-            .on("click", function(event, d) {
-                // show info on the "sticky note"?
-                console.log(d);
-                console.log(vis.departmentMap[d.name]);
-            })
-            .attr("fill", "white")
-            .attr("fill-opacity", 0.4)
-            .attr("width", 75)
-            .attr("height", 25);
+        // there used to be rectangles all around
 
-        let texts = vis.svg.append("g")
-            .attr("class", "labels")
+        let textG = vis.svg.append("g")
+            .attr("class", "labels");
+
+        let texts = textG
             .selectAll("text")
-            .data(vis.data.nodes)
+            .data(vis.data.nodes, (d) => d.name)
             .enter().append("text")
+            .attr("class", "group-labels")
             .style("font-size", 12)
             .attr("dx", 12)
             .attr("dy", ".35em")
-            .text(function(d) { return vis.labels[d.id] });
+            .text(function(d) {
+                return vis.labels[d.id];
+            });
 
 
+        let titleTexts = textG
+            .selectAll(".title-labels")
+            .data(vis.data.nodes, (d) => d.name)
+            .enter().append("text")
+            .attr("class", "title-labels")
+            .attr("id", (d) => d.id+"_title-text")
+            .on("mouseover", function(event, d) {
+                // show the faculty name
+                textG
+                    .selectAll(".title-labels")
+                    .data(vis.data.nodes, (d2) => d2.name)
+                    .attr("opacity", (d2) => {
+                        if (d.name == d2.name){
+                            // if this is the one we hovered over, set it to 1.0
+                            return 1.0;
+                        }
+                        else {
+                            return 0.0;
+                        }
+                    });
+
+                // make the group labels less opaque, so that we see titles better
+                textG
+                    .selectAll(".group-labels")
+                    .data(vis.data.nodes, (d2) => d2.name)
+                    .attr("opacity", (d2) => {
+                        return 0.2;
+                    });
+            })
+            .on("mouseout", function(event, d) {
+                // hide the faculty name, show the group label
+                textG
+                    .selectAll(".title-labels")
+                    .data(vis.data.nodes, (d2) => d2.name)
+                    .attr("opacity",0.0);
+
+                textG
+                    .selectAll(".group-labels")
+                    .data(vis.data.nodes, (d2) => d2.name)
+                    .attr("opacity", (d2) => {
+                        return 1.0;
+                    });
+            })
+            .style("font-size", 12)
+            .attr("dx", 12)
+            .attr("dy", ".35em")
+            .attr("opacity", 0.0)
+            .text(function(d) {
+                return d.name;
+            });
+
+
+        // I believe this controls movement
         function ticked() {
             circles
                 .attr("cx", function(d) { return d.x; })
@@ -309,19 +328,9 @@ class groupDotsVis {
             texts
                 .attr("x", function(d) { return d.x - 30; })
                 .attr("y", function(d) { return d.y; });
-
-            rects
-                .attr("x", function(d) { return d.x - 30; })
-                .attr("y", function(d) { return d.y - 12; })
-                .attr("fill-opacity", function(d) {
-                    let opacity = 0.0;
-                    // previous condition: d.id < vis.labels.length
-                    if (vis.groupFirstIds.includes(d.id)) {
-                        // only if this is a label node. Maybe it doesn't have to be in this particular structure
-                        opacity = 0.4
-                    }
-                    return opacity;
-                });
+            titleTexts
+                .attr("x", function(d) { return d.x-40; })
+                .attr("y", function(d) { return d.y; });
 
         }
 
@@ -334,7 +343,6 @@ class groupDotsVis {
     killAll() {
         let vis = this;
         vis.svg.selectAll("circle").data(new Array()).exit().remove();
-        vis.svg.selectAll("rect").data(new Array()).exit().remove();
         vis.svg.selectAll("text").data(new Array()).exit().remove();
     }
 }

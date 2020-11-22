@@ -42,7 +42,7 @@
 		</div>
 	</section>
 
-	<section id="section-faculty-dots-blurb" class="row">
+	<section id="section-faculty-dots-blurb" class="row blurb-row">
 		<div class="container-fluid">
 			<div class="row justify-content-center">
 				<div class="align-self-center">
@@ -69,7 +69,7 @@
 		</div>
 	</section>
 
-	<section id="section-faculty-interest-table-blurb" class="row">
+	<section id="section-faculty-interest-table-blurb" class="row blurb-row">
 		<div class="container-fluid">
 			<div class="row justify-content-center">
 				<div class="align-self-center">
@@ -116,7 +116,7 @@
 		</div>
 	</section>
 
-	<section id="section-faculty-adj-blurb" class="row">
+	<section id="section-faculty-adj-blurb" class="row blurb-row">
 		<div class="container-fluid">
 			<div class="row justify-content-center">
 				<div class="align-self-center">
@@ -136,13 +136,9 @@
 					<h1>Faculty Coauthor Adjacency Matrix</h1>
 					<select id='faculty-adj-sort-selector' class="custom-select align-self-center" style="width: 20%" onchange="sortChangeFacultyAdj()">
 						<option value="name" selected>Default Ordering</option>
-						<option value="teachingArea">By Teaching Area</option>
-						<!--
-						<option value="numPapers">Number of Papers</option>
-						<option value="numPaperCoauthor">Number of Papers with Coauthors</option>
-						<option value="numCoauthor">Number of Coauthors</option>
-						<option value="numPaperSolo">Number of Papers (alone)</option>
-						-->
+						<option value="teachingArea">Sort: By Teaching Area</option>
+						<option value="numCoauthors">Sort: By Number of Coauthors</option>
+						<option value="numPapers">Sort: By Number of Papers</option>
 					</select>
 					<select id='faculty-adj-filter-selector' class="custom-select align-self-center" style="width: 20%" onchange="filterChangeFacultyAdj()">
 						<option value="All">Include All</option>

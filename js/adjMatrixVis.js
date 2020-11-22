@@ -143,12 +143,16 @@ class adjMatrixVis {
             facultyObj.name = name;
             facultyObj.relations = [];
             let ypos = 0;
+            let coauthorCounter = 0;
             vis.displayFaculty.forEach((name2) => {
                 let facultyPairObj = {};
                 facultyPairObj.name1 = name;
                 facultyPairObj.name2 = name2;
                 facultyPairObj.values = vis.facultyPapersDict[name][name2];
                 facultyPairObj.valueLen = vis.facultyPapersDict[name][name2].length;
+                if (facultyPairObj.valueLen > 0) {
+                    coauthorCounter += 1;
+                }
                 facultyPairObj.xpos = xpos;
                 facultyPairObj.ypos = ypos;
                 facultyPairObj.nameKey = name + ";" + name2;
@@ -158,6 +162,9 @@ class adjMatrixVis {
             });
             facultyObj.researchInterest = vis.departmentMap[name].researchInterest;
             facultyObj.teachingArea = vis.departmentMap[name].teachingArea;
+            facultyObj.numCoauthors = coauthorCounter;
+            //facultyObj.numSoloPapers = vis.facultyPapersDict[name][name].length - coauthorPapers;
+            facultyObj.numPapers = vis.facultyPapersDict[name][name].length;
             facultyListOfLists.push(facultyObj);
             vis.facultySortInfoDict[name] = facultyObj;
             xpos = xpos+1;
@@ -191,7 +198,14 @@ class adjMatrixVis {
         }
 
         // THEN sort
-        vis.displayFaculty.sort(function(a, b){return vis.facultySortInfoDict[a][selectedFacultyAdjSort].localeCompare(vis.facultySortInfoDict[b][selectedFacultyAdjSort])})
+        let strSortList = ["name", "teachingArea"];
+        if (strSortList.includes(selectedFacultyAdjSort)) {
+            vis.displayFaculty.sort(function(a, b){return vis.facultySortInfoDict[a][selectedFacultyAdjSort].localeCompare(vis.facultySortInfoDict[b][selectedFacultyAdjSort])});
+        }
+        else {
+            // numerical sorting
+            vis.displayFaculty.sort(function(a, b){return vis.facultySortInfoDict[b][selectedFacultyAdjSort] - vis.facultySortInfoDict[a][selectedFacultyAdjSort]});
+        }
 
         // update the cell widths so it scales, and maybe update whether or not text is shown
         vis.cellWidth = d3.max([vis.cellScalar * ((vis.minDim - d3.max([vis.xShift, vis.yShift])) / vis.displayFaculty.length),2])
