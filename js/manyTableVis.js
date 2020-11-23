@@ -1,17 +1,20 @@
 /* * * * * * * * * * * * * *
-*      class adjMatrixVis        *
+*      class manyTableVis        *
 * * * * * * * * * * * * * */
 
+// TODO: maybe use an actual scale, instead of adjusting with scaling myself...
+// TODO: maybe have something interesting happen on click
 
-class adjMatrixVis {
-    constructor(parentElement, peopleInfo, perPaperInfo, latestPeopleInfo){
+class manyTableVis {
+    constructor(parentElement, peopleInfo, coursesInfo, latestPeopleInfo){
         this.parentElement = parentElement;
         this.peopleInfo = peopleInfo;
-        this.perPaperInfo = perPaperInfo;
+        this.coursesInfo = coursesInfo;
         this.latestPeopleInfo = latestPeopleInfo;
 
         this.initVis();
     }
+
 
     initVis(){
         let vis = this;
@@ -28,23 +31,24 @@ class adjMatrixVis {
             .append('g')
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
+        // we seem to be narrowing who we include, so here it is
         vis.latestAllFaculty = vis.latestPeopleInfo.map((x) => x.Title);
-        vis.allFaculty = vis.peopleInfo.map((x) => x.Title).filter((x) => vis.latestAllFaculty.includes(x));
+        vis.allFaculty = vis.peopleInfo.map((x) => x.Title)
+            .filter((x) => vis.latestAllFaculty.includes(x));
 
         // I also want some big list of research areas... and teaching areas while we're at it
         let allResearchInterestsDup = vis.peopleInfo.map((x) => x["Research Interests"]).join("|").split("|");
         vis.allResearchInterests = [...new Set(allResearchInterestsDup)]
             .filter((x) => x.length > 0)
             .sort(function(a, b){return a.localeCompare(b)});
-        //console.log(vis.allResearchInterests);
 
         let allTeachingAreasDup = vis.peopleInfo.map((x) => x["Teaching Areas"]).join("|").split("|");
         vis.allTeachingAreas = [...new Set(allTeachingAreasDup)]
             .filter((x) => x.length > 0)
             .sort(function(a, b){return a.localeCompare(b)});
 
-        //'faculty-table-filter-selector'
-        let selectDiv = document.getElementById('faculty-adj-filter-selector');
+        // add options to the select item for filtering
+        let selectDiv = document.getElementById('faculty-table-filter-selector');
         vis.allTeachingAreas.forEach((teachingArea) => {
             let opt = document.createElement('option');
             opt.value = teachingArea;
@@ -58,157 +62,163 @@ class adjMatrixVis {
             // just so that something is set
             if (r == vis.allResearchInterests[0]) {
                 opt.selected = true;
-                selectedFacultyAdjFilter = r;
+                selectedFacultyTableFilter = r;
             }
             selectDiv.appendChild(opt);
         });
 
         // intrinsic properties of the adjacency matrix
         //vis.cellWidth = 2;
-        vis.yShift = 60;
-        vis.xShift = 100;
-        vis.cellScalar = 0.5;
-        vis.cellWidth = d3.max([vis.cellScalar * ((vis.minDim - d3.max([vis.xShift, vis.yShift])) / vis.allFaculty.length),2]);
+        vis.yShift = 100;
+        vis.xShift = 240;
+
+        vis.cellScalar = 0.85;
         vis.cellPadding = 1;
+
+
+        // I will define cellWidth later, dynamically
 
         // we may decide to filter this list for one reason or another, but for now use all
         vis.displayFaculty = vis.allFaculty;
-        vis.displayPaperInfo = vis.perPaperInfo;
+        vis.displayResearchInterests = vis.allResearchInterests;
 
         // populate/update with relevant new info. Use to sort later
         vis.facultySortInfoDict = {};
+        vis.researchInterestSortInfoDict = {};
+        vis.allResearchInterests.forEach((r) => {
+            // I may want more exciting sortable features, but this is a start
+            vis.researchInterestSortInfoDict[r] = {};
+            vis.researchInterestSortInfoDict[r].interestedFaculty = 0;
+            vis.researchInterestSortInfoDict[r].researchInterest = r;
+        })
 
         vis.basicRelationData();
         vis.createMatrixData();
 
         // decide whether or not to display text based on how many are here
-        vis.displayLabelsThreshold = 40;
+        vis.displayLabelsThreshold = 50;
         vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
 
-        // actually create the squares (and labels, maybe)
-        vis.wrangleData()
-        vis.updateVis();
+        // actually create the squares (and labels)
+        vis.wrangleData();
 
     }
 
     basicRelationData() {
-        // create n by n dictionary, mapping pairs to their papers
         let vis = this;
 
         vis.departmentMap = {};
         vis.peopleInfo.forEach((x) => {
-            vis.departmentMap[x["Title"]] = {'researchInterest': x["Research Interests"], 'teachingArea': x["Teaching Areas"]};
+            vis.departmentMap[x["Title"]] = {'researchInterests': x["Research Interests"], 'teachingAreas': x["Teaching Areas"]};
         });
 
-        vis.facultyPapersDict = {};
-        vis.displayFaculty.forEach((name) => {
-            vis.facultyPapersDict[name] = {};
-            vis.displayFaculty.forEach((name2) => {
-                // create a mapping where we store a list of common papers between the two authors
-                // then, we can extract info (namely, the length of this list
-                vis.facultyPapersDict[name][name2] = [];
-            });
-        });
-
-        vis.displayPaperInfo.forEach((paper) => {
-            vis.displayFaculty.forEach((name) => {
-                // the fact that it's a string... might need to be changed at some point
-                if(paper[name] == "1") {
-                    vis.displayFaculty.forEach((name2) => {
-                        // note that name and name2 could be the same, which is fine
-                        if(paper[name2] == "1") {
-                            // we will be most interested in the LENGTH of this list
-                            // but we may want to display a list of abstracts, titles, etc.
-                            vis.facultyPapersDict[name][name2].push(paper);
-                        }
-                    });
-                }
-            });
-        });
     }
 
     createMatrixData() {
         let vis = this;
-        // this function will use some names of faculty (vis.displayFaculty), and some dataset, and create an adjacency matrix to use
+        // this function will use some names of faculty (vis.displayFaculty), and some dataset, and creates data in the table
 
-
-        // now create a list of objects, each object containing a list of objects, each of those objects with papers and names of two authors
-        let facultyListOfLists = [];
         let matrixLongList = [];
-        //let facultySortInfoDict = {};
+
+        vis.allResearchInterests.forEach((r) => {
+            vis.researchInterestSortInfoDict[r].interestedFaculty = 0;
+        });
+
         let xpos = 0;
         vis.displayFaculty.forEach((name) => {
-
             let facultyObj = {};
             facultyObj.name = name;
-            facultyObj.relations = [];
+            facultyObj.researchInterests = [];
             let ypos = 0;
-            let coauthorCounter = 0;
-            vis.displayFaculty.forEach((name2) => {
-                let facultyPairObj = {};
-                facultyPairObj.name1 = name;
-                facultyPairObj.name2 = name2;
-                facultyPairObj.values = vis.facultyPapersDict[name][name2];
-                facultyPairObj.valueLen = vis.facultyPapersDict[name][name2].length;
-                if (facultyPairObj.valueLen > 0) {
-                    coauthorCounter += 1;
+            let interestCounter = 0;
+            vis.displayResearchInterests.forEach((r) => {
+                let facultyResearchInterestObj = {};
+                // keep track of the name
+                facultyResearchInterestObj.name = name;
+                facultyResearchInterestObj.researchInterest = r;
+                facultyResearchInterestObj.isInterested = (vis.departmentMap[name].researchInterests.includes(r));
+                if (facultyResearchInterestObj.isInterested) {
+                    interestCounter = interestCounter + 1;
+                    vis.researchInterestSortInfoDict[r].interestedFaculty = vis.researchInterestSortInfoDict[r].interestedFaculty + 1;
                 }
-                facultyPairObj.xpos = xpos;
-                facultyPairObj.ypos = ypos;
-                facultyPairObj.nameKey = name + ";" + name2;
-                facultyObj.relations.push(facultyPairObj);
-                matrixLongList.push(facultyPairObj);
+                facultyResearchInterestObj.xpos = xpos;
+                facultyResearchInterestObj.ypos = ypos;
+                facultyResearchInterestObj.nameKey = name + ";" + r;
+                facultyObj.researchInterests.push(facultyResearchInterestObj);
+                matrixLongList.push(facultyResearchInterestObj);
+
                 ypos = ypos+1;
             });
-            facultyObj.researchInterest = vis.departmentMap[name].researchInterest;
-            facultyObj.teachingArea = vis.departmentMap[name].teachingArea;
-            facultyObj.numCoauthors = coauthorCounter;
-            //facultyObj.numSoloPapers = vis.facultyPapersDict[name][name].length - coauthorPapers;
-            facultyObj.numPapers = vis.facultyPapersDict[name][name].length;
-            facultyListOfLists.push(facultyObj);
+
+            // save this info so you can sort using it, later
+            facultyObj.researchInterests = vis.departmentMap[name].researchInterests;
+            facultyObj.teachingAreas = vis.departmentMap[name].teachingAreas;
+            facultyObj.numResearchInterests = interestCounter;
+
             vis.facultySortInfoDict[name] = facultyObj;
+
             xpos = xpos+1;
         });
 
-        //vis.matrixData = facultyListOfLists;
         vis.matrixLongList = matrixLongList;
-        //vis.facultySortInfoDict = facultySortInfoDict;
     }
 
     sortAndFilterValues() {
         let vis = this;
 
-        // ok, it has a new value of selectedFacultyAdjSort
-
         // filter FIRST
-        // eventually make these lists bigger. You might filter by different things, so have different behavior
-        //let researchInterestList = ["Artificial Intelligence", "Theory of Computation", "Materials"];
-        //let teachingAreaList = ["Applied Mathematics", "Computer Science"];
-        if (vis.allResearchInterests.includes(selectedFacultyAdjFilter)) {
-            let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].researchInterest.includes(selectedFacultyAdjFilter));
+
+        // filtering the faculty
+        if (vis.allResearchInterests.includes(selectedFacultyTableFilter)) {
+            let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].researchInterests.includes(selectedFacultyTableFilter));
             vis.displayFaculty = filteredFaculty;
-        } else if (vis.allTeachingAreas.includes(selectedFacultyAdjFilter)) {
-            let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].teachingArea.includes(selectedFacultyAdjFilter));
+            vis.xShift = 240;
+            vis.cellScalar = 0.85;
+        } else if (vis.allTeachingAreas.includes(selectedFacultyTableFilter)) {
+            let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].teachingAreas.includes(selectedFacultyTableFilter));
             vis.displayFaculty = filteredFaculty;
+            vis.xShift = 240;
+            vis.cellScalar = 0.85;
         }
-        // this is the case where we JUST clicked on filtering back
-        else if (newFilterBack) {
+        else if (selectedFacultyTableFilter == "All") {
             vis.displayFaculty = vis.allFaculty;
-            newFilterBack = false;
+            vis.xShift = 50;
+            vis.cellScalar = 0.6;
         }
+
+        // once you've filtered the faculty, filter out research areas that are unnecessary
+        let allRelevantResearchInterestStr = vis.displayFaculty.map((name) => vis.departmentMap[name].researchInterests).join("|");
+        let relevantResearchInterests = vis.allResearchInterests.filter((r) => allRelevantResearchInterestStr.includes(r));
+        vis.displayResearchInterests = relevantResearchInterests;
+
+        // just so the data is still fresh
+        vis.createMatrixData();
 
         // THEN sort
-        let strSortList = ["name", "teachingArea"];
-        if (strSortList.includes(selectedFacultyAdjSort)) {
-            vis.displayFaculty.sort(function(a, b){return vis.facultySortInfoDict[a][selectedFacultyAdjSort].localeCompare(vis.facultySortInfoDict[b][selectedFacultyAdjSort])});
+
+        // sorting of faculty
+        let stringFacultyInclusionSorts = ["name", "teachingAreas"];
+        if (stringFacultyInclusionSorts.includes(selectedFacultyTableFacultySort)) {
+            // compare strings
+            vis.displayFaculty.sort(function(a, b){return vis.facultySortInfoDict[a][selectedFacultyTableFacultySort].localeCompare(vis.facultySortInfoDict[b][selectedFacultyTableFacultySort])});
         }
         else {
-            // numerical sorting
-            vis.displayFaculty.sort(function(a, b){return vis.facultySortInfoDict[b][selectedFacultyAdjSort] - vis.facultySortInfoDict[a][selectedFacultyAdjSort]});
+            // compare numbers (counts)
+            vis.displayFaculty.sort(function(a, b){return vis.facultySortInfoDict[b][selectedFacultyTableFacultySort] - vis.facultySortInfoDict[a][selectedFacultyTableFacultySort]});
+        }
+
+        // sorting of research areas
+        let stringResearchInclusionSorts = ["researchInterest"];
+        if (stringResearchInclusionSorts.includes(selectedFacultyTableResearchSort)) {
+            vis.displayResearchInterests.sort(function(a, b){return vis.researchInterestSortInfoDict[a][selectedFacultyTableResearchSort].localeCompare(vis.researchInterestSortInfoDict[b][selectedFacultyTableResearchSort])});
+        }
+        else {
+            vis.displayResearchInterests.sort(function(a, b){return vis.researchInterestSortInfoDict[b][selectedFacultyTableResearchSort] - vis.researchInterestSortInfoDict[a][selectedFacultyTableResearchSort]});
         }
 
         // update the cell widths so it scales, and maybe update whether or not text is shown
-        vis.cellWidth = d3.max([vis.cellScalar * ((vis.minDim - d3.max([vis.xShift, vis.yShift])) / vis.displayFaculty.length),2])
+        let tempScaleShift = vis.cellScalar * d3.min([((vis.width - vis.xShift) / vis.displayFaculty.length), ((vis.height - vis.yShift) / vis.displayResearchInterests.length)]);
+        vis.cellWidth = d3.max([tempScaleShift,3]);
         vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
 
     }
@@ -243,20 +253,22 @@ class adjMatrixVis {
             .append("rect")
             .attr("class","matrix-relation-squares")
             .on("click", function(event, d) {
-                // show info on the "sticky note"
-                vis.clickFacts(d);
+                // maybe do more with this later
+                console.log("Clicking!");
+                console.log(d);
+                console.log(vis.departmentMap[d.name]);
             })
             .merge(relationSquares) // ENTER + UPDATE
             .transition(trans)
             .attr("fill", function(d) {
-                if (d.valueLen > 0) {
+                if (d.isInterested) {
                     return "purple";
                 } else {
                     return "gray";
                 }
             })
             .attr("opacity", function(d) {
-                if (vis.displayLabelsBoolean || d.valueLen > 0){
+                if (vis.displayLabelsBoolean || d.isInterested){
                     return 1.0;
                 }
                 else {
@@ -268,9 +280,10 @@ class adjMatrixVis {
             .attr("width", vis.cellWidth)
             .attr("height", vis.cellWidth);
 
+        // rows are for research interests
         let rowLabels = vis.svg
             .selectAll(".matrix-row-labels")
-            .data(vis.displayFaculty);
+            .data(vis.displayResearchInterests);
 
         rowLabels.exit() // EXIT
             .style("opacity", 0.0)
@@ -296,7 +309,8 @@ class adjMatrixVis {
             })
             .text(d => d);
 
-        // same for column labels
+        // column labels are for the faculty
+
         let columnLabels = vis.svg
             .selectAll(".matrix-column-labels")
             .data(vis.displayFaculty);
@@ -324,10 +338,12 @@ class adjMatrixVis {
                 }
             })
             .attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
-            .text(d => d);
+            .text((d) => d);
     }
 
     clickFacts(d) {
+        // maybe eventually I will do something interesting if we click on a box
+        /*
         let vis = this;
         // fill the string with facts for this relation
         let formatString = "";
@@ -343,6 +359,10 @@ class adjMatrixVis {
 
         document.getElementById('click-facts-adjacency-matrix')
             .innerHTML = formatString;
+
+         */
     }
+
+
 
 }

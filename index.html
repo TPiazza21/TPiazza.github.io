@@ -30,68 +30,151 @@
 		})
 	</script>
 
-
 	<!-- GOOGLE FONTS -->
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,400italic,300italic' rel='stylesheet' type='text/css'>
 </head>
 <body>
-	<section id="section-1" class="row">
 
+	<section id="section-1" class="row">
 		<div class="col-xs-10 col-xs-offset-1">
 			<h1>Harvard Faculty Connections</h1>
 			<h3>Explore the connections between Harvard faculty!</h3>
-		</div>
-	</section>
-	<section id="section-2" class="row">
-
-		<div class="container-fluid">
-			<div class="row justify-content-center">
-				<div class="align-self-center">
-					<h1>(Visualization: Group dots of faculty and research areas)</h1>
-				</div>
-			</div>
-
+			<div id="bannerimage"></div>
 		</div>
 	</section>
 
-	<section id="section-3" class="row">
-
-		<div class="container-fluid">
-			<div class="row justify-content-center">
-				<div class="align-self-center">
-					<h1>(Visualization: Adjacency matrix/heat map to see faculty and research connections)</h1>
+	<section id="section-faculty-dots-blurb" class="row blurb-row">
+		<div class="container-fluid center-blurb">
+			<div class="row justify-content-center" >
+				<div class="col-xs-10 align-self-center">
+					<p style="font-size: 24px; color: white;">The Harvard School of Engineering and Applied Sciences, or
+						SEAS, consists of over 120 faculty members and 8 distinct teaching areas. Most faculty members
+						are apart of either Computer Science or Applied Physics and work in either Maxwell-Dworkin or Pierce.
+						Below is a dot visualization that illustrates the different clusters of faculty in SEAS.
+					</p>
 				</div>
 			</div>
-
 		</div>
 	</section>
 
-	<section id="section-4" class="row">
-
+	<section id="section-faculty-dots" class="row">
 		<div class="container-fluid">
 			<div class="row justify-content-center">
 				<div class="align-self-center">
-					<h1>(Visualization: Parallel coordinates of faculty, centers, research areas)</h1>
+					<h1>How can we group the SEAS faculty?</h1>
+					<select  id='faculty-dots-group-selector' class="custom-select align-self-center" style="width: 20%" onchange="groupFacultyDotsSelector()">
+						<option value="teachingAreas">Teaching Area</option>
+						<option value="officeBuilding">Office Location</option>
+						<!-- There may be other interesting ideas... -->
+					</select>
+					<div id="faculty-dots"></div>
 				</div>
 			</div>
-
 		</div>
+	</section>
 
+	<section id="section-faculty-interest-table-blurb" class="row blurb-row">
+		<div class="container-fluid center-blurb">
+			<div class="row justify-content-center">
+				<div class="col-xs-10 align-self-center">
+					<p style="font-size: 24px; color: white;">
+						There's a wide variety of research being done by faculty in SEAS. From bioinspired robotics to solar geoengineering, the
+						research being done at Harvard is impressively diverse. Below is a table with research interests indicated
+						by each faculty. Some faculty indicate more interests than others, and some interests (like Artificial Intelligence) are quite popular.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="section-faculty-interest-table" class="row">
+		<div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="align-self-center">
+					<h1>Faculty Research Interest Table</h1>
+					<select  id='faculty-table-filter-selector' class="custom-select align-self-center" style="width: 20%" onchange="filterChangeFacultyTable()">
+						<option value="All">Include All</option>
+						<!-- Include the rest programmatically -->
+					</select>
+					<select id='faculty-table-faculty-sort-selector' class="custom-select align-self-center" style="width: 20%" onchange="sortFacultyChangeFacultyTable()">
+						<option value="name" selected>Sort Faculty: Default Ordering</option>
+						<option value="teachingAreas">Sort Faculty: By Teaching Area</option>
+						<option value="numResearchInterests">Sort Faculty: By Most Research Interests</option>
+					</select>
+					<select id='faculty-table-research-sort-selector' class="custom-select align-self-center" style="width: 20%" onchange="sortResearchChangeFacultyTable()">
+						<option value="researchInterest" selected>Sort Research Interests: Default Ordering</option>
+						<option value="interestedFaculty">Sort Research Interests: By Number of Interested Faculty</option>
+					</select>
+					<div id="faculty-interest-table"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="relationship-blurb" class="row blurb-row">
+		<div class="container-fluid center-blurb">
+			<div class="row justify-content-center">
+				<div class="col-xs-10 align-self-center">
+					<p style="font-size: 24px; color: white;">In addition to the teaching areas, there are a variety of multidisciplinary
+						institutes, centers, and initiatives. Below is a relationship graph that shows the connections between faculty and their respective
+						teaching areas and affiliations. Hover over each node to highlight the numerous connections at Harvard.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="relationship-section" class="row">
+		<div class="col-12">
+			<div class="row">
+				<div id="relationshipDiv" style="height: 100vh; width: 100%; text-align:center;"></div>
+			</div>
+		</div>
+	</section>
+
+	<section id="section-faculty-adj-blurb" class="row blurb-row">
+		<div class="container-fluid center-blurb">
+			<div class="row justify-content-center">
+				<div class="col-xs-10 align-self-center">
+					<p style="font-size: 24px; color: white;">The Harvard SEAS faculty also have important collaborations with each other.
+						Below shows us which Harvard faculty were coauthors on a publication.
+						Click on the square to see more information, like the number of papers co-written.</p>
+				</div>
+			</div>
+		</div>
 	</section>
 
 	<section id="section-faculty-adj" class="row">
 		<div class="container-fluid">
 			<div class="row justify-content-center">
 				<div class="align-self-center">
-					<h1>(Visualization: Adjacency matrix to show faculty-to-faculty connections via published papers, etc.)</h1>
-					<select id='faculty-adj-sort-selector' class="custom-select align-self-center" style="width: 50%" onchange="sortChangeFacultyAdj()">
-						<option value="index" selected>Default Ordering</option>
-						<option value="numPapers">Number of Papers</option>
-						<option value="numPaperCoauthor">Number of Papers with Coauthors</option>
-						<option value="numCoauthor">Number of Coauthors</option>
-						<option value="numPaperSolo">Number of Papers (alone)</option>
+					<h1>Faculty Coauthor Adjacency Matrix</h1>
+					<select id='faculty-adj-sort-selector' class="custom-select align-self-center" style="width: 20%" onchange="sortChangeFacultyAdj()">
+						<option value="name" selected>Default Ordering</option>
+						<option value="teachingArea">Sort: By Teaching Area</option>
+						<option value="numCoauthors">Sort: By Number of Coauthors</option>
+						<option value="numPapers">Sort: By Number of Papers</option>
 					</select>
+					<select id='faculty-adj-filter-selector' class="custom-select align-self-center" style="width: 20%" onchange="filterChangeFacultyAdj()">
+						<option value="All">Include All</option>
+						<!-- Populate the rest automatically-->
+					</select>
+					<div id="click-facts-adjacency-matrix">Click on box to see info!</div>
 					<div id="faculty-adj-matrix"></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="network-blurb" class="row blurb-row">
+		<div class="container-fluid center-blurb">
+			<div class="row justify-content-center">
+				<div class="col-xs-10 align-self-center">
+					<p style="font-size: 24px; color: white;">SEAS faculty collaborate together on research, paper writing,
+						in centers and initiatives, and are featured together in the news. The network graph shows
+						these different types of collaborations between faculty.
+						Did you know that if a faculty is affiliated with more than one Harvard school,
+					they are likely to have more connections with other SEAS faculty members?</p>
 				</div>
 			</div>
 		</div>
@@ -108,21 +191,11 @@
 		</div>
 	</section>
 
-	<section id="section-7" class="row">
-		<div class="container-fluid">
+	<section id="end-blurb" class="row blurb-row">
+		<div class="container-fluid center-blurb">
 			<div class="row justify-content-center">
-				<div class="align-self-center">
-					<h1>(Visualization: Map on Harvard campus with dots on research buildings)</h1>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<section id="section-8" class="row">
-		<div class="container-fluid">
-			<div class="row justify-content-center">
-				<div class="align-self-center">
-					<h1>Fin!</h1>
+				<div class="col-xs-10 align-self-center">
+					<p style="font-size: 100px; color: white;">Fin!</p>
 				</div>
 			</div>
 		</div>
@@ -132,6 +205,9 @@
 	<script src="https://d3js.org/d3.v6.min.js"></script>
 
 	<script src="js/adjMatrixVis.js"></script>
+	<script src="js/manyTableVis.js"></script>
+	<script src="js/groupDotsVis.js"></script>
+	<script src="js/relationshipVis.js"></script>
 	<!-- Main file (put visualization classes above this) -->
 	<script src="js/main.js"></script>
 	<script src="js/nodeData.js"></script>
