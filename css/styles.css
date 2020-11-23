@@ -109,3 +109,40 @@ section {
 	background-color: lightgrey;
 }
 
+.label {
+	font-size: 9px;
+}
+
+rect {
+	cursor: pointer;
+}
+
+.label {
+	fill: white;
+	font-family: sans-serif;
+	pointer-events: none;
+}
+
+.link {
+	fill: none;
+	stroke-width: 1px;
+}
+
+.activeFaculty {
+	fill: #a51c30;
+	stroke: #a51c30;
+}
+
+.activeLink {
+	fill: none;
+	stroke-width: 5px;
+}
+
+.repressNode {
+	fill: #CCC;
+}
+
+.repressLink {
+	stroke: #CCC;
+	stroke-width: 1px;
+}

@@ -6,7 +6,8 @@ let promises = [
     d3.csv('data/Visualization Data_Courses.csv'),
     d3.csv('data/Visualization Data_News.csv'),
     d3.csv('data/Visualization Data_Programs.csv'),
-    d3.csv('data/Final Visualization Data_People.csv')
+    d3.csv('data/Final Visualization Data_People.csv'),
+    d3.csv('data/Visualization Data_Centers.csv')
     // please add additional data AFTER these, so that people's indexing isn't messed up...
 ];
 
@@ -26,12 +27,14 @@ function initMainPage(dataArray) {
     let newsData = dataArray[4];
     let programsData = dataArray[5];
     let latestPeopleData = dataArray[6];  // this is latest list of faculty (as of 11/21)
+    let centers = dataArray[7];
 
     // initialize the visualizations here
     myNetworkVis = new NetworkGraph("network-graph", nodeData);
     myFacultyAdjVis = new adjMatrixVis("faculty-adj-matrix", peopleData, perPaperVals, latestPeopleData);
     myFacultyManyTableVis = new manyTableVis("faculty-interest-table", peopleData, coursesData, latestPeopleData);
     myFacultyDotsVis = new groupDotsVis("faculty-dots", peopleData, coursesData, latestPeopleData);
+    myRelationshipVis = new RelationshipVis("relationshipDiv", latestPeopleData, centers);
 }
 
 // handle buttons, sorting, selecting etc. down here
