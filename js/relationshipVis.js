@@ -219,9 +219,6 @@ class RelationshipVis {
             return a.lvl - b.lvl;
         });
 
-        //console.log(vis.Nodes)
-        //console.log(vis.Nodes.filter(obj => {return obj.name === "Applied Physics"}))
-
         vis.listAreas.sort(function(a,b){ return a.localeCompare(b) });
         vis.listFaculty.sort(function(a,b){ return a.localeCompare(b) });
         vis.listCenters.sort(function(a,b){ return a.localeCompare(b) });
@@ -263,9 +260,9 @@ class RelationshipVis {
         vis.boxHeightArea = (vis.height - vis.areaCount*vis.gap.height) / vis.areaCount;
         vis.boxHeightCenter = (vis.height - vis.centerCount*vis.gap.height) / vis.centerCount;
 
-        if(vis.height < 800){
-            vis.facultyOffset1 = 5;
-            vis.facultyOffset2 = 5;
+        if(vis.height < 850){
+            vis.facultyOffset1 = 10;
+            vis.facultyOffset2 = 10;
         }else{
             vis.facultyOffset1 = (vis.height - (vis.facultyHalfCount * vis.boxHeight)) / 2;
             vis.facultyOffset2 = (vis.height - ((vis.facultyCount - vis.facultyHalfCount) * vis.boxHeight)) / 2;
@@ -339,7 +336,7 @@ class RelationshipVis {
             .attr("fill", function(d){
                 if(d.lvl === 0 || d.lvl === 4){ return vis.colorAreas(d.name); }
                 else if(d.lvl === 2){ return vis.colorCenters(d.name); }
-                else{ return "#CCC"; }
+                else{ return "#ed1b34"; }
             })
             .attr("class", "node")
             .attr("rx", 6)
@@ -363,6 +360,13 @@ class RelationshipVis {
                     return d.y + vis.boxHeightCenter/2+3;
                 }else{
                     return d.y + vis.boxHeight-3;
+                }
+            })
+            .style("font-size", function(d){
+                if(d.lvl === 0 || d.lvl === 4){
+                    return "9px";
+                }else{
+                    return "9px";
                 }
             })
             .text(function (d) { return d.name; });

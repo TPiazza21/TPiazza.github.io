@@ -21,7 +21,7 @@ h1, h3, p {
 }
 
 h1 {
-	font-size:48px;
+	font-size:52px;
 	margin-top:0;	
 }
 
@@ -110,8 +110,9 @@ section {
 	width: 800px;
 }
 
-.label {
-	font-size: 9px;
+#relationship-section {
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 rect {
@@ -130,8 +131,8 @@ rect {
 }
 
 .activeFaculty {
-	fill: #a51c30;
-	stroke: #a51c30;
+	fill: #ed1b34;
+	stroke: #ed1b34;
 }
 
 .activeLink {
