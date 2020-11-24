@@ -8,10 +8,9 @@ class NetworkGraph {
     // TODO - add faculty pictures to nodes?
     // TODO - interactivity with network graph
     initVis() {
-        // Most code adapted from
-        // https://www.d3-graph-gallery.com/graph/network_basic.html
 
         let vis = this;
+
         vis.margin = {top: 10, right: 10, bottom: 10, left: 10};
 
         vis.width = $('#' + vis.parentElement).width() - vis.margin.left - vis.margin.right;
@@ -24,29 +23,43 @@ class NetworkGraph {
             .append("g")
             .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")")
 
+        // Most code adapted from
+        // https://www.d3-graph-gallery.com/graph/network_basic.html
+
         vis.simulation = d3.forceSimulation(vis.data.nodes)                 // Force algorithm is applied to data.nodes
             .force("link", d3.forceLink()                               // This force provides links between nodes
                 .id(function(d) { return d.id; })                     // This provide  the id of a node
                 .links(vis.data.links)                                    // and this the list of links
             )
-            .force("charge", d3.forceManyBody().strength(-1))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+            .force("forceX", d3.forceX().strength(.1).x(vis.width/2))
+            .force("forceY", d3.forceY().strength(.1).y(vis.height/2))
+            .force("charge", d3.forceManyBody().strength(-40))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
             .force("center", d3.forceCenter(vis.width / 2, vis.height / 2))     // This force attracts nodes to the center of the svg area
             .on("end", ticked);
 
         // Initialize the links
         vis.link = vis.svg
-            .selectAll("line")
+            .selectAll(".network-line")
             .data(vis.data.links)
             .enter()
             .append("line")
-            .style("stroke", d=> {if(d.type == "news") {return "blue"} else {return "red"}})
+            .attr("class", "network-line")
+            .style("stroke", d=>
+            {if(d.type == "news") {return "blue"}
+            else if(d.type=="research") {return "red"}
+            else if(d.type=="center") {return "purple"}
+            else if(d.type=="initiative") {return "orange"}
+            else if(d.type=="school") {return "grey"}
+            else {return "yellow"};
+            })
 
         // Initialize the nodes
         vis.node = vis.svg
-            .selectAll("circle")
+            .selectAll(".network-circle")
             .data(vis.data.nodes)
             .enter()
             .append("circle")
+            .attr("class", "network-circle")
             .attr("r", 5)
             .style("fill", d=> d.image)
             .on("click",
@@ -101,32 +114,43 @@ class NetworkGraph {
 
     updateVis() {
         let vis = this;
-        $("line").remove();
-        $("circle").remove();
+        $(".network-line").remove();
+        $(".network-circle").remove();
         vis.simulation = d3.forceSimulation(vis.displayNodes)                 // Force algorithm is applied to data.nodes
             .force("link", d3.forceLink()                               // This force provides links between nodes
                 .id(function(d) { return d.id; })                     // This provide  the id of a node
                 .links(vis.displayLinks)                                    // and this the list of links
             )
-            .force("charge", d3.forceManyBody().strength(-1))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+            .force("forceX", d3.forceX().strength(.1).x(vis.width/2))
+            .force("forceY", d3.forceY().strength(.1).y(vis.height/2))
+            .force("charge", d3.forceManyBody().strength(-100))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
             .force("center", d3.forceCenter(vis.width / 2, vis.height / 2))     // This force attracts nodes to the center of the svg area
             .on("end", ticked);
 
         // Initialize the links
         vis.link = vis.svg
-            .selectAll("line")
+            .selectAll(".network-line")
             .data(vis.displayLinks)
             .enter()
             .append("line")
-            .style("stroke", d => {if(d.type == "news") {return "blue"} else {return "red"}})
+            .attr("class", "network-line")
+            .style("stroke", d=>
+            {if(d.type == "news") {return "blue"}
+            else if(d.type=="research") {return "red"}
+            else if(d.type=="center") {return "purple"}
+            else if(d.type=="initiative") {return "orange"}
+            else if(d.type=="school") {return "grey"}
+            else {return "yellow"};
+            })
 
         // Initialize the nodes
         vis.node = vis.svg
-            .selectAll("circle")
+            .selectAll(".network-circle")
             .data(vis.displayNodes)
             .enter()
             .append("circle")
-            .attr("r", 10)
+            .attr("class", "network-circle")
+            .attr("r", 5)
             .style("fill", d=> d.image)
 
         vis.text = vis.svg.selectAll("text")
