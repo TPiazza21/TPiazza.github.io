@@ -11,7 +11,7 @@ class wordBarVis {
         //this.latestPeopleInfo = latestPeopleInfo;
 
         //this.initVis();
-        console.log("at wordBarVis");
+        //console.log("at wordBarVis");
     }
 
     initVis(){
