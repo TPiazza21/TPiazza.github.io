@@ -31,6 +31,8 @@ function initMainPage(dataArray) {
 
     // initialize the visualizations here
     myNetworkVis = new NetworkGraph("network-graph", nodeData);
+
+    myWordBarVis = new wordBarVis("word-frequency-chart")
     myFacultyAdjVis = new adjMatrixVis("faculty-adj-matrix", peopleData, perPaperVals, latestPeopleData);
     myFacultyManyTableVis = new manyTableVis("faculty-interest-table", peopleData, coursesData, latestPeopleData);
     myFacultyDotsVis = new groupDotsVis("faculty-dots", peopleData, coursesData, latestPeopleData);
