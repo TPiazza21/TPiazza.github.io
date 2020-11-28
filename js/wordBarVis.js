@@ -13,7 +13,7 @@ class wordBarVis {
     initVis(){
         let vis = this;
 
-        vis.margin = {top: 40, right: 60, bottom: 60, left: 60};
+        vis.margin = {top: 40, right: 45, bottom: 80, left: 60};
         vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
 
@@ -30,7 +30,8 @@ class wordBarVis {
             .append('text')
             .text('Most Popular Words in Titles and Abstracts')
             .attr('transform', `translate(${vis.width / 2}, -20)`)
-            .attr('text-anchor', 'middle');
+            .attr('text-anchor', 'middle')
+            .attr("font-size", 14);
 
         // add title
         vis.subTitle = vis.svg.append('g')
@@ -70,6 +71,13 @@ class wordBarVis {
             .attr("transform", "rotate(45)")
             .style("text-anchor", "start");
 
+        vis.svg.append("text")
+            .attr("class", "axis-label")
+            .text("Frequency in paper titles and abstracts")
+            .attr("x", -35)
+            .attr("y", vis.width + 30)
+            .attr("transform", "rotate(270, -35, "+ (vis.width + 30) + ")");
+
     }
 
     wrangleData() {
@@ -97,7 +105,8 @@ class wordBarVis {
         }
 
         // then to get the top 10
-        filteredWords = filteredWords.sort((a,b) => wordCount[b] - wordCount[a]);
+        // break ties with the longer word
+        filteredWords = filteredWords.sort((a,b) => b.length - a.length).sort((a,b) => wordCount[b] - wordCount[a]);
         filteredWords = filteredWords.slice(0, 10);
         let displayData = [];
         filteredWords.forEach((wrd) => {
@@ -130,6 +139,9 @@ class wordBarVis {
 
         vis.rects.enter().append("rect")
             .attr("width",vis.x.bandwidth())
+            .attr("height", d=> vis.height - vis.y(d["wordCount"]))
+            .attr("y", d=> vis.y(d["wordCount"]))
+            .attr("opacity", 0.0)
             .merge(vis.rects)
             .transition()
             .duration(750)
@@ -138,21 +150,29 @@ class wordBarVis {
             .attr("width", vis.x.bandwidth())
             .attr("height", d=> vis.height - vis.y(d["wordCount"]))
             .attr("fill", function(d) {
-                //return wordBarColor; // this doesn't work when color is like white
-                return "purple";
+                return wordBarColor; // this doesn't work when color is like white
+                //return "purple";
             })
-            .attr("class","bar");
+            .attr("class","bar")
+            .attr('stroke-width', '1px')
+            .attr('stroke', 'gray')
+            .attr("opacity", 1.0);
         // update x-axis
         vis.svg.select(".x-axis")
             .transition()
+            .duration(750)
             .call(vis.xAxis)
             .selectAll("text")
             .attr("y", 0)
-            .attr("x", 9)
+            .attr("x", 5)
             .attr("dy", ".35em")
-            .attr("transform", "rotate(45)")
+            .attr("transform", "rotate(45, 0, 4)")
             .style("text-anchor", "start");
-        vis.svg.select(".y-axis").transition().call(vis.yAxis);
+
+        vis.svg.select(".y-axis")
+            .transition()
+            .duration(750)
+            .call(vis.yAxis);
 
         vis.subTitle.text(wordBarSubTitle);
 

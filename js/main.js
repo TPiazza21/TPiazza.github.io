@@ -2,6 +2,7 @@ let wordBarLongString = ""; // this will be modified with words, if we do new th
 let wordBarSubTitle = "";
 let wordBarColor = ""; // send over the color of the selected box
 let selectedFacultyAdjFilter = "";
+let selectedFacultyTableFilter = "";
 
 // load data using promises
 let promises = [

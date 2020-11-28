@@ -6,8 +6,9 @@
       <change beforePath="$PROJECT_DIR$/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/adjMatrixVis.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/adjMatrixVis.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/groupDotsVis.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/groupDotsVis.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/manyTableVis.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/manyTableVis.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/relationshipVis.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/relationshipVis.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/wordBarVis.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/wordBarVis.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -42,7 +43,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606497966897</updated>
-      <workItem from="1606497970601" duration="18416000" />
+      <workItem from="1606497970601" duration="27713000" />
     </task>
     <servers />
   </component>

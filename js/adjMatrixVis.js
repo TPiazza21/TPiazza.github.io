@@ -16,7 +16,7 @@ class adjMatrixVis {
     initVis(){
         let vis = this;
 
-        vis.margin = {top: 40, right: 20, bottom: 60, left: 20};
+        vis.margin = {top: 40, right: 5, bottom: 5, left: 20};
         vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
 
@@ -65,6 +65,8 @@ class adjMatrixVis {
         // intrinsic properties of the adjacency matrix
         vis.yShift = 100;
         vis.xShift = 100;
+        vis.originalYShift = vis.yShift;
+        vis.originalXShift = vis.xShift;
 
         vis.cellScale = d3.scaleBand()
             .rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift])])
@@ -99,8 +101,8 @@ class adjMatrixVis {
             .attr("class", "axis one-author-axis")
             .call(vis.oneAuthorAxis);
 
-        vis.oneAuthorColorScale = d3.scaleSequential(d3.interpolateBlues)
-            .domain([0, vis.colorBarWidth]);
+        vis.oneAuthorColorScale = d3.scaleSequential()
+            .domain([0, vis.colorBarWidth]).range(["lightblue","darkblue"]);
 
         vis.oneAuthorGroup.selectAll(".bars")
             .data(d3.range(vis.colorBarWidth), function(d) { return d; })
@@ -114,7 +116,7 @@ class adjMatrixVis {
 
         vis.authorText = vis.svg.append("text")
             .text("Papers By An Author")
-            .attr("x", 0)
+            .attr("x", -15)
             .attr("y", -25);
 
 
@@ -130,8 +132,8 @@ class adjMatrixVis {
             .attr("transform", "translate(0, 60)")
             .call(vis.coauthorAxis);
 
-        vis.coauthorColorScale = d3.scaleSequential(d3.interpolateReds)
-            .domain([0, vis.colorBarWidth]);
+        vis.coauthorColorScale = d3.scaleSequential()
+            .domain([0, vis.colorBarWidth]).range(["pink","darkred"]);
 
         vis.coauthorGroup.selectAll(".bars")
             .data(d3.range(vis.colorBarWidth), function(d) { return d; })
@@ -143,7 +145,15 @@ class adjMatrixVis {
             .attr("width", 1)
             .style("fill", function(d, i ) { return vis.coauthorColorScale(d); });
 
-        vis.coauthorText = vis.svg.append("text").text("Papers By Two Faculty").attr("x", 0).attr("y", 45);
+        vis.coauthorText = vis.svg.append("text")
+            .text("Papers By Two Faculty")
+            .attr("x", -15)
+            .attr("y", 45);
+
+        vis.svg.append("text")
+            .text("Click to learn more!")
+            .attr("x", -15)
+            .attr("y", 90);
 
         // actually create the squares (and labels, maybe)
         vis.wrangleData()
@@ -260,6 +270,20 @@ class adjMatrixVis {
         vis.matrixLongList = matrixLongList;
         vis.allRelatedPapers = allRelatedPapers;
 
+        if (vis.displayFaculty.length == vis.allFaculty.length) {
+            vis.yShift = -70;
+            //vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift]) + 50]);
+            //vis.cellScale.paddingInner(0.001);
+            // idea is to get it bigger, and plot it bigger
+            vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift])]);
+        }
+        else {
+            vis.yShift = vis.originalYShift;
+            vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift])]);
+            //vis.cellScale.paddingInner(0.1);
+            //vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift])]);
+        }
+
     }
 
     sortAndFilterValues() {
@@ -323,7 +347,8 @@ class adjMatrixVis {
 
         relationSquares.exit() // EXIT
             .style("opacity", 0.0)
-            .transition(trans)
+            .transition()
+            .duration(800)
             .remove();
 
         relationSquares
@@ -354,7 +379,8 @@ class adjMatrixVis {
                 }
             })
             .merge(relationSquares) // ENTER + UPDATE
-            .transition(trans)
+            .transition()
+            .duration(800)
             .attr("fill", function(d) {
                 if (d.valueLen > 0) {
                     //return "purple";
@@ -388,7 +414,8 @@ class adjMatrixVis {
 
         rowLabels.exit() // EXIT
             .style("opacity", 0.0)
-            .transition(trans)
+            .transition()
+            .duration(800)
             .remove();
 
         rowLabels
@@ -396,7 +423,8 @@ class adjMatrixVis {
             .append("text")
             .attr("class","matrix-row-labels")
             .merge(rowLabels)
-            .transition(trans) // ENTER + UPDATE
+            .transition()
+            .duration(800) // ENTER + UPDATE
             .attr("text-anchor","end")
             .attr("y", (d,i) => vis.cellScale(i) + vis.yShift + vis.cellScale.bandwidth())
             .attr("x", vis.xShift-5)
@@ -417,7 +445,8 @@ class adjMatrixVis {
 
         columnLabels.exit() // EXIT
             .style("opacity", 0.0)
-            .transition(trans)
+            .transition()
+            .duration(800)
             .remove();
 
         columnLabels
@@ -425,7 +454,8 @@ class adjMatrixVis {
             .append("text")
             .attr("class","matrix-column-labels")
             .merge(columnLabels)
-            .transition(trans) // ENTER + UPDATE
+            .transition()
+            .duration(800) // ENTER + UPDATE
             .attr("text-anchor","start")
             //.attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift)
             .attr("x", (d,i) => vis.cellScale(i) + vis.xShift + vis.cellScale.bandwidth())
@@ -440,11 +470,13 @@ class adjMatrixVis {
             })
             //.attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
             .attr("transform", (d,i) => "rotate(270," + (vis.cellScale(i) + vis.xShift + vis.cellScale.bandwidth()) +  "," + vis.yShift + ")")
-
             .text(d => d);
 
         // update axis of color labels
-        vis.oneAuthorGroup.transition().call(vis.oneAuthorAxis)
+        vis.oneAuthorGroup
+            .transition()
+            .duration(800)
+            .call(vis.oneAuthorAxis)
             .attr("opacity", () => {
                 if (vis.maxPaperLen > 0) {
                     return 1.0;
@@ -454,7 +486,10 @@ class adjMatrixVis {
                 }
             });
 
-        vis.authorText.attr("opacity", () => {
+        vis.authorText
+            .transition()
+            .duration(800)
+            .attr("opacity", () => {
             if (vis.maxPaperLen > 0) {
                 return 1.0;
             }
@@ -463,7 +498,10 @@ class adjMatrixVis {
             }
         });
 
-        vis.coauthorGroup.transition().call(vis.coauthorAxis)
+        vis.coauthorGroup
+            .transition()
+            .duration(800)
+            .call(vis.coauthorAxis)
             .attr("opacity", () => {
                 if (vis.maxCoauthorPaperLen > 0) {
                     return 1.0;
@@ -473,7 +511,10 @@ class adjMatrixVis {
                 }
             });
 
-        vis.coauthorText.attr("opacity", () => {
+        vis.coauthorText
+            .transition()
+            .duration(800)
+            .attr("opacity", () => {
             if (vis.maxCoauthorPaperLen > 0) {
                 return 1.0;
             }
