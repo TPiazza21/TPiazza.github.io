@@ -6,12 +6,8 @@
 class wordBarVis {
     constructor(parentElement){
         this.parentElement = parentElement;
-        //this.peopleInfo = peopleInfo;
-        //this.perPaperInfo = perPaperInfo;
-        //this.latestPeopleInfo = latestPeopleInfo;
 
-        //this.initVis();
-        //console.log("at wordBarVis");
+        this.initVis();
     }
 
     initVis(){
@@ -28,123 +24,137 @@ class wordBarVis {
             .append('g')
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
-        // actually create the squares (and labels, maybe)
-        //vis.wrangleData()
-        //vis.updateVis();
+        // add title
+        vis.svg.append('g')
+            .attr('class', 'title bar-title')
+            .append('text')
+            .text('Most Popular Words in Titles and Abstracts')
+            .attr('transform', `translate(${vis.width / 2}, -20)`)
+            .attr('text-anchor', 'middle');
+
+        // add title
+        vis.subTitle = vis.svg.append('g')
+            .attr('class', 'subtitle')
+            .append('text')
+            .text('Papers from John Harvard')
+            .attr('transform', `translate(${vis.width / 2}, -10)`)
+            .attr('text-anchor', 'middle');
+
+        // Scales
+        vis.x = d3.scaleBand()
+            .rangeRound([0, vis.width])
+            .paddingInner(0.1);
+
+        vis.y = d3.scaleLinear()
+            .range([vis.height, 0]);
+
+        // set up the initial axis (at the start)
+        vis.yAxis = d3.axisLeft()
+            .scale(vis.y).ticks(3);
+
+        vis.yGroup = vis.svg.append("g")
+            .attr("class", "axis y-axis")
+            .call(vis.yAxis);
+
+        vis.xAxis = d3.axisBottom()
+            .scale(vis.x);
+
+        vis.xGroup = vis.svg.append("g")
+            .attr("class", "axis x-axis")
+            .attr("transform", "translate(" + 0 + "," + vis.height + ")")
+            .call(vis.xAxis)
+            .selectAll("text")
+            .attr("y", 0)
+            .attr("x", 9)
+            .attr("dy", ".35em")
+            .attr("transform", "rotate(45)")
+            .style("text-anchor", "start");
 
     }
 
     wrangleData() {
         let vis = this;
 
+        // a new list of words, now has to parse
+        vis.plotLongString = wordBarLongString;
+        vis.plotLongString = vis.plotLongString.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()"]/g,"");
+        vis.plotLongString = vis.plotLongString.toLowerCase();
+
+
+        let wordCount = vis.plotLongString.split(" ").reduce(function(map, word){
+            map[word] = (map[word]||0)+1;
+            return map;
+        }, Object.create(null));
+
+
+        let filteredWords = [];
+        // from https://gist.github.com/sebleier/554280, for stop words
+        let stopWords = ['i','me','my','myself','we','our','ours','ourselves','you','your','yours','yourself','yourselves','he','him','his','himself','she','her','hers','herself','it','its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that','these','those','am','is','are','was','were','be','been','being','have','has','had','having','do','does','did','doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again','further','then','once','here','there','when','where','why','how','all','any','both','each','few','more','most','other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','just','don','should','now'];
+        for (const property in wordCount) {
+            if ((property.length > 0) && (/[a-zA-Z]/).test(property[0]) && !stopWords.includes(property)) {
+                filteredWords.push(property);
+            }
+        }
+
+        // then to get the top 10
+        filteredWords = filteredWords.sort((a,b) => wordCount[b] - wordCount[a]);
+        filteredWords = filteredWords.slice(0, 10);
+        let displayData = [];
+        filteredWords.forEach((wrd) => {
+            let tempObj = {};
+            tempObj.word = wrd;
+            tempObj.wordCount = wordCount[wrd];
+            displayData.push(tempObj);
+        });
+
+        vis.displayData = displayData;
+
+        // specify domains of scales
+        vis.x.domain(vis.displayData.map(d=> d["word"]));
+
+        vis.y.domain([0,d3.max(vis.displayData, d=>d["wordCount"])]);
 
         vis.updateVis();
-
     }
 
     updateVis(){
         let vis = this;
 
-        let trans = d3.transition()
-            .duration(800);
+        // key is state, so that's where data comes in
+        vis.rects = vis.svg.selectAll("rect").data(vis.displayData, (d) => d["word"]);
 
-        let relationSquares = vis.svg
-            .selectAll(".matrix-relation-squares")
-            .data(vis.matrixLongList, (d) => d.nameKey);
-
-        relationSquares.exit() // EXIT
-            .style("opacity", 0.0)
-            .transition(trans)
+        // remove
+        vis.rects.exit()
+            .transition()
             .remove();
 
-        relationSquares
-            .enter() // ENTER
-            .append("rect")
-            .attr("class","matrix-relation-squares")
-            .on("click", function(event, d) {
-                // show info on the "sticky note"
-                vis.clickFacts(d);
-            })
-            .merge(relationSquares) // ENTER + UPDATE
-            .transition(trans)
+        vis.rects.enter().append("rect")
+            .attr("width",vis.x.bandwidth())
+            .merge(vis.rects)
+            .transition()
+            .duration(750)
+            .attr("x", d=> vis.x(d["word"]))
+            .attr("y", d=> vis.y(d["wordCount"]))
+            .attr("width", vis.x.bandwidth())
+            .attr("height", d=> vis.height - vis.y(d["wordCount"]))
             .attr("fill", function(d) {
-                if (d.valueLen > 0) {
-                    return "purple";
-                } else {
-                    return "gray";
-                }
+                //return wordBarColor; // this doesn't work when color is like white
+                return "purple";
             })
-            .attr("opacity", function(d) {
-                if (vis.displayLabelsBoolean || d.valueLen > 0){
-                    return 1.0;
-                }
-                else {
-                    return 0.5;
-                }
-            })
-            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * d.xpos + vis.xShift)
-            .attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * d.ypos + vis.yShift)
-            .attr("width", vis.cellWidth)
-            .attr("height", vis.cellWidth);
+            .attr("class","bar");
+        // update x-axis
+        vis.svg.select(".x-axis")
+            .transition()
+            .call(vis.xAxis)
+            .selectAll("text")
+            .attr("y", 0)
+            .attr("x", 9)
+            .attr("dy", ".35em")
+            .attr("transform", "rotate(45)")
+            .style("text-anchor", "start");
+        vis.svg.select(".y-axis").transition().call(vis.yAxis);
 
-        let rowLabels = vis.svg
-            .selectAll(".matrix-row-labels")
-            .data(vis.displayFaculty);
+        vis.subTitle.text(wordBarSubTitle);
 
-        rowLabels.exit() // EXIT
-            .style("opacity", 0.0)
-            .transition(trans)
-            .remove();
-
-        rowLabels
-            .enter() // ENTER
-            .append("text")
-            .attr("class","matrix-row-labels")
-            .merge(rowLabels)
-            .transition(trans) // ENTER + UPDATE
-            .attr("text-anchor","end")
-            .attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * (i+1) + vis.yShift)
-            .attr("x", vis.xShift-5)
-            .attr("opacity", function(d) {
-                if (vis.displayLabelsBoolean){
-                    return 1.0;
-                }
-                else {
-                    return 0.0;
-                }
-            })
-            .text(d => d);
-
-        // same for column labels
-        let columnLabels = vis.svg
-            .selectAll(".matrix-column-labels")
-            .data(vis.displayFaculty);
-
-        columnLabels.exit() // EXIT
-            .style("opacity", 0.0)
-            .transition(trans)
-            .remove();
-
-        columnLabels
-            .enter() // ENTER
-            .append("text")
-            .attr("class","matrix-column-labels")
-            .merge(columnLabels)
-            .transition(trans) // ENTER + UPDATE
-            .attr("text-anchor","start")
-            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift)
-            .attr("y", vis.yShift-5)
-            .attr("opacity", function(d) {
-                if (vis.displayLabelsBoolean){
-                    return 1.0;
-                }
-                else {
-                    return 0.0;
-                }
-            })
-            .attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
-            .text(d => d);
     }
-
-
 }

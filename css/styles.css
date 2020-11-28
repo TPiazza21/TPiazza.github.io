@@ -77,7 +77,12 @@ section {
 
 #faculty-adj-matrix {
 	height: 800px;
-	width: 100%;
+	width: 70%;
+}
+
+#word-frequency-chart {
+	height: 800px;
+	width: 30%; /* more? */
 }
 
 #section-faculty-adj {
@@ -108,6 +113,15 @@ section {
 #faculty-dots {
 	height: 700px;
 	width: 800px;
+}
+
+#groupTooltip {
+	width: 300px;
+}
+
+
+#groupTooltip p {
+	font-size: 14px;
 }
 
 #relationship-section {
