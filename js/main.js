@@ -1,3 +1,9 @@
+let wordBarLongString = ""; // this will be modified with words, if we do new things with the bar graph
+let wordBarSubTitle = "";
+let wordBarColor = ""; // send over the color of the selected box
+let selectedFacultyAdjFilter = "";
+let selectedFacultyTableFilter = "";
+
 // load data using promises
 let promises = [
     d3.csv("data/faculty_coauthor_matrix.csv"),
@@ -31,6 +37,9 @@ function initMainPage(dataArray) {
 
     // initialize the visualizations here
     myNetworkVis = new NetworkGraph("network-graph", nodeData);
+
+
+    myWordBarVis = new wordBarVis("word-frequency-chart");
     myFacultyAdjVis = new adjMatrixVis("faculty-adj-matrix", peopleData, perPaperVals, latestPeopleData);
     myFacultyManyTableVis = new manyTableVis("faculty-interest-table", peopleData, coursesData, latestPeopleData);
     myFacultyDotsVis = new groupDotsVis("faculty-dots", peopleData, coursesData, latestPeopleData);

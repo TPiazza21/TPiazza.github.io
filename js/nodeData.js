@@ -899,6 +899,7 @@ nodeData = {
     // removed awards and fellowships and people whose names did not appear in the faculty cards
     // incorporated publication relationships
     // incorporated centers & initiatives
+    // incorporated courses
     "links": [
         {"source": 1519, "target": 1636, "weight": 1, "type": "news"},
         {"source": 1526, "target": 1533, "weight": 1, "type": "news"},

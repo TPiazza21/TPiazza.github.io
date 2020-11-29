@@ -394,7 +394,7 @@ class RelationshipVis {
                         } else {
                             oTarget.y += vis.boxWidthArea;
                         }
-                    }else{
+                    } else{
                         oTarget = {
                             x: li.target.y + 0.5 * vis.boxHeightCenter,
                             y: li.target.x
