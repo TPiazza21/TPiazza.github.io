@@ -271,7 +271,7 @@ class adjMatrixVis {
         vis.allRelatedPapers = allRelatedPapers;
 
         if (vis.displayFaculty.length == vis.allFaculty.length) {
-            vis.yShift = -70;
+            vis.yShift = -50;
             //vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift]) + 50]);
             //vis.cellScale.paddingInner(0.001);
             // idea is to get it bigger, and plot it bigger

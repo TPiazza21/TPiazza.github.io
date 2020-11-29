@@ -3,13 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c09b143c-d9b2-41e6-b685-1075673197a8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/adjMatrixVis.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/adjMatrixVis.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/manyTableVis.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/manyTableVis.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/relationshipVis.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/relationshipVis.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/wordBarVis.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/wordBarVis.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/groupDotsVis.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/groupDotsVis.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +38,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606497966897</updated>
-      <workItem from="1606497970601" duration="27713000" />
+      <workItem from="1606497970601" duration="28412000" />
     </task>
     <servers />
   </component>

@@ -333,6 +333,7 @@ class groupDotsVis {
 
         vis.labelCircles.enter().append("circle")
             .attr("r",vis.circleRadius)
+            .attr("cx", (d,i) => vis.width)
             .merge(vis.labelCircles)
             .transition()
             .duration(750)
@@ -352,6 +353,7 @@ class groupDotsVis {
             .remove();
 
         vis.labelCirclesText.enter().append("text")
+            .attr("x", (d,i) => vis.width -  vis.circleRadius - 5)
             .merge(vis.labelCircles)
             .transition()
             .duration(750)
