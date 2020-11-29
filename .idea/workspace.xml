@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="c09b143c-d9b2-41e6-b685-1075673197a8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+=======
+    <list default="true" id="a4fd47dc-7e02-4504-8136-b455283d1d0a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/network.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/network.js" afterDir="false" />
+>>>>>>> af9c90c490a04d650d42290d6d3e3c7ef32ac83a
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -12,8 +18,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectId" id="1ksn36juxLN4qqlURAcAL2UShh2" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectId" id="1kyNhLV3k2B3Ryhiz0sZQVMvlLE" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -27,27 +32,26 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="c09b143c-d9b2-41e6-b685-1075673197a8" name="Default Changelist" comment="" />
-      <created>1606497966897</created>
+      <changelist id="a4fd47dc-7e02-4504-8136-b455283d1d0a" name="Default Changelist" comment="" />
+      <created>1606668990919</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
+<<<<<<< HEAD
       <updated>1606497966897</updated>
       <workItem from="1606497970601" duration="28912000" />
+=======
+      <updated>1606668990919</updated>
+      <workItem from="1606668992609" duration="7424000" />
+>>>>>>> af9c90c490a04d650d42290d6d3e3c7ef32ac83a
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="168" y="75" width="670" height="677" key="search.everywhere.popup" timestamp="1606525527127">
-      <screen x="0" y="23" width="1280" height="729" />
-    </state>
-    <state x="168" y="75" width="670" height="676" key="search.everywhere.popup/0.23.1280.728@0.23.1280.728" timestamp="1606519535323" />
-    <state x="168" y="75" width="670" height="677" key="search.everywhere.popup/0.23.1280.729@0.23.1280.729" timestamp="1606525527127" />
   </component>
 </project>
