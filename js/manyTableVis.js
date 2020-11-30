@@ -61,8 +61,8 @@ class manyTableVis {
             opt.innerHTML = "Filter: Research Interest: " + r;
             // just so that something is set
             if (r == vis.allResearchInterests[0]) {
-                opt.selected = true;
-                selectedFacultyTableFilter = r;
+                //opt.selected = true;
+                //selectedFacultyTableFilter = r;
             }
             selectDiv.appendChild(opt);
         });
@@ -90,7 +90,7 @@ class manyTableVis {
             vis.researchInterestSortInfoDict[r] = {};
             vis.researchInterestSortInfoDict[r].interestedFaculty = 0;
             vis.researchInterestSortInfoDict[r].researchInterest = r;
-        })
+        });
 
         vis.basicRelationData();
         vis.createMatrixData();
@@ -115,6 +115,11 @@ class manyTableVis {
         vis.departmentMap = {};
         vis.peopleInfo.forEach((x) => {
             vis.departmentMap[x["Title"]] = {'researchInterests': x["Research Interests"], 'teachingAreas': x["Teaching Areas"]};
+        });
+
+        vis.allInfoMap = {};
+        vis.peopleInfo.forEach((x) => {
+            vis.allInfoMap[x["Title"]] = x;
         });
 
     }
@@ -337,15 +342,26 @@ class manyTableVis {
                 // update tooltip
                 vis.tooltip
                     .style("opacity", 1)
-                    .style("left", event.pageX + 20 + "px")
-                    .style("top", event.pageY + "px")
                     .html(`
                      <div style="border: thin solid grey; border-radius: 5px; background: lightgrey; padding: 20px">
-                        <h2 style="text-align: center"><b>Column: </b>${d.name}</h2>
-                        <h2 style="text-align: center"><b>Row: </b> ${d.researchInterest}</h2>
-                        <p><b>Teaching Area:</b> ${vis.departmentMap[d.name].teachingAreas}</p>
-                        <p><b>Research Interests:</b> ${vis.departmentMap[d.name].researchInterests}</p>
+                        <h4 style="text-align: center"><b>Column: </b>${d.name}</h4>
+                        <h4 style="text-align: center"><b>Row: </b> ${d.researchInterest}</h4>
+                        <p><b>Teaching Area:</b> ${vis.departmentMap[d.name].teachingAreas}
+                        <br>
+                        <b>Research Interests:</b> ${vis.departmentMap[d.name].researchInterests}
+                        <br>
+                        <b>Email:</b> ${vis.allInfoMap[d.name]["Email"]}
+                        <br>
+                        <b>Phone:</b> ${vis.allInfoMap[d.name]["Phone"]}
+                        <br>
+                        <b>Website:</b> ${vis.allInfoMap[d.name]["Website Link"]}
+                        </p>
                      </div>`);
+
+                vis.tooltip
+                    .style("left", (event.pageX - $("#researchInterestsTooltip").width()/2) + "px")
+
+                    .style("top", (event.pageY - $("#researchInterestsTooltip").height() - 5) + "px")
             })
             .on('mouseout', function(event, d){
                 d3.select(this)

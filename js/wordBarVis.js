@@ -28,7 +28,7 @@ class wordBarVis {
         vis.svg.append('g')
             .attr('class', 'title bar-title')
             .append('text')
-            .text('Most Popular Words in Titles and Abstracts')
+            .text('Most Popular Words')
             .attr('transform', `translate(${vis.width / 2}, -20)`)
             .attr('text-anchor', 'middle')
             .attr("font-size", 14);
