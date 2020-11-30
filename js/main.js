@@ -123,6 +123,9 @@ function networkTableSelector() {
         $("#network-research-interests").text(tableData.researchInterests);
         $("#network-teaching-areas").text(tableData.teachingArea);
         $("#network-location").text(tableData.location)
-        $('#network-pic').prepend('<img src='+tableData.image +'/>')
+        $('#network-pic').prepend('<a href="http://seasdrupalstg.prod.acquia-sites.com/node/'
+            +selectedFacultyNetworkViz.toString()+'" target="_blank">'+
+            '<img src='+tableData.image +' title="Click for more information" width=200 height=300/>' +
+            '</a>')
     }
 }
