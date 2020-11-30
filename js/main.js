@@ -42,7 +42,7 @@ function initMainPage(dataArray) {
     myWordBarVis = new wordBarVis("word-frequency-chart");
     myFacultyAdjVis = new adjMatrixVis("faculty-adj-matrix", peopleData, perPaperVals, latestPeopleData);
     myFacultyManyTableVis = new manyTableVis("faculty-interest-table", peopleData, coursesData, latestPeopleData);
-    myFacultyDotsVis = new groupDotsVis("faculty-dots", peopleData, coursesData, latestPeopleData);
+    myFacultyDotsVis = new groupDotsVis("faculty-dots", peopleData, coursesData, latestPeopleData, nodeData);
     myRelationshipVis = new RelationshipVis("relationshipDiv", latestPeopleData, centers);
 }
 

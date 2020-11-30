@@ -56,8 +56,8 @@ class adjMatrixVis {
             opt.innerHTML = "Filter: Research Interest: " + r;
             // just so that something is set
             if (r == vis.allResearchInterests[0]) {
-                opt.selected = true;
-                selectedFacultyAdjFilter = r;
+                //opt.selected = true;
+                //selectedFacultyAdjFilter = r;
             }
             selectDiv.appendChild(opt);
         });
@@ -116,6 +116,7 @@ class adjMatrixVis {
 
         vis.authorText = vis.svg.append("text")
             .text("Papers By An Author")
+            .attr("class", "colorscale-label")
             .attr("x", -15)
             .attr("y", -25);
 
@@ -147,11 +148,13 @@ class adjMatrixVis {
 
         vis.coauthorText = vis.svg.append("text")
             .text("Papers By Two Faculty")
+            .attr("class", "colorscale-label")
             .attr("x", -15)
             .attr("y", 45);
 
         vis.svg.append("text")
             .text("Click to learn more!")
+            .attr("class", "colorscale-label")
             .attr("x", -15)
             .attr("y", 90);
 
@@ -271,7 +274,7 @@ class adjMatrixVis {
         vis.allRelatedPapers = allRelatedPapers;
 
         if (vis.displayFaculty.length == vis.allFaculty.length) {
-            vis.yShift = -50;
+            vis.yShift = -30;
             //vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift]) + 50]);
             //vis.cellScale.paddingInner(0.001);
             // idea is to get it bigger, and plot it bigger

@@ -88,25 +88,26 @@ section {
 }
 
 #researchInterestsTooltip {
-	width: 300px;
+	width: 400px;
 }
 
-#section-faculty-dots {
-	height: 800px;
-}
-
-#faculty-dots {
-	height: 700px;
-	width: 800px;
+#researchInterestsTooltip p {
+	font-size: 11px;
+	padding: 0px;
 }
 
 #groupTooltip {
-	width: 300px;
+	width: 400px;
 }
 
-
 #groupTooltip p {
-	font-size: 14px;
+	font-size: 11px;
+	padding: 0px;
+}
+
+#groupTooltip img {
+	width: 30px;
+	height: 45px;
 }
 
 #relationship-section {
@@ -146,4 +147,36 @@ rect {
 .repressLink {
 	stroke: #CCC;
 	stroke-width: 1px;
+}
+
+#faculty-adj-matrix .colorscale-label {
+	font-size: 10px;
+}
+
+#faculty-adj-matrix .matrix-column-labels {
+	font-size: 12px;
+}
+
+#faculty-adj-matrix .matrix-row-labels {
+	font-size: 12px;
+}
+
+#word-frequency-chart .axis-label {
+	font-size: 11px;
+}
+
+#word-frequency-chart .bar-title {
+	font-size: 13px;
+}
+
+#word-frequency-chart .subtitle {
+	font-size: 10px;
+}
+
+#faculty-interest-table .matrix-row-labels {
+	font-size: 10px;
+}
+
+#faculty-interest-table .matrix-column-labels {
+	font-size: 9px;
 }

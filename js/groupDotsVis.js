@@ -5,11 +5,12 @@
 // https://bl.ocks.org/ocarneiro/42286298b683c490ff74cdbf3800241e
 
 class groupDotsVis {
-    constructor(parentElement, peopleInfo, coursesInfo, latestPeopleInfo){
+    constructor(parentElement, peopleInfo, coursesInfo, latestPeopleInfo, nodeInfo){
         this.parentElement = parentElement;
         this.peopleInfo = peopleInfo;
         this.coursesInfo = coursesInfo;
         this.latestPeopleInfo = latestPeopleInfo;
+        this.nodeInfo = nodeInfo;
 
         this.initVis();
     }
@@ -30,8 +31,6 @@ class groupDotsVis {
             .append('g')
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
 
-        vis.svg.append("text").text("This is in progress. See https://bl.ocks.org/ocarneiro/42286298b683c490ff74cdbf3800241e to know what I'm trying to do").attr("x",50).attr("y",50);
-
         vis.latestAllFaculty = vis.latestPeopleInfo.map((x) => x.Title);
         vis.allFaculty = vis.peopleInfo.map((x) => x.Title).filter((x) => vis.latestAllFaculty.includes(x));
 
@@ -51,12 +50,17 @@ class groupDotsVis {
         vis.allInfoMap = {};
         vis.peopleInfo.forEach((x) => {
             vis.allInfoMap[x["Title"]] = x;
-        })
+        });
 
         vis.officeMap = {};
         vis.peopleInfo.forEach((x) => {
             vis.officeMap[x["Title"]] = x["Office"];
-        })
+        });
+
+        vis.picMap = {};
+        vis.nodeInfo.nodes.forEach((node) => {
+            vis.picMap[node.name] = node.image;
+        });
 
         vis.color = d3.scaleOrdinal(d3.schemeCategory10);
         vis.departmentColors = {
@@ -72,7 +76,7 @@ class groupDotsVis {
         };
 
 
-        vis.circleRadius = 15;
+        vis.circleRadius = 7;
         vis.displayFaculty = vis.allFaculty;
 
         vis.circleDiv = vis.svg.append("g").attr("class","nodes");
@@ -279,15 +283,31 @@ class groupDotsVis {
                 // update tooltip
                 vis.tooltip
                     .style("opacity", 1)
-                    .style("left", event.pageX + 20 + "px")
-                    .style("top", event.pageY + "px")
+                    //.style("left", event.pageX + 20 + "px")
+                    //.style("top", (event.pageY - 100) + "px")
                     .html(`
-                     <div style="border: thin solid grey; border-radius: 5px; background: lightgrey; padding: 20px">
+                     <div style="border: thin solid grey; border-radius: 5px; background: lightgrey; padding: 2px">
+                        
                         <h2 style="text-align: center">${d.name}</h2>
-                        <p><b>Teaching Area:</b> ${vis.allInfoMap[d.name]["Teaching Areas"]}</p>
-                        <p><b>Research Interests:</b> ${vis.allInfoMap[d.name]["Research Interests"]}</p>
-                        <p><b>Office Location:</b> ${vis.allInfoMap[d.name]["Office"]}</p>
+                        <p><b>Teaching Area:</b> ${vis.allInfoMap[d.name]["Teaching Areas"]} 
+                        <br>
+                        <b>Research Interests:</b> ${vis.allInfoMap[d.name]["Research Interests"]}
+                        <br>
+                        <b>Office Location:</b> ${vis.allInfoMap[d.name]["Office"]}
+                        <br>
+                        <b>Email:</b> ${vis.allInfoMap[d.name]["Email"]}
+                        <br>
+                        <b>Phone:</b> ${vis.allInfoMap[d.name]["Phone"]}
+                        <br>
+                        <b>Website:</b> ${vis.allInfoMap[d.name]["Website Link"]}
+                        </p>
+                        <img src = "${vis.picMap[d.name]}" style="position: absolute; top: 10px; left:10px; ">
                      </div>`);
+
+                vis.tooltip
+                    .style("left", (event.pageX - $("#groupTooltip").width()/2) + "px")
+                    .style("top", (event.pageY - $("#groupTooltip").height() - 2*vis.circleRadius) + "px")
+
             })
             .on('mouseout', function(event, d){
                 d3.select(this)
@@ -314,8 +334,16 @@ class groupDotsVis {
         // I believe this controls movement
         function ticked() {
             circles
-                .attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; });
+                .attr("cx", function(d) {
+                    //
+                    return Math.max(vis.circleRadius, Math.min(vis.width - vis.circleRadius, d.x));
+                })
+                .attr("cy", function(d) {
+                    //
+                    return Math.max(vis.circleRadius, Math.min(vis.height - vis.circleRadius, d.y));
+                });
+                //.attr("cx", function(d) { return d.x; })
+                //.attr("cy", function(d) { return d.y; });
         }
 
         vis.simulation.nodes(vis.data.nodes).on("tick", ticked);
