@@ -97,3 +97,32 @@ function groupFacultyDotsSelector() {
     myFacultyDotsVis.wrangleData();
 
 }
+
+// for the network visualization
+// from https://stackoverflow.com/questions/9895082/javascript-populate-drop-down-list-with-array
+var select = document.getElementById("network-selector");
+var options = nodeData.nodes.map(d=>d.name)
+var ids = nodeData.nodes.map(d=>d.id)
+
+for(var i = 0; i < options.length; i++) {
+    var opt = options[i];
+    var id = ids[i]
+    var el = document.createElement("option");
+    el.textContent = opt;
+    el.value = id;
+    select.appendChild(el);
+}
+
+function networkTableSelector() {
+    selectedFacultyNetworkViz = $("#network-selector").val();
+    $(".table").empty();
+    myNetworkVis.updateVis()
+    if (selectedFacultyNetworkViz>0) {
+        let tableData = nodeData.nodes.find(x => x.id == selectedFacultyNetworkViz);
+        $("#network-title").text(tableData.primaryTitle);
+        $("#network-research-interests").text(tableData.researchInterests);
+        $("#network-teaching-areas").text(tableData.teachingArea);
+        $("#network-location").text(tableData.location)
+        $('#network-pic').prepend('<img src='+tableData.image +'/>')
+    }
+}

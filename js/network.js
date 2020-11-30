@@ -5,8 +5,6 @@ class NetworkGraph {
         this.initVis();
     }
 
-    // TODO - add faculty pictures to nodes?
-    // TODO - interactivity with network graph
     initVis() {
 
         let vis = this;
@@ -22,20 +20,6 @@ class NetworkGraph {
             .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
             .append("g")
             .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")")
-
-        vis.defs = vis.svg.append("defs");
-
-        // vis.defs
-        //     .data(vis.data.nodes)
-        //     .enter()
-        //     .append('pattern')
-        //     .attr("id", d=>"image"+ d.id )
-        //     .attr("width", 1)
-        //     .attr("height", 1)
-        //     .append("image")
-        //     .attr("href", d=> d.image)
-        //     .attr("width", 100)
-        //     .attr("height", 150);
 
         // Most code adapted from
         // https://www.d3-graph-gallery.com/graph/network_basic.html
@@ -59,13 +43,14 @@ class NetworkGraph {
             .append("line")
             .attr("class", "network-line")
             .style("stroke", d=>
-            {if(d.type == "news") {return "blue"}
-            else if(d.type=="research") {return "red"}
-            else if(d.type=="center") {return "purple"}
-            else if(d.type=="initiative") {return "orange"}
-            else if(d.type=="school") {return "grey"}
-            else {return "yellow"};
+            {if(d.type == "news") {return "#1b9e77"}
+            else if(d.type=="research") {return "#d95f02"}
+            else if(d.type=="center") {return "#7570b3"}
+            else if(d.type=="initiative") {return "#e7298a"}
+            else if(d.type=="school") {return "#66a61e"}
+            else {return "#e6ab02"};
             })
+            .attr("stroke-width", 2);
 
         // Initialize nodes
         vis.node = vis.svg
@@ -74,8 +59,8 @@ class NetworkGraph {
             .enter()
             .append("circle")
             .attr("class", "network-node")
+            .attr("id", d => "node"+d.id)
             .attr("r", 5)
-            .on('click', connectedNodes);
 
         vis.node.append("title")
             .text(d => d.name);
@@ -93,40 +78,41 @@ class NetworkGraph {
 
         }
 
+    }
+    updateVis() {
+        let vis = this;
+
         // from http://coppelia.io/2014/07/an-a-to-z-of-extra-features-for-the-d3-force-layout/
-        //Toggle stores whether the highlighting is on
-        var toggle = 0;
-        //Create an array logging what is connected to what
-        var linkedByIndex = {};
-        var i;
-        for (i = 0; i < vis.data.nodes.length; i++) {
-            linkedByIndex[i + "," + i] = 1;
-        };
-        vis.data.links.forEach(function (d) {
-            linkedByIndex[d.source.index + "," + d.target.index] = 1;
-        });
-        //This function looks up whether a pair are neighbours
-        function neighboring(a, b) {
-            return linkedByIndex[a.index + "," + b.index];
+
+        if(selectedFacultyNetworkViz==0) {
+            vis.node.style("opacity", 1);
+            vis.link.style("opacity", 1);
         }
-        function connectedNodes() {
-            if (toggle == 0) {
-                //Reduce the opacity of all but the neighbouring nodes
-                let d = d3.select(this).node().__data__;
-                vis.node.style("opacity", function (o) {
-                    return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
-                });
-                vis.link.style("opacity", function (o) {
-                    return d.index==o.source.index | d.index==o.target.index ? 1 : 0.1;
-                });
-                //Reduce the op
-                toggle = 1;
-            } else {
-                //Put them back to opacity=1
-                vis.node.style("opacity", 1);
-                vis.link.style("opacity", 1);
-                toggle = 0;
+        else {
+            //Create an array logging what is connected to what
+            var linkedByIndex = {};
+            var i;
+            for (i = 0; i < vis.data.nodes.length; i++) {
+                linkedByIndex[i + "," + i] = 1;
+            };
+            vis.data.links.forEach(function (d) {
+                linkedByIndex[d.source.index + "," + d.target.index] = 1;
+            });
+            //This function looks up whether a pair are neighbours
+            function neighboring(a, b) {
+                return linkedByIndex[a.index + "," + b.index];
             }
+
+            //Reduce the opacity of all but the neighbouring nodes
+            let d = d3.select("#node"+selectedFacultyNetworkViz).node().__data__;
+            vis.node.style("opacity", function (o) {
+                return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
+            });
+
+            vis.link.style("opacity", function (o) {
+                return d.index==o.source.index | d.index==o.target.index ? 1 : 0.1;
+            });
         }
+
     }
   }
