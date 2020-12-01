@@ -19,7 +19,7 @@ class NetworkGraph {
             .attr("width", vis.width + vis.margin.left + vis.margin.right)
             .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
             .append("g")
-            .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")")
+            .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
         // Most code adapted from
         // https://www.d3-graph-gallery.com/graph/network_basic.html
@@ -95,6 +95,8 @@ class NetworkGraph {
         }
         function connectedNodes() {
             let d = d3.select(this).node().__data__;
+            vis.node.attr("fill", "black");
+            d3.select(this).attr("fill","brown");
                 //Reduce the opacity of all but the neighbouring nodes
                 vis.node.style("opacity", function (o) {
                     return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
@@ -103,6 +105,7 @@ class NetworkGraph {
                     return d.index==o.source.index | d.index==o.target.index ? 1 : 0.1;
                 });
             networkTableSelector(d);
+            myNetworkBarVis.wrangleData();
         }
 
         function networkTableSelector(d) {
@@ -110,6 +113,10 @@ class NetworkGraph {
             selectedFacultyNetworkViz = $("#network-selector").val();
             $(".table").empty();
             if (selectedFacultyNetworkViz>0) {
+                $("#network-table").append('<table style="width:100%"> <tr> <td>Title</td> <td id="network-title" class="table" ></td> </tr>'+
+                    '<tr> <td>Research Interests</td><td id="network-research-interests" class="table" ></td> </tr>'+
+                    '<tr><td>Teaching Areas</td> <td id="network-teaching-areas" class="table" ></td> </tr>'+
+                    '<tr><td>Location</td><td id="network-location" class="table" ></td></tr> </table>');
                 $("#network-title").text(d.primaryTitle);
                 $("#network-research-interests").text(d.researchInterests);
                 $("#network-teaching-areas").text(d.teachingArea);
@@ -125,9 +132,12 @@ class NetworkGraph {
     updateVis() {
         let vis = this;
 
+        myNetworkBarVis.wrangleData();
+
         // from http://coppelia.io/2014/07/an-a-to-z-of-extra-features-for-the-d3-force-layout/
 
         if(selectedFacultyNetworkViz==0) {
+            vis.node.attr("fill", "black");
             vis.node.style("opacity", 1);
             vis.link.style("opacity", 1);
         }
@@ -148,6 +158,8 @@ class NetworkGraph {
 
             //Reduce the opacity of all but the neighbouring nodes
             let d = d3.select("#node"+selectedFacultyNetworkViz).node().__data__;
+            vis.node.attr("fill", "black");
+            d3.select("#node"+selectedFacultyNetworkViz).attr("fill","brown");
             vis.node.style("opacity", function (o) {
                 return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
             });

@@ -2630,7 +2630,7 @@ nodeData = {
         {"source": 1667, "target": 1715, "weight": "Robotics at Harvard", "type":"center"},
         {"source": 1667, "target": 22051, "weight": "Robotics at Harvard", "type":"center"},
         {"source": 1715, "target": 22051, "weight": "Robotics at Harvard", "type":"center"},
-        {"source": 1544, "target": 1556, "weight": "Science and Cooking", "type":"class"},
+        {"source": 1544, "target": 1556, "weight": "Science and Cooking", "type":"course"},
         {"source": 1536, "target": 1558, "weight": "The Center for Brains, Minds and Machines", "type":"center"},
         {"source": 1519, "target": 1713, "weight": "The EconCS Group", "type":"center"},
         {"source": 1519, "target": 1727, "weight": "The EconCS Group", "type":"center"},

@@ -38,6 +38,7 @@ function initMainPage(dataArray) {
 
     // initialize the visualizations here
     myNetworkVis = new NetworkGraph("network-graph", nodeData);
+    myNetworkBarVis = new NetworkBarGraph("network-counts", nodeData.links);
 
 
     myWordBarVis = new wordBarVis("word-frequency-chart");
@@ -117,8 +118,12 @@ for(var i = 0; i < options.length; i++) {
 function networkTableSelector() {
     selectedFacultyNetworkViz = $("#network-selector").val();
     $(".table").empty();
-    myNetworkVis.updateVis()
+    myNetworkVis.updateVis();
     if (selectedFacultyNetworkViz>0) {
+        $("#network-table").append('<table style="width:100%"> <tr> <td>Title</td> <td id="network-title" class="table" ></td> </tr>'+
+            '<tr> <td>Research Interests</td><td id="network-research-interests" class="table" ></td> </tr>'+
+            '<tr><td>Teaching Areas</td> <td id="network-teaching-areas" class="table" ></td> </tr>'+
+            '<tr><td>Location</td><td id="network-location" class="table" ></td></tr> </table>');
         let tableData = nodeData.nodes.find(x => x.id == selectedFacultyNetworkViz);
         $("#network-title").text(tableData.primaryTitle);
         $("#network-research-interests").text(tableData.researchInterests);
