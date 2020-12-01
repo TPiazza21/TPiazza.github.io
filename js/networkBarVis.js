@@ -135,7 +135,7 @@ class NetworkBarGraph {
         vis.texts.exit().remove();
 
         // Call axis function with the new domain
-        vis.svg.select(".y-axis").call(vis.yAxis);
+        vis.svg.select(".y-axis").call(vis.yAxis).call(g => g.select(".domain").remove());;
 
     }
 }
