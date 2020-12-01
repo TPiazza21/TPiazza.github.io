@@ -61,6 +61,7 @@ class NetworkGraph {
             .attr("class", "network-node")
             .attr("id", d => "node"+d.id)
             .attr("r", 5)
+            .on("click", connectedNodes);
 
         vis.node.append("title")
             .text(d => d.name);
@@ -76,6 +77,48 @@ class NetworkGraph {
             vis.node
                 .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
+        }
+
+        //Toggle stores whether the highlighting is on
+        //Create an array logging what is connected to what
+        var linkedByIndex = {};
+        var i;
+        for (i = 0; i < vis.data.nodes.length; i++) {
+            linkedByIndex[i + "," + i] = 1;
+        };
+        vis.data.links.forEach(function (d) {
+            linkedByIndex[d.source.index + "," + d.target.index] = 1;
+        });
+        //This function looks up whether a pair are neighbours
+        function neighboring(a, b) {
+            return linkedByIndex[a.index + "," + b.index];
+        }
+        function connectedNodes() {
+            let d = d3.select(this).node().__data__;
+                //Reduce the opacity of all but the neighbouring nodes
+                vis.node.style("opacity", function (o) {
+                    return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
+                });
+                vis.link.style("opacity", function (o) {
+                    return d.index==o.source.index | d.index==o.target.index ? 1 : 0.1;
+                });
+            networkTableSelector(d);
+        }
+
+        function networkTableSelector(d) {
+            $("#network-selector").val(d.id);
+            selectedFacultyNetworkViz = $("#network-selector").val();
+            $(".table").empty();
+            if (selectedFacultyNetworkViz>0) {
+                $("#network-title").text(d.primaryTitle);
+                $("#network-research-interests").text(d.researchInterests);
+                $("#network-teaching-areas").text(d.teachingArea);
+                $("#network-location").text(d.location)
+                $('#network-pic').prepend('<a href="http://seasdrupalstg.prod.acquia-sites.com/node/'
+                    +selectedFacultyNetworkViz.toString()+'" target="_blank">'+
+                    '<img src='+d.image +' title="Click for more information" width=200 height=300/>' +
+                    '</a>')
+            }
         }
 
     }

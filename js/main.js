@@ -3,6 +3,7 @@ let wordBarSubTitle = "";
 let wordBarColor = ""; // send over the color of the selected box
 let selectedFacultyAdjFilter = "";
 let selectedFacultyTableFilter = "";
+let selectedFacultyNetworkViz=0;
 
 // load data using promises
 let promises = [
