@@ -105,6 +105,8 @@ class NetworkBarGraph {
             .attr("class", "bar")
             .attr("height", vis.y.bandwidth())
             .attr("y", d=> vis.y(d.type))
+            .on("mouseover", (d,i) => myNetworkVis.barMouseOver(i.type))
+            .on("mouseout", myNetworkVis.barMouseOut)
             // // Enter and Update (set the dynamic properties of the elements)
             .transition()
             .duration(1000)

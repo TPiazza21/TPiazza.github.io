@@ -46,8 +46,7 @@ class NetworkGraph {
             {if(d.type == "news") {return "#1b9e77"}
             else if(d.type=="research") {return "#d95f02"}
             else if(d.type=="center") {return "#7570b3"}
-            else if(d.type=="initiative") {return "#e7298a"}
-            else if(d.type=="school") {return "#66a61e"}
+            else if(d.type=="school") {return "#e7298a"}
             else {return "#e6ab02"};
             })
             .attr("stroke-width", 2);
@@ -169,5 +168,55 @@ class NetworkGraph {
             });
         }
 
+    }
+
+    barMouseOver(type) {
+        let vis = this;
+        if(selectedFacultyNetworkViz>0) {
+            let d = d3.select("#node"+selectedFacultyNetworkViz).node().__data__;
+            vis.link.style("opacity", function (o) {
+                return (d.index==o.source.index | d.index==o.target.index) && o.type==type ? 1 : 0.1;
+            });
+        }
+        else {
+            vis.link.style("opacity", function(o) {
+                return o.type == type ? 1: 0.1;
+            })
+        }
+    }
+
+    barMouseOut() {
+        let vis = this;
+        console.log(selectedFacultyNetworkViz);
+        if (selectedFacultyNetworkViz==0) {
+            vis.link.style("opacity", 1);
+        }
+        else {
+            //Create an array logging what is connected to what
+            var linkedByIndex = {};
+            var i;
+            for (i = 0; i < vis.data.nodes.length; i++) {
+                linkedByIndex[i + "," + i] = 1;
+            };
+            vis.data.links.forEach(function (d) {
+                linkedByIndex[d.source.index + "," + d.target.index] = 1;
+            });
+            //This function looks up whether a pair are neighbours
+            function neighboring(a, b) {
+                return linkedByIndex[a.index + "," + b.index];
+            }
+
+            //Reduce the opacity of all but the neighbouring nodes
+            let d = d3.select("#node"+selectedFacultyNetworkViz).node().__data__;
+            vis.node.attr("fill", "black");
+            d3.select("#node"+selectedFacultyNetworkViz).attr("fill","brown");
+            vis.node.style("opacity", function (o) {
+                return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
+            });
+
+            vis.link.style("opacity", function (o) {
+                return d.index==o.source.index | d.index==o.target.index ? 1 : 0.1;
+            });
+        }
     }
   }
