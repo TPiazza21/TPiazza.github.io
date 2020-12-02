@@ -15,6 +15,11 @@
 	<!--required stylesheet for plugin-->
 	<link rel="stylesheet" href="css/fullview.css">
 
+	<!--leaflet stylesheet-->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+		  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+		  crossorigin=""/>
+
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
@@ -325,17 +330,46 @@
 					</div>
 					<div id="network-graph" class="row justify-content-center"></div>
 				</div>
-					<div id='network-summary' class="col-6">
-						<select id="network-selector" onchange="networkTableSelector()">
-							<option value=0>All Faculty</option>
-						</select>
-						<div class="row">
-							<div id="network-pic" class="table col"></div>
-							<div id="network-table" class="table col"></div>
-						</div>
-
-						<div id="network-counts" style="height:200px"></div>
+				<div id='network-summary' class="col-6">
+					<select id="network-selector" onchange="networkTableSelector()">
+						<option value=0>All Faculty</option>
+					</select>
+					<div class="row">
+						<div id="network-pic" class="table col"></div>
+						<div id="network-table" class="table col"></div>
 					</div>
+
+					<div id="network-counts" style="height:200px"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="map-blurb" class="section row blurb-row">
+		<div class="container-fluid center-blurb">
+			<div class="row justify-content-center">
+				<div class="col-xs-10 align-self-center">
+					<p style="font-size: 24px; color: white;">Find your professor on the map!</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="section-7" class="section row">
+		<div class="container-fluid">
+			<div class="row justify content center">
+				<div class="col">
+					<form id="map-form" autocomplete="off">
+					<!--Make sure the form has the autocomplete function switched off:-->
+						<div class="autocomplete" style="width:300px;">
+							<input id="myInput" type="text" name="search" placeholder="Faculty">
+						</div>
+						<input type="submit" onclick="zoomMap()">
+					</form>
+				</div>
+				<div class="col">
+					<div id="faculty-map" style="height:500px"></div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -363,6 +397,11 @@
 	<!-- d3 -->
 	<script src="https://d3js.org/d3.v6.min.js"></script>
 
+	<!-- leaflet -->
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+			integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+			crossorigin=""></script>
+
 	<script src="js/wordBarVis.js"></script>
 	<script src="js/adjMatrixVis.js"></script>
 	<script src="js/manyTableVis.js"></script>
@@ -371,6 +410,7 @@
 	<script src="js/nodeData.js"></script>
 	<script src="js/network.js"></script>
 	<script src="js/networkBarVis.js"></script>
+	<script src="js/mapVis.js"></script>
 	<!-- Main file (put visualization classes above this) -->
 	<script src="js/main.js"></script>
 </body>
