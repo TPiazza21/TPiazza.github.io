@@ -1,7 +1,8 @@
 class NetworkGraph {
-    constructor(parentElement, data) {
+    constructor(parentElement, data, allInfoMap) {
         this.parentElement = parentElement;
         this.data = data;
+        this.allInfoMap = allInfoMap;
         this.initVis();
     }
 
@@ -29,9 +30,9 @@ class NetworkGraph {
                 .id(function(d) { return d.id; })                     // This provide  the id of a node
                 .links(vis.data.links)                                    // and this the list of links
             )
-            .force("forceX", d3.forceX().strength(.1).x(vis.width/2))
-            .force("forceY", d3.forceY().strength(.1).y(vis.height/2))
-            .force("charge", d3.forceManyBody().strength(-40))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+            .force("forceX", d3.forceX().strength(.4).x(vis.width/2))
+            .force("forceY", d3.forceY().strength(.4).y(vis.height/2))
+            .force("charge", d3.forceManyBody().strength(-300))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
             .force("center", d3.forceCenter(vis.width / 2, vis.height / 2))     // This force attracts nodes to the center of the svg area
             .on("end", ticked);
 
@@ -47,7 +48,7 @@ class NetworkGraph {
             else if(d.type=="research") {return "#d95f02"}
             else if(d.type=="center") {return "#7570b3"}
             else if(d.type=="school") {return "#e7298a"}
-            else {return "#e6ab02"};
+            else {return "#082ed0"};
             })
             .attr("stroke-width", 2);
 
@@ -60,11 +61,52 @@ class NetworkGraph {
             .attr("class", "network-node")
             .attr("id", d => "node"+d.id)
             .attr("r", 5)
-            .on("click", connectedNodes);
+            .on("click", connectedNodes)
+            .on('mouseover', function(event, d){
+                // highlight this circle
+                d3.select(this)
+                    .attr('r', 7);
 
-        vis.node.append("title")
-            .text(d => d.name);
+                // update tooltip
+                vis.tooltip
+                    .style("opacity", 1)
+                    .style("left", (d3.select(this).attr("cx")-100) + "px")
+                    .style("top",  (d3.select(this).attr("cy")-60) + "px")
+                    .html(`
+                     <div style="border: thin solid grey; border-radius: 5px; background: lightgrey; padding: 2px">
+                        
+                        <h6 style="text-align: center">${d.name}</h6>
+                        <p>
+                         <b>Click my node for more information!</b>
+                         <br>
+                        <b>Teaching Area:</b> ${vis.allInfoMap[d.name]["Teaching Areas"]} 
+                        <br>
+                        <b>Office Location:</b> ${vis.allInfoMap[d.name]["Office"]}
+                        <br>
+                        <b>Email:</b> ${vis.allInfoMap[d.name]["Email"]}
+                        <br>
+                        <b>Phone:</b> ${vis.allInfoMap[d.name]["Phone"]}
+                        </p>
+                     </div>`);
 
+            })
+            .on('mouseout', function(event, d){
+                d3.select(this)
+                    .attr('r', 5);
+
+                vis.tooltip
+                    .style("opacity", 0)
+                    .style("left", 0)
+                    .style("top", 0)
+                    .html(``);
+
+            });
+
+        // tooltip
+        vis.tooltip = d3.select("body").append('div')
+            .attr('class', "tooltip")
+            .attr('id', 'networkTooltip')
+            .attr("opacity", 0.0);
 
         function ticked() {
             vis.link
@@ -72,9 +114,9 @@ class NetworkGraph {
                 .attr("y1", function(d) { return d.source.y; })
                 .attr("x2", function(d) { return d.target.x; })
                 .attr("y2", function(d) { return d.target.y; });
-
             vis.node
-                .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+                .attr("cx", function (d) { return d.x; })
+                .attr("cy", function(d) { return d.y; });
 
         }
 
@@ -122,7 +164,7 @@ class NetworkGraph {
                 $("#network-location").text(d.location)
                 $('#network-pic').prepend('<a href="http://seasdrupalstg.prod.acquia-sites.com/node/'
                     +selectedFacultyNetworkViz.toString()+'" target="_blank">'+
-                    '<img src='+d.image +' title="Click for more information" width=200 height=300/>' +
+                    '<img src='+d.image +' title="Click to go to my card" width=200 height=300/>' +
                     '</a>')
             }
         }
@@ -185,38 +227,4 @@ class NetworkGraph {
         }
     }
 
-    barMouseOut() {
-        let vis = this;
-        console.log(selectedFacultyNetworkViz);
-        if (selectedFacultyNetworkViz==0) {
-            vis.link.style("opacity", 1);
-        }
-        else {
-            //Create an array logging what is connected to what
-            var linkedByIndex = {};
-            var i;
-            for (i = 0; i < vis.data.nodes.length; i++) {
-                linkedByIndex[i + "," + i] = 1;
-            };
-            vis.data.links.forEach(function (d) {
-                linkedByIndex[d.source.index + "," + d.target.index] = 1;
-            });
-            //This function looks up whether a pair are neighbours
-            function neighboring(a, b) {
-                return linkedByIndex[a.index + "," + b.index];
-            }
-
-            //Reduce the opacity of all but the neighbouring nodes
-            let d = d3.select("#node"+selectedFacultyNetworkViz).node().__data__;
-            vis.node.attr("fill", "black");
-            d3.select("#node"+selectedFacultyNetworkViz).attr("fill","brown");
-            vis.node.style("opacity", function (o) {
-                return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
-            });
-
-            vis.link.style("opacity", function (o) {
-                return d.index==o.source.index | d.index==o.target.index ? 1 : 0.1;
-            });
-        }
-    }
   }

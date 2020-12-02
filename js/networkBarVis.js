@@ -106,11 +106,23 @@ class NetworkBarGraph {
             .attr("height", vis.y.bandwidth())
             .attr("y", d=> vis.y(d.type))
             .on("mouseover", (d,i) => myNetworkVis.barMouseOver(i.type))
-            .on("mouseout", myNetworkVis.barMouseOut)
+            .on("mouseout", function() {
+                if (selectedFacultyNetworkViz==0) {
+                    myNetworkVis.link.style("opacity", 1);
+                }
+                else {
+                    //Reduce the opacity of all but the neighbouring nodes
+                    let d = d3.select("#node"+selectedFacultyNetworkViz).node().__data__;
+
+                    myNetworkVis.link.style("opacity", function (o) {
+                        return d.index==o.source.index | d.index==o.target.index ? 1 : 0.1;
+                    });
+                }
+            })
             // // Enter and Update (set the dynamic properties of the elements)
             .transition()
             .duration(1000)
-            .attr("width", d=> vis.x(d.qty))
+            .attr("width", d=> vis.x(d.qty));
 
         // Exit
         vis.bar.exit().remove();

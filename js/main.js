@@ -37,16 +37,14 @@ function initMainPage(dataArray) {
     let centers = dataArray[7];
 
     // initialize the visualizations here
-    myNetworkVis = new NetworkGraph("network-graph", nodeData);
-    myNetworkBarVis = new NetworkBarGraph("network-counts", nodeData.links);
-
-    myMapVis = new MapVis("faculty-map", nodeData.nodes, latestPeopleData, [42.378784,-71.116824])
-
     myWordBarVis = new wordBarVis("word-frequency-chart");
     myFacultyAdjVis = new adjMatrixVis("faculty-adj-matrix", peopleData, perPaperVals, latestPeopleData);
     myFacultyManyTableVis = new manyTableVis("faculty-interest-table", peopleData, coursesData, latestPeopleData);
     myFacultyDotsVis = new groupDotsVis("faculty-dots", peopleData, coursesData, latestPeopleData, nodeData);
     myRelationshipVis = new RelationshipVis("relationshipDiv", latestPeopleData, centers);
+    myNetworkVis = new NetworkGraph("network-graph", nodeData, myFacultyDotsVis.allInfoMap);
+    myNetworkBarVis = new NetworkBarGraph("network-counts", nodeData.links);
+    myMapVis = new MapVis("faculty-map", nodeData.nodes, latestPeopleData, [42.378784,-71.116824])
 }
 
 // handle buttons, sorting, selecting etc. down here
@@ -240,6 +238,7 @@ function autocomplete(inp, arr) {
     });
 }
 
+/*get array of faculty names for autocomplete*/
 var faculty = nodeData.nodes.map(d=>d.name)
 
 /*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/

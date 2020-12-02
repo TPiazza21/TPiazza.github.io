@@ -72,7 +72,7 @@ section {
 }
 
 #network-graph {
-	height: 500px;
+	height: 700px;
 }
 
 #word-frequency-chart {
@@ -96,11 +96,11 @@ section {
 	padding: 0px;
 }
 
-#groupTooltip {
+#groupTooltip, #networkTooltip {
 	width: 400px;
 }
 
-#groupTooltip p {
+#groupTooltip p, #networkTooltip p {
 	font-size: 11px;
 	padding: 0px;
 }
