@@ -110,6 +110,12 @@ section {
 	height: 45px;
 }
 
+#faculty-dots .label-circle-text {
+	font-size: 10px;
+}
+
+
+
 #relationship-section {
 	margin-top: 5px;
 	margin-bottom: 5px;
@@ -154,23 +160,27 @@ rect {
 }
 
 #faculty-adj-matrix .matrix-column-labels {
-	font-size: 12px;
+	font-size: 9px;
 }
 
 #faculty-adj-matrix .matrix-row-labels {
-	font-size: 12px;
+	font-size: 9px;
 }
 
 #word-frequency-chart .axis-label {
-	font-size: 11px;
+	font-size: 12px;
 }
 
 #word-frequency-chart .bar-title {
 	font-size: 13px;
 }
 
-#word-frequency-chart .subtitle {
-	font-size: 10px;
+#word-frequency-chart .subtitle-top {
+	font-size: 11px;
+}
+
+#word-frequency-chart .subtitle-bottom {
+	font-size: 9px;
 }
 
 #faculty-interest-table .matrix-row-labels {

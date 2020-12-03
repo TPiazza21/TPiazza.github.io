@@ -1,5 +1,6 @@
 let wordBarLongString = ""; // this will be modified with words, if we do new things with the bar graph
-let wordBarSubTitle = "";
+let wordBarSubTitleTop = "";
+let wordBarSubTitleBottom = "";
 let wordBarColor = ""; // send over the color of the selected box
 let selectedFacultyAdjFilter = "";
 let selectedFacultyTableFilter = "";

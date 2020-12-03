@@ -13,7 +13,7 @@ class wordBarVis {
     initVis(){
         let vis = this;
 
-        vis.margin = {top: 40, right: 45, bottom: 80, left: 60};
+        vis.margin = {top: 60, right: 45, bottom: 80, left: 60};
         vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
 
@@ -29,16 +29,23 @@ class wordBarVis {
             .attr('class', 'title bar-title')
             .append('text')
             .text('Most Popular Words')
-            .attr('transform', `translate(${vis.width / 2}, -20)`)
+            .attr('transform', `translate(${vis.width / 2}, -45)`)
             .attr('text-anchor', 'middle')
             .attr("font-size", 14);
 
         // add title
-        vis.subTitle = vis.svg.append('g')
-            .attr('class', 'subtitle')
+        vis.subTitleTop = vis.svg.append('g')
+            .attr('class', 'subtitle subtitle-top')
             .append('text')
-            .text('Papers from John Harvard')
-            .attr('transform', `translate(${vis.width / 2}, -10)`)
+            .text('All 11 Papers')
+            .attr('transform', `translate(${vis.width / 2}, -25)`)
+            .attr('text-anchor', 'middle');
+
+        vis.subTitleBottom = vis.svg.append('g')
+            .attr('class', 'subtitle subtitle-bottom')
+            .append('text')
+            .text('From John Harvard and Sally Yale')
+            .attr('transform', `translate(${vis.width / 2}, -12)`)
             .attr('text-anchor', 'middle');
 
         // Scales
@@ -174,7 +181,8 @@ class wordBarVis {
             .duration(750)
             .call(vis.yAxis);
 
-        vis.subTitle.text(wordBarSubTitle);
+        vis.subTitleTop.text(wordBarSubTitleTop);
+        vis.subTitleBottom.text(wordBarSubTitleBottom);
 
     }
 }

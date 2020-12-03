@@ -232,7 +232,7 @@ class manyTableVis {
         if (vis.displayFaculty.length == vis.allFaculty.length) {
             //tempScaleShift = vis.cellScalar * d3.min([((vis.width) / vis.displayFaculty.length), ((vis.height) / vis.displayResearchInterests.length)]);
         }
-        vis.cellWidth = d3.max([tempScaleShift,5]); // can I just increase the max?
+        vis.cellWidth = d3.max([tempScaleShift,4]); // can I just increase the max?
         vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
 
     }
