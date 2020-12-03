@@ -16,7 +16,7 @@ class adjMatrixVis {
     initVis(){
         let vis = this;
 
-        vis.margin = {top: 40, right: 5, bottom: 5, left: 20};
+        vis.margin = {top: 40, right: 5, bottom: 5, left: 45};
         vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
 
@@ -274,7 +274,8 @@ class adjMatrixVis {
         vis.allRelatedPapers = allRelatedPapers;
 
         if (vis.displayFaculty.length == vis.allFaculty.length) {
-            vis.yShift = -30;
+            vis.yShift = -40;
+            vis.xShift = 90;
             //vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift]) + 50]);
             //vis.cellScale.paddingInner(0.001);
             // idea is to get it bigger, and plot it bigger
@@ -541,11 +542,13 @@ class adjMatrixVis {
         wordBarLongString = sendString;
 
         if (d.name1 == d.name2) {
-            wordBarSubTitle = "" + vis.facultyPapersDict[d.name1][d.name2].length + " Papers by " + d.name1;
+            wordBarSubTitleTop = "" + vis.facultyPapersDict[d.name1][d.name2].length + " Papers by ";
+            wordBarSubTitleBottom = d.name1;
             wordBarColor = vis.oneAuthorColorScale(d.valueLen);
         }
         else {
-            wordBarSubTitle = "" + vis.facultyPapersDict[d.name1][d.name2].length + " Papers coathored by " + d.name1 + " and " + d.name2;
+            wordBarSubTitleTop = "" + vis.facultyPapersDict[d.name1][d.name2].length + " Papers coathored by ";
+            wordBarSubTitleBottom = d.name1 + " and " + d.name2;
             wordBarColor = vis.coauthorColorScale(d.valueLen);
         }
 
@@ -564,14 +567,18 @@ class adjMatrixVis {
         sendString = coolStrings.join(" "); // one big mess of words. Ok, sure, let them parse it
         wordBarLongString = sendString;
         if (selectedFacultyAdjFilter != "All") {
-            wordBarSubTitle = "All " + vis.allRelatedPapers.length + " papers from " + selectedFacultyAdjFilter;
+            wordBarSubTitleTop = "All " + vis.allRelatedPapers.length + " papers from ";
+            wordBarSubTitleBottom = selectedFacultyAdjFilter;
+
         }
         else {
-            wordBarSubTitle = "All " + vis.allRelatedPapers.length + " papers";
+            wordBarSubTitleTop = "All " + vis.allRelatedPapers.length + " papers from";
+            wordBarSubTitleBottom = "all faculty";
         }
 
         if (sendString == "") {
-            wordBarSubTitle = "Uh oh! We couldn't scrape any papers from " + selectedFacultyAdjFilter;
+            wordBarSubTitleTop = "Uh oh! We couldn't scrape any papers from ";
+            wordBarSubTitleBottom = selectedFacultyAdjFilter;
         }
 
         wordBarColor = "purple"; // the generic option
