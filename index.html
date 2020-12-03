@@ -4,46 +4,49 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>Harvard Faculty Connections</title>
+	<title>Harvard Engineering School: Faculty Connections</title>
 
 	<!--including bootstrap for demo purposes only-->
 	<link rel="stylesheet" href="css/bootstrap.css">
 
 	<!--styles needed for demo-->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-	<link rel="stylesheet" href="css/styles.css">
 
 	<!--required stylesheet for plugin-->
-	<link rel="stylesheet" href="css/jq-vertical-dot-navigation.css">
+	<link rel="stylesheet" href="css/fullview.css">
 
+	<!--leaflet stylesheet-->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+		  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+		  crossorigin=""/>
+
+	<!-- bootstrap -->
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
-	<script src="js/libraries/jquery.min.js"></script>
-	<script src="js/libraries/jq-vertical-dot-nav.js"></script>
-	<script>
-		$(document).ready(function(){
-			$('section').verticalDotNav({
-				align : "right"
-			});
-		})
-	</script>
+	<!-- fullview -->
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"  crossorigin="anonymous"></script>
+	<script src="js/libraries/fullview.js"></script>
+
+	<!-- Our style sheet -->
+	<link rel="stylesheet" href="css/styles.css">
 
 	<!-- GOOGLE FONTS -->
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,400italic,300italic' rel='stylesheet' type='text/css'>
 </head>
 <body>
 
-	<section id="section-1" class="row">
+<div id="fullview">
+	<div id="section-1" class="section row">
 		<div class="col-xs-10 col-xs-offset-1">
-			<h1>Harvard Faculty Connections</h1>
-			<h3>Explore the connections between Harvard faculty!</h3>
+			<h1>Harvard Engineering School: Faculty Connections</h1>
+			<h3>A tool for prospective students, industry, and academic collaborators</h3>
 			<div id="bannerimage"></div>
 		</div>
-	</section>
+	</div>
 
-	<section id="section-faculty-dots-blurb" class="row blurb-row">
+	<div id="section-faculty-dots-blurb" class="section row blurb-row">
 		<div class="container-fluid center-blurb">
 			<div class="row justify-content-center" >
 				<div class="col-xs-10 align-self-center">
@@ -55,25 +58,60 @@
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
 
-	<section id="section-faculty-dots" class="row">
-		<div class="container-fluid">
-			<div class="row justify-content-center">
-				<div class="align-self-center">
-					<h1>How can we group the SEAS faculty?</h1>
-					<select  id='faculty-dots-group-selector' class="custom-select align-self-center" style="width: 20%" onchange="groupFacultyDotsSelector()">
-						<option value="teachingAreas">Teaching Area</option>
-						<option value="officeBuilding">Office Location</option>
-						<!-- There may be other interesting ideas... -->
-					</select>
-					<div id="faculty-dots"></div>
+	<div id="section-faculty-dots" class="section row">
+		<!-- WRAPPER -->
+		<div class="container-fluid" style="height: 100vh; padding-top: 1vh">
+			<div class="row">
+				<div class="col-10 offset-1">
+
+					<!-- HEADING -->
+					<div class="row d-flex justify-content-center" style="height: 10vh; padding: 0;">
+						<div class="align-self-center">
+							<h1>How can we group the SEAS faculty?</h1>
+						</div>
+					</div>
+					<!-- CONTENT -->
+					<div class="row" style="height: 80vh; padding: 0;">
+
+						<div class="col-12">
+							<div class="row" style="height: 10vh; padding-left: 0vh; padding-bottom: 1vh; padding-right: 1vh; padding-top: 1vh">
+								<div class="col">
+									<div class="row" style="height: 100%">
+										<div class="col-8">
+											<div class="row justify-content-center" style="height: 100%">
+												<!-- the select-->
+												<select  id='faculty-dots-group-selector' class="custom-select align-self-center" style="width: 50%" onchange="groupFacultyDotsSelector()">
+													<option value="teachingAreas">Teaching Area</option>
+													<option value="officeBuilding">Office Location</option>
+
+												</select>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+							<div class="row justify-content-center" style="height: 80vh; padding-left: 0vh; padding-bottom: 1vh; padding-right: 1vh; padding-top: 0vh">
+								<div class="align-self-center" style="height: 100%; width:100%;">
+									<div class="row justify-content-center" style="height: 100%; width: 100%">
+										<div id="faculty-dots" style="height: 100%; width:95%;">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
 				</div>
 			</div>
-		</div>
-	</section>
 
-	<section id="section-faculty-interest-table-blurb" class="row blurb-row">
+		</div>
+
+	</div>
+
+	<div id="section-faculty-interest-table-blurb" class="section row blurb-row">
 		<div class="container-fluid center-blurb">
 			<div class="row justify-content-center">
 				<div class="col-xs-10 align-self-center">
@@ -85,33 +123,76 @@
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
 
-	<section id="section-faculty-interest-table" class="row">
-		<div class="container-fluid">
-			<div class="row justify-content-center">
-				<div class="align-self-center">
-					<h1>Faculty Research Interest Table</h1>
-					<select  id='faculty-table-filter-selector' class="custom-select align-self-center" style="width: 20%" onchange="filterChangeFacultyTable()">
-						<option value="All">Include All</option>
-						<!-- Include the rest programmatically -->
-					</select>
-					<select id='faculty-table-faculty-sort-selector' class="custom-select align-self-center" style="width: 20%" onchange="sortFacultyChangeFacultyTable()">
-						<option value="name" selected>Sort Faculty: Default Ordering</option>
-						<option value="teachingAreas">Sort Faculty: By Teaching Area</option>
-						<option value="numResearchInterests">Sort Faculty: By Most Research Interests</option>
-					</select>
-					<select id='faculty-table-research-sort-selector' class="custom-select align-self-center" style="width: 20%" onchange="sortResearchChangeFacultyTable()">
-						<option value="researchInterest" selected>Sort Research Interests: Default Ordering</option>
-						<option value="interestedFaculty">Sort Research Interests: By Number of Interested Faculty</option>
-					</select>
-					<div id="faculty-interest-table"></div>
+	<div id="section-faculty-interest-table" class="section row">
+		<!-- WRAPPER -->
+		<div class="container-fluid" style="height: 100vh; padding-top: 1vh">
+			<div class="row">
+				<div class="col-10 offset-1">
+
+					<!-- HEADING -->
+					<div class="row d-flex justify-content-center" style="height: 10vh; padding: 0;">
+						<div class="align-self-center">
+							<h1>Faculty Research Interest Table</h1>
+						</div>
+					</div>
+					<!-- CONTENT -->
+					<div class="row" style="height: 80vh; padding: 0;">
+
+						<div class="col-12">
+							<div class="row" style="height: 10vh; padding-left: 0vh; padding-bottom: 1vh; padding-right: 1vh; padding-top: 1vh">
+								<div class="col">
+									<div class="row" style="height: 100%">
+										<div class="col-4">
+											<div class="row justify-content-center" style="height: 100%">
+												<!-- the select-->
+												<select  id='faculty-table-filter-selector' class="custom-select align-self-center" onchange="filterChangeFacultyTable()">
+													<option value="All">Include All</option>
+
+												</select>
+											</div>
+										</div>
+										<div class="col-4">
+											<div class="row justify-content-center" style="height: 100%">
+												<!-- the select-->
+												<select id='faculty-table-faculty-sort-selector' class="custom-select align-self-center" onchange="sortFacultyChangeFacultyTable()">
+													<option value="name" selected>Sort Faculty: Default Ordering</option>
+													<option value="teachingAreas">Sort Faculty: By Teaching Area</option>
+													<option value="numResearchInterests">Sort Faculty: By Most Research Interests</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-4">
+											<div class="row justify-content-center" style="height: 100%">
+												<!-- the select-->
+												<select id='faculty-table-research-sort-selector' class="custom-select align-self-center" onchange="sortResearchChangeFacultyTable()">
+													<option value="researchInterest" selected>Sort Research Interests: Default Ordering</option>
+													<option value="interestedFaculty">Sort Research Interests: By Number of Interested Faculty</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row justify-content-center" style="height: 80vh; padding-left: 0vh; padding-bottom: 1vh; padding-right: 1vh; padding-top: 0vh">
+								<div class="align-self-center" style="height: 100%; width:100%;">
+									<div class="row justify-content-center" style="height: 100%; width: 100%">
+										<div id="faculty-interest-table" style="height: 100%; width:95%;">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
 				</div>
 			</div>
-		</div>
-	</section>
 
-	<section id="relationship-blurb" class="row blurb-row">
+		</div>
+	</div>
+
+	<div id="relationship-blurb" class="section row blurb-row">
 		<div class="container-fluid center-blurb">
 			<div class="row justify-content-center">
 				<div class="col-xs-10 align-self-center">
@@ -122,17 +203,17 @@
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
 
-	<section id="relationship-section" class="row">
+	<div id="relationship-section" class="section row">
 		<div class="col-12">
 			<div class="row">
 				<div id="relationshipDiv" style="height: 100vh; width: 100%; text-align:center;"></div>
 			</div>
 		</div>
-	</section>
+	</div>
 
-	<section id="section-faculty-adj-blurb" class="row blurb-row">
+	<div id="section-faculty-adj-blurb" class="section row blurb-row">
 		<div class="container-fluid center-blurb">
 			<div class="row justify-content-center">
 				<div class="col-xs-10 align-self-center">
@@ -142,31 +223,79 @@
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
 
-	<section id="section-faculty-adj" class="row">
-		<div class="container-fluid">
-			<div class="row justify-content-center">
-				<div class="align-self-center">
-					<h1>Faculty Coauthor Adjacency Matrix</h1>
-					<select id='faculty-adj-sort-selector' class="custom-select align-self-center" style="width: 20%" onchange="sortChangeFacultyAdj()">
-						<option value="name" selected>Default Ordering</option>
-						<option value="teachingArea">Sort: By Teaching Area</option>
-						<option value="numCoauthors">Sort: By Number of Coauthors</option>
-						<option value="numPapers">Sort: By Number of Papers</option>
-					</select>
-					<select id='faculty-adj-filter-selector' class="custom-select align-self-center" style="width: 20%" onchange="filterChangeFacultyAdj()">
-						<option value="All">Include All</option>
-						<!-- Populate the rest automatically-->
-					</select>
-					<div id="click-facts-adjacency-matrix">Click on box to see info!</div>
-					<div id="faculty-adj-matrix"></div>
+	<div id="section-faculty-adj" class="section row">
+
+		<!-- WRAPPER -->
+		<div class="container-fluid" style="height: 100vh; padding-top: 1vh">
+			<div class="row">
+				<div class="col-10 offset-1">
+
+					<!-- HEADING -->
+					<div class="row d-flex justify-content-center" style="height: 10vh; padding: 0;">
+						<div class="align-self-center">
+							<h1>Faculty Coauthor Adjacency Matrix</h1>
+						</div>
+					</div>
+					<!-- CONTENT -->
+					<div class="row" style="height: 80vh; padding: 0;">
+						<!-- LEFT -->
+						<div class="col-8" style="padding: 0;">
+							<div class="row" style="padding: 0;">
+
+								<div class="col" style="padding: 0;">
+									<div class="row" style="height: 80vh; padding: 0vh; width: 100%">
+										<div id="faculty-adj-matrix" style="overflow-y: scroll; height: 100%; width:100%;">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- RIGHT -->
+						<div class="col-4">
+							<div class="row" style="height: 10vh; padding-left: 0vh; padding-bottom: 1vh; padding-right: 1vh; padding-top: 1vh">
+								<div class="col">
+									<div class="row" style="height: 100%">
+										<div class="col-4">
+											<div class="row justify-content-center" style="height: 100%">
+												<select id='faculty-adj-sort-selector' class="custom-select align-self-center" onchange="sortChangeFacultyAdj()">
+													<option value="name" selected>Default Ordering</option>
+													<option value="teachingArea">Sort: By Teaching Area</option>
+													<option value="numCoauthors">Sort: By Number of Coauthors</option>
+													<option value="numPapers">Sort: By Number of Papers</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-8">
+											<div class="row justify-content-center" style="height: 100%">
+												<select id='faculty-adj-filter-selector' class="custom-select align-self-center" onchange="filterChangeFacultyAdj()">
+													<option value="All">Include All</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row justify-content-center" style="height: 70vh; padding-left: 0vh; padding-bottom: 1vh; padding-right: 1vh; padding-top: 0vh">
+								<div class="align-self-center" style="height: 100%; width:100%;">
+									<div class="row justify-content-center" style="height: 100%; width: 100%">
+										<div id="word-frequency-chart" style="height: 100%; width:95%;">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
 				</div>
 			</div>
-		</div>
-	</section>
 
-	<section id="network-blurb" class="row blurb-row">
+		</div>
+	</div>
+
+	<div id="network-blurb" class="section row blurb-row">
 		<div class="container-fluid center-blurb">
 			<div class="row justify-content-center">
 				<div class="col-xs-10 align-self-center">
@@ -178,20 +307,73 @@
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
 
-	<section id="section-6" class="row">
+	<div id="section-6" class="section row">
 		<div class="container-fluid">
-			<div class="row justify-content-center">
-				<div class="align-self-center">
-					<h1>(Visualization: Network of faculty-to-faculty connections)</h1>
-					<div id="network-graph"></div>
+			<div class="row justify-content-center" style="padding:20px;">
+				<div class="col-6">
+					<div id="network-legend" class="row justify-content-center">
+						<svg width="600" height="50" padding="10px">
+							<rect width="20" height="20" x=0 style="fill:#1b9e77;" />
+							<rect width="20" height="20" x = 100 style="fill:#d95f02;" />
+							<rect width="20" height="20" x = 225 style="fill:#7570b3;" />
+							<rect width="20" height="20" x = 400 style="fill:#e7298a;" />
+							<rect width="20" height="20" x = 500 style="fill:#082ed0;" />
+							<text x = 25 y=15>News</text>
+							<text x = 125 y=15>Research</text>
+							<text x = 250 y=15>Center/Initiative</text>
+							<text x = 425 y=15>School</text>
+							<text x = 525 y=15>Course</text>
+						</svg>
+					</div>
+					<div id="network-graph" class="row justify-content-center"></div>
+				</div>
+				<div id='network-summary' class="col-6">
+					<select id="network-selector" onchange="networkTableSelector()">
+						<option value=0>All Faculty</option>
+					</select>
+					<div class="row">
+						<div id="network-pic" class="table col"></div>
+						<div id="network-table" class="table col"></div>
+					</div>
+
+					<div id="network-counts" style="height:200px"></div>
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
 
-	<section id="end-blurb" class="row blurb-row">
+	<div id="map-blurb" class="section row blurb-row">
+		<div class="container-fluid center-blurb">
+			<div class="row justify-content-center">
+				<div class="col-xs-10 align-self-center">
+					<p style="font-size: 24px; color: white;">Find your professor on the map!</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="section-7" class="section row">
+		<div class="container-fluid">
+			<div class="row justify content center">
+				<div class="col">
+					<form id="map-form" autocomplete="off">
+					<!--Make sure the form has the autocomplete function switched off:-->
+						<div class="autocomplete" style="width:300px;">
+							<input id="myInput" type="text" name="search" placeholder="Faculty">
+						</div>
+						<input type="submit" onclick="zoomMap()">
+					</form>
+				</div>
+				<div class="col">
+					<div id="faculty-map" style="height:500px"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="end-blurb" class="section row blurb-row">
 		<div class="container-fluid center-blurb">
 			<div class="row justify-content-center">
 				<div class="col-xs-10 align-self-center">
@@ -199,18 +381,38 @@
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
+
+</div>
+
+	<!-- instantiate fullview scroll -->
+	<script>
+		$("#fullview").fullView({
+			dots:  true,
+			dotsPosition:  'right',
+			easing:  'swing',
+		});
+	</script>
 
 	<!-- d3 -->
 	<script src="https://d3js.org/d3.v6.min.js"></script>
 
+	<!-- leaflet -->
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+			integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+			crossorigin=""></script>
+
+	<!-- our custom scripts-->
+	<script src="js/wordBarVis.js"></script>
 	<script src="js/adjMatrixVis.js"></script>
 	<script src="js/manyTableVis.js"></script>
 	<script src="js/groupDotsVis.js"></script>
 	<script src="js/relationshipVis.js"></script>
-	<!-- Main file (put visualization classes above this) -->
-	<script src="js/main.js"></script>
 	<script src="js/nodeData.js"></script>
 	<script src="js/network.js"></script>
+	<script src="js/networkBarVis.js"></script>
+	<script src="js/mapVis.js"></script>
+	<!-- Main file (put visualization classes above this) -->
+	<script src="js/main.js"></script>
 </body>
 </html>

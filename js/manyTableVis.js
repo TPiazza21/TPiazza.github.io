@@ -61,8 +61,8 @@ class manyTableVis {
             opt.innerHTML = "Filter: Research Interest: " + r;
             // just so that something is set
             if (r == vis.allResearchInterests[0]) {
-                opt.selected = true;
-                selectedFacultyTableFilter = r;
+                //opt.selected = true;
+                //selectedFacultyTableFilter = r;
             }
             selectDiv.appendChild(opt);
         });
@@ -72,7 +72,7 @@ class manyTableVis {
         vis.yShift = 100;
         vis.xShift = 240;
 
-        vis.cellScalar = 0.85;
+        vis.cellScalar = 0.95; //0.85;
         vis.cellPadding = 1;
 
 
@@ -90,7 +90,7 @@ class manyTableVis {
             vis.researchInterestSortInfoDict[r] = {};
             vis.researchInterestSortInfoDict[r].interestedFaculty = 0;
             vis.researchInterestSortInfoDict[r].researchInterest = r;
-        })
+        });
 
         vis.basicRelationData();
         vis.createMatrixData();
@@ -98,6 +98,11 @@ class manyTableVis {
         // decide whether or not to display text based on how many are here
         vis.displayLabelsThreshold = 50;
         vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
+
+        vis.tooltip = d3.select("body").append('div')
+            .attr('class', "tooltip")
+            .attr('id', 'researchInterestsTooltip')
+            .attr("opacity", 0.0);
 
         // actually create the squares (and labels)
         vis.wrangleData();
@@ -110,6 +115,11 @@ class manyTableVis {
         vis.departmentMap = {};
         vis.peopleInfo.forEach((x) => {
             vis.departmentMap[x["Title"]] = {'researchInterests': x["Research Interests"], 'teachingAreas': x["Teaching Areas"]};
+        });
+
+        vis.allInfoMap = {};
+        vis.peopleInfo.forEach((x) => {
+            vis.allInfoMap[x["Title"]] = x;
         });
 
     }
@@ -217,8 +227,12 @@ class manyTableVis {
         }
 
         // update the cell widths so it scales, and maybe update whether or not text is shown
+
         let tempScaleShift = vis.cellScalar * d3.min([((vis.width - vis.xShift) / vis.displayFaculty.length), ((vis.height - vis.yShift) / vis.displayResearchInterests.length)]);
-        vis.cellWidth = d3.max([tempScaleShift,3]);
+        if (vis.displayFaculty.length == vis.allFaculty.length) {
+            //tempScaleShift = vis.cellScalar * d3.min([((vis.width) / vis.displayFaculty.length), ((vis.height) / vis.displayResearchInterests.length)]);
+        }
+        vis.cellWidth = d3.max([tempScaleShift,5]); // can I just increase the max?
         vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
 
     }
@@ -238,47 +252,6 @@ class manyTableVis {
 
         let trans = d3.transition()
             .duration(800);
-
-        let relationSquares = vis.svg
-            .selectAll(".matrix-relation-squares")
-            .data(vis.matrixLongList, (d) => d.nameKey);
-
-        relationSquares.exit() // EXIT
-            .style("opacity", 0.0)
-            .transition(trans)
-            .remove();
-
-        relationSquares
-            .enter() // ENTER
-            .append("rect")
-            .attr("class","matrix-relation-squares")
-            .on("click", function(event, d) {
-                // maybe do more with this later
-                console.log("Clicking!");
-                console.log(d);
-                console.log(vis.departmentMap[d.name]);
-            })
-            .merge(relationSquares) // ENTER + UPDATE
-            .transition(trans)
-            .attr("fill", function(d) {
-                if (d.isInterested) {
-                    return "purple";
-                } else {
-                    return "gray";
-                }
-            })
-            .attr("opacity", function(d) {
-                if (vis.displayLabelsBoolean || d.isInterested){
-                    return 1.0;
-                }
-                else {
-                    return 0.5;
-                }
-            })
-            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * d.xpos + vis.xShift)
-            .attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * d.ypos + vis.yShift)
-            .attr("width", vis.cellWidth)
-            .attr("height", vis.cellWidth);
 
         // rows are for research interests
         let rowLabels = vis.svg
@@ -307,7 +280,14 @@ class manyTableVis {
                     return 0.0;
                 }
             })
-            .text(d => d);
+            .attr("fill", function(d) {
+                if (d == selectedFacultyTableFilter) {
+                    return "black";
+                } else {
+                    return "#5d5d5d";
+                }
+            })
+            .text(d =>d);
 
         // column labels are for the faculty
 
@@ -339,29 +319,98 @@ class manyTableVis {
             })
             .attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
             .text((d) => d);
+
+        let relationSquares = vis.svg
+            .selectAll(".matrix-relation-squares")
+            .data(vis.matrixLongList, (d) => d.nameKey);
+
+        relationSquares.exit() // EXIT
+            .style("opacity", 0.0)
+            .transition(trans)
+            .remove();
+
+        relationSquares
+            .enter() // ENTER
+            .append("rect")
+            .attr("class","matrix-relation-squares")
+            .on('mouseover', function(event, d){
+
+                // highlight this square
+                d3.select(this)
+                    .attr('stroke-width', '2px')
+                    .attr('stroke', 'black');
+                // update tooltip
+                vis.tooltip
+                    .style("opacity", 1)
+                    .html(`
+                     <div style="border: thin solid grey; border-radius: 5px; background: lightgrey; padding: 20px">
+                        <h4 style="text-align: center"><b>Column: </b>${d.name}</h4>
+                        <h4 style="text-align: center"><b>Row: </b> ${d.researchInterest}</h4>
+                        <p><b>Teaching Area:</b> ${vis.departmentMap[d.name].teachingAreas}
+                        <br>
+                        <b>Research Interests:</b> ${vis.departmentMap[d.name].researchInterests}
+                        <br>
+                        <b>Email:</b> ${vis.allInfoMap[d.name]["Email"]}
+                        <br>
+                        <b>Phone:</b> ${vis.allInfoMap[d.name]["Phone"]}
+                        <br>
+                        <b>Website:</b> ${vis.allInfoMap[d.name]["Website Link"]}
+                        </p>
+                     </div>`);
+
+                vis.tooltip
+                    .style("left", (event.pageX - $("#researchInterestsTooltip").width()/2) + "px")
+
+                    .style("top", (event.pageY - $("#researchInterestsTooltip").height() - 5) + "px")
+            })
+            .on('mouseout', function(event, d){
+                d3.select(this)
+                    .attr('stroke-width', '0px');
+
+                vis.tooltip
+                    .style("opacity", 0)
+                    .style("left", 0)
+                    .style("top", 0)
+                    .html(``);
+
+            })
+            .merge(relationSquares) // ENTER + UPDATE
+            .transition(trans)
+            .attr("fill", function(d) {
+                if (d.isInterested) {
+                    return "#a51c30"; // harvard crimson. used to be purple here
+                } else {
+                    return "gray";
+                }
+            })
+            .attr("opacity", function(d) {
+                if (vis.displayLabelsBoolean || d.isInterested){
+                    return 1.0;
+                }
+                else {
+                    return 0.5;
+                }
+            })
+            .attr("x", (d,i) => {
+                let usualX = (vis.cellPadding + vis.cellWidth) * d.xpos + vis.xShift;
+                if (vis.displayFaculty == vis.allFaculty) {
+                    //usualX -= vis.xShift;
+                }
+                return usualX;
+            })
+            .attr("y", (d,i) => {
+                let usualY = (vis.cellPadding + vis.cellWidth) * d.ypos + vis.yShift;
+                if (vis.displayFaculty == vis.allFaculty) {
+                    //usualY -= vis.yShift;
+                }
+                return usualY;
+            })
+            //.attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * d.ypos + vis.yShift)
+            .attr("width", vis.cellWidth)
+            .attr("height", vis.cellWidth);
+
     }
 
-    clickFacts(d) {
-        // maybe eventually I will do something interesting if we click on a box
-        /*
-        let vis = this;
-        // fill the string with facts for this relation
-        let formatString = "";
-        formatString += "Number of common papers: " + d.valueLen +  "<br/>";
-
-        formatString += "Row faculty: " + d.name1 +  "<br/>";
-        formatString += "Teaching Area: " + vis.departmentMap[d.name1].teachingArea +  "<br/>";
-        //formatString += "Research Interest: " + vis.departmentMap[d.name1].researchInterest +  "<br/>";
-
-        formatString += "Col faculty: " + d.name2 +  "<br/>";
-        formatString += "Teaching Area: " + vis.departmentMap[d.name2].teachingArea +  "<br/>";
-        //formatString += "Research Interest: " + vis.departmentMap[d.name2].researchInterest +  "<br/>";
-
-        document.getElementById('click-facts-adjacency-matrix')
-            .innerHTML = formatString;
-
-         */
-    }
 
 
 

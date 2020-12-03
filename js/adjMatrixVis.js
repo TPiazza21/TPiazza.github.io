@@ -16,7 +16,7 @@ class adjMatrixVis {
     initVis(){
         let vis = this;
 
-        vis.margin = {top: 40, right: 60, bottom: 60, left: 60};
+        vis.margin = {top: 40, right: 5, bottom: 5, left: 20};
         vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
 
@@ -36,7 +36,6 @@ class adjMatrixVis {
         vis.allResearchInterests = [...new Set(allResearchInterestsDup)]
             .filter((x) => x.length > 0)
             .sort(function(a, b){return a.localeCompare(b)});
-        //console.log(vis.allResearchInterests);
 
         let allTeachingAreasDup = vis.peopleInfo.map((x) => x["Teaching Areas"]).join("|").split("|");
         vis.allTeachingAreas = [...new Set(allTeachingAreasDup)]
@@ -57,19 +56,23 @@ class adjMatrixVis {
             opt.innerHTML = "Filter: Research Interest: " + r;
             // just so that something is set
             if (r == vis.allResearchInterests[0]) {
-                opt.selected = true;
-                selectedFacultyAdjFilter = r;
+                //opt.selected = true;
+                //selectedFacultyAdjFilter = r;
             }
             selectDiv.appendChild(opt);
         });
 
         // intrinsic properties of the adjacency matrix
-        //vis.cellWidth = 2;
-        vis.yShift = 60;
+        vis.yShift = 100;
         vis.xShift = 100;
-        vis.cellScalar = 0.5;
-        vis.cellWidth = d3.max([vis.cellScalar * ((vis.minDim - d3.max([vis.xShift, vis.yShift])) / vis.allFaculty.length),2]);
-        vis.cellPadding = 1;
+        vis.originalYShift = vis.yShift;
+        vis.originalXShift = vis.xShift;
+
+        vis.cellScale = d3.scaleBand()
+            .rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift])])
+            .paddingInner(0.1); // a value 0 to 1. Maybe make smaller?
+
+        vis.cellScale.domain(d3.range(vis.allFaculty.length));
 
         // we may decide to filter this list for one reason or another, but for now use all
         vis.displayFaculty = vis.allFaculty;
@@ -84,6 +87,76 @@ class adjMatrixVis {
         // decide whether or not to display text based on how many are here
         vis.displayLabelsThreshold = 40;
         vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
+
+        vis.colorBarWidth = 80;
+        vis.colorBarHeight = 10;
+
+        vis.oneAuthorLinearScale = d3.scaleLinear()
+            .range([0, vis.colorBarWidth]);
+
+        vis.oneAuthorAxis = d3.axisBottom()
+            .scale(vis.oneAuthorLinearScale).ticks(3);
+
+        vis.oneAuthorGroup = vis.svg.append("g")
+            .attr("class", "axis one-author-axis")
+            .call(vis.oneAuthorAxis);
+
+        vis.oneAuthorColorScale = d3.scaleSequential()
+            .domain([0, vis.colorBarWidth]).range(["lightblue","darkblue"]);
+
+        vis.oneAuthorGroup.selectAll(".bars")
+            .data(d3.range(vis.colorBarWidth), function(d) { return d; })
+            .enter().append("rect")
+            .attr("class", "bars")
+            .attr("x", function(d, i) { return i; })
+            .attr("y", -vis.colorBarHeight)
+            .attr("height", vis.colorBarHeight)
+            .attr("width", 1)
+            .style("fill", function(d, i ) { return vis.oneAuthorColorScale(d); });
+
+        vis.authorText = vis.svg.append("text")
+            .text("Papers By An Author")
+            .attr("class", "colorscale-label")
+            .attr("x", -15)
+            .attr("y", -25);
+
+
+        // then for the coauthor stuff too
+        vis.coauthorLinearScale = d3.scaleLinear()
+            .range([0, vis.colorBarWidth]);
+
+        vis.coauthorAxis = d3.axisBottom()
+            .scale(vis.coauthorLinearScale).ticks(2);
+
+        vis.coauthorGroup = vis.svg.append("g")
+            .attr("class", "axis coauthor-axis")
+            .attr("transform", "translate(0, 60)")
+            .call(vis.coauthorAxis);
+
+        vis.coauthorColorScale = d3.scaleSequential()
+            .domain([0, vis.colorBarWidth]).range(["pink","darkred"]);
+
+        vis.coauthorGroup.selectAll(".bars")
+            .data(d3.range(vis.colorBarWidth), function(d) { return d; })
+            .enter().append("rect")
+            .attr("class", "bars")
+            .attr("x", function(d, i) { return i; })
+            .attr("y", -vis.colorBarHeight)
+            .attr("height", vis.colorBarHeight)
+            .attr("width", 1)
+            .style("fill", function(d, i ) { return vis.coauthorColorScale(d); });
+
+        vis.coauthorText = vis.svg.append("text")
+            .text("Papers By Two Faculty")
+            .attr("class", "colorscale-label")
+            .attr("x", -15)
+            .attr("y", 45);
+
+        vis.svg.append("text")
+            .text("Click to learn more!")
+            .attr("class", "colorscale-label")
+            .attr("x", -15)
+            .attr("y", 90);
 
         // actually create the squares (and labels, maybe)
         vis.wrangleData()
@@ -136,7 +209,10 @@ class adjMatrixVis {
         let facultyListOfLists = [];
         let matrixLongList = [];
         //let facultySortInfoDict = {};
+        let allRelatedPapers = [];
         let xpos = 0;
+        let paperLengths = [];
+        let coauthorPaperLengths = [];
         vis.displayFaculty.forEach((name) => {
 
             let facultyObj = {};
@@ -152,6 +228,13 @@ class adjMatrixVis {
                 facultyPairObj.valueLen = vis.facultyPapersDict[name][name2].length;
                 if (facultyPairObj.valueLen > 0) {
                     coauthorCounter += 1;
+                    // keep track of the amount of papers in these categories
+                    if (name == name2) {
+                        paperLengths.push(facultyPairObj.valueLen);
+                    }
+                    else {
+                        coauthorPaperLengths.push(facultyPairObj.valueLen);
+                    }
                 }
                 facultyPairObj.xpos = xpos;
                 facultyPairObj.ypos = ypos;
@@ -168,11 +251,42 @@ class adjMatrixVis {
             facultyListOfLists.push(facultyObj);
             vis.facultySortInfoDict[name] = facultyObj;
             xpos = xpos+1;
+            // keep track of all papers from this filter
+            vis.facultyPapersDict[name][name].forEach((paper) => {
+                allRelatedPapers.push(paper);
+            });
+
         });
 
-        //vis.matrixData = facultyListOfLists;
+        // update domains
+        if (vis.oneAuthorLinearScale) {
+            vis.maxPaperLen = d3.max(paperLengths);
+            vis.oneAuthorLinearScale.domain([0, vis.maxPaperLen]);
+            vis.oneAuthorColorScale.domain([0, vis.maxPaperLen]);
+        }
+        if (vis.coauthorLinearScale) {
+            vis.maxCoauthorPaperLen = d3.max(coauthorPaperLengths);
+            vis.coauthorLinearScale.domain([0, vis.maxCoauthorPaperLen]);
+            vis.coauthorColorScale.domain([0, vis.maxCoauthorPaperLen]);
+        }
+
         vis.matrixLongList = matrixLongList;
-        //vis.facultySortInfoDict = facultySortInfoDict;
+        vis.allRelatedPapers = allRelatedPapers;
+
+        if (vis.displayFaculty.length == vis.allFaculty.length) {
+            vis.yShift = -30;
+            //vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift]) + 50]);
+            //vis.cellScale.paddingInner(0.001);
+            // idea is to get it bigger, and plot it bigger
+            vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift])]);
+        }
+        else {
+            vis.yShift = vis.originalYShift;
+            vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift])]);
+            //vis.cellScale.paddingInner(0.1);
+            //vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift])]);
+        }
+
     }
 
     sortAndFilterValues() {
@@ -181,9 +295,6 @@ class adjMatrixVis {
         // ok, it has a new value of selectedFacultyAdjSort
 
         // filter FIRST
-        // eventually make these lists bigger. You might filter by different things, so have different behavior
-        //let researchInterestList = ["Artificial Intelligence", "Theory of Computation", "Materials"];
-        //let teachingAreaList = ["Applied Mathematics", "Computer Science"];
         if (vis.allResearchInterests.includes(selectedFacultyAdjFilter)) {
             let filteredFaculty = vis.allFaculty.filter(name => vis.departmentMap[name].researchInterest.includes(selectedFacultyAdjFilter));
             vis.displayFaculty = filteredFaculty;
@@ -208,7 +319,7 @@ class adjMatrixVis {
         }
 
         // update the cell widths so it scales, and maybe update whether or not text is shown
-        vis.cellWidth = d3.max([vis.cellScalar * ((vis.minDim - d3.max([vis.xShift, vis.yShift])) / vis.displayFaculty.length),2])
+        vis.cellScale.domain(d3.range(vis.displayFaculty.length));
         vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
 
     }
@@ -226,6 +337,10 @@ class adjMatrixVis {
     updateVis(){
         let vis = this;
 
+        vis.broadWordChart();
+
+        vis.selectedSquare = ""; // keep track of the nameKey of a square that was clicked
+
         let trans = d3.transition()
             .duration(800);
 
@@ -235,7 +350,8 @@ class adjMatrixVis {
 
         relationSquares.exit() // EXIT
             .style("opacity", 0.0)
-            .transition(trans)
+            .transition()
+            .duration(800)
             .remove();
 
         relationSquares
@@ -243,14 +359,40 @@ class adjMatrixVis {
             .append("rect")
             .attr("class","matrix-relation-squares")
             .on("click", function(event, d) {
-                // show info on the "sticky note"
-                vis.clickFacts(d);
+
+                if (d.valueLen > 0) {
+                    if (vis.selectedSquare != d.nameKey) {
+                        vis.clickBehavior(event, d);
+                        vis.selectedSquare = d.nameKey;
+
+                        // get rid of any other stroke behavior
+                        vis.svg
+                            .selectAll(".matrix-relation-squares")
+                            .attr('stroke-width', '0px');
+
+                        d3.select(this)
+                            .attr('stroke-width', '2px')
+                            .attr('stroke', 'black');
+                    } else {
+                        vis.broadWordChart();
+                        vis.selectedSquare = "";
+                        d3.select(this)
+                            .attr('stroke-width', '0px');
+                    }
+                }
             })
             .merge(relationSquares) // ENTER + UPDATE
-            .transition(trans)
+            .transition()
+            .duration(800)
             .attr("fill", function(d) {
                 if (d.valueLen > 0) {
-                    return "purple";
+                    //return "purple";
+                    if (d.name1 == d.name2) {
+                        return vis.oneAuthorColorScale(d.valueLen);
+                    }
+                    else {
+                        return vis.coauthorColorScale(d.valueLen);
+                    }
                 } else {
                     return "gray";
                 }
@@ -263,10 +405,11 @@ class adjMatrixVis {
                     return 0.5;
                 }
             })
-            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * d.xpos + vis.xShift)
-            .attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * d.ypos + vis.yShift)
-            .attr("width", vis.cellWidth)
-            .attr("height", vis.cellWidth);
+            .attr("x", (d,i) => vis.cellScale(d.xpos) + vis.xShift)
+            .attr("y", (d,i) => vis.cellScale(d.ypos) + vis.yShift)
+            .attr("width", vis.cellScale.bandwidth())
+            .attr("height", vis.cellScale.bandwidth())
+            .attr('stroke-width', '0px');
 
         let rowLabels = vis.svg
             .selectAll(".matrix-row-labels")
@@ -274,7 +417,8 @@ class adjMatrixVis {
 
         rowLabels.exit() // EXIT
             .style("opacity", 0.0)
-            .transition(trans)
+            .transition()
+            .duration(800)
             .remove();
 
         rowLabels
@@ -282,9 +426,10 @@ class adjMatrixVis {
             .append("text")
             .attr("class","matrix-row-labels")
             .merge(rowLabels)
-            .transition(trans) // ENTER + UPDATE
+            .transition()
+            .duration(800) // ENTER + UPDATE
             .attr("text-anchor","end")
-            .attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * (i+1) + vis.yShift)
+            .attr("y", (d,i) => vis.cellScale(i) + vis.yShift + vis.cellScale.bandwidth())
             .attr("x", vis.xShift-5)
             .attr("opacity", function(d) {
                 if (vis.displayLabelsBoolean){
@@ -303,7 +448,8 @@ class adjMatrixVis {
 
         columnLabels.exit() // EXIT
             .style("opacity", 0.0)
-            .transition(trans)
+            .transition()
+            .duration(800)
             .remove();
 
         columnLabels
@@ -311,9 +457,11 @@ class adjMatrixVis {
             .append("text")
             .attr("class","matrix-column-labels")
             .merge(columnLabels)
-            .transition(trans) // ENTER + UPDATE
+            .transition()
+            .duration(800) // ENTER + UPDATE
             .attr("text-anchor","start")
-            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift)
+            //.attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift)
+            .attr("x", (d,i) => vis.cellScale(i) + vis.xShift + vis.cellScale.bandwidth())
             .attr("y", vis.yShift-5)
             .attr("opacity", function(d) {
                 if (vis.displayLabelsBoolean){
@@ -323,26 +471,112 @@ class adjMatrixVis {
                     return 0.0;
                 }
             })
-            .attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
+            //.attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
+            .attr("transform", (d,i) => "rotate(270," + (vis.cellScale(i) + vis.xShift + vis.cellScale.bandwidth()) +  "," + vis.yShift + ")")
             .text(d => d);
+
+        // update axis of color labels
+        vis.oneAuthorGroup
+            .transition()
+            .duration(800)
+            .call(vis.oneAuthorAxis)
+            .attr("opacity", () => {
+                if (vis.maxPaperLen > 0) {
+                    return 1.0;
+                }
+                else {
+                    return 0.0;
+                }
+            });
+
+        vis.authorText
+            .transition()
+            .duration(800)
+            .attr("opacity", () => {
+            if (vis.maxPaperLen > 0) {
+                return 1.0;
+            }
+            else {
+                return 0.0;
+            }
+        });
+
+        vis.coauthorGroup
+            .transition()
+            .duration(800)
+            .call(vis.coauthorAxis)
+            .attr("opacity", () => {
+                if (vis.maxCoauthorPaperLen > 0) {
+                    return 1.0;
+                }
+                else {
+                    return 0.0;
+                }
+            });
+
+        vis.coauthorText
+            .transition()
+            .duration(800)
+            .attr("opacity", () => {
+            if (vis.maxCoauthorPaperLen > 0) {
+                return 1.0;
+            }
+            else {
+                return 0.0;
+            }
+        });
     }
 
-    clickFacts(d) {
+    clickBehavior(event, d) {
         let vis = this;
-        // fill the string with facts for this relation
-        let formatString = "";
-        formatString += "Number of common papers: " + d.valueLen +  "<br/>";
 
-        formatString += "Row faculty: " + d.name1 +  "<br/>";
-        formatString += "Teaching Area: " + vis.departmentMap[d.name1].teachingArea +  "<br/>";
-        //formatString += "Research Interest: " + vis.departmentMap[d.name1].researchInterest +  "<br/>";
+        // for now, just feed it this person's info, right?
+        let sendString = "";
+        let coolStrings = [];
+        vis.facultyPapersDict[d.name1][d.name2].forEach((paper) => {
+            coolStrings.push(paper.Abstract);
+            coolStrings.push(paper.Title);
+        });
+        sendString = coolStrings.join(" "); // one big mess of words. Ok, sure, let them parse it
+        wordBarLongString = sendString;
 
-        formatString += "Col faculty: " + d.name2 +  "<br/>";
-        formatString += "Teaching Area: " + vis.departmentMap[d.name2].teachingArea +  "<br/>";
-        //formatString += "Research Interest: " + vis.departmentMap[d.name2].researchInterest +  "<br/>";
+        if (d.name1 == d.name2) {
+            wordBarSubTitle = "" + vis.facultyPapersDict[d.name1][d.name2].length + " Papers by " + d.name1;
+            wordBarColor = vis.oneAuthorColorScale(d.valueLen);
+        }
+        else {
+            wordBarSubTitle = "" + vis.facultyPapersDict[d.name1][d.name2].length + " Papers coathored by " + d.name1 + " and " + d.name2;
+            wordBarColor = vis.coauthorColorScale(d.valueLen);
+        }
 
-        document.getElementById('click-facts-adjacency-matrix')
-            .innerHTML = formatString;
+        myWordBarVis.wrangleData();
     }
+
+    broadWordChart() {
+        // this is when you want the word bar graph to be just of the rectangles on the screen
+        let vis = this;
+        let sendString = "";
+        let coolStrings = []
+        vis.allRelatedPapers.forEach((paper) => {
+            coolStrings.push(paper.Abstract);
+            coolStrings.push(paper.Title);
+        });
+        sendString = coolStrings.join(" "); // one big mess of words. Ok, sure, let them parse it
+        wordBarLongString = sendString;
+        if (selectedFacultyAdjFilter != "All") {
+            wordBarSubTitle = "All " + vis.allRelatedPapers.length + " papers from " + selectedFacultyAdjFilter;
+        }
+        else {
+            wordBarSubTitle = "All " + vis.allRelatedPapers.length + " papers";
+        }
+
+        if (sendString == "") {
+            wordBarSubTitle = "Uh oh! We couldn't scrape any papers from " + selectedFacultyAdjFilter;
+        }
+
+        wordBarColor = "purple"; // the generic option
+        myWordBarVis.wrangleData();
+    }
+
 
 }
