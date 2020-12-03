@@ -54,7 +54,7 @@ class NetworkBarGraph {
             vis.filteredData = vis.data.filter(filterData);
             vis.filteredData.reduce(function (res, value) {
                 if (!res[value.type]) {
-                    res[value.type] = {type: value.type, qty: 0};
+                    res[value.type] = {type: value.type.charAt(0).toUpperCase() + value.type.slice(1), qty: 0};
                     vis.displayData.push(res[value.type])
                 }
                 res[value.type].qty += addValue(value.weight);
