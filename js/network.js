@@ -154,7 +154,7 @@ class NetworkGraph {
             selectedFacultyNetworkViz = $("#network-selector").val();
             $(".table").empty();
             if (selectedFacultyNetworkViz>0) {
-                $("#network-table").append('<table style="width:100%"> <tr> <td>Title</td> <td id="network-title" class="table" ></td> </tr>'+
+                $("#network-table").append('<table style="width:auto"> <tr> <td>Title</td> <td id="network-title" class="table" ></td> </tr>'+
                     '<tr> <td>Research Interests</td><td id="network-research-interests" class="table" ></td> </tr>'+
                     '<tr><td>Teaching Areas</td> <td id="network-teaching-areas" class="table" ></td> </tr>'+
                     '<tr><td>Location</td><td id="network-location" class="table" ></td></tr> </table>');
@@ -217,12 +217,12 @@ class NetworkGraph {
         if(selectedFacultyNetworkViz>0) {
             let d = d3.select("#node"+selectedFacultyNetworkViz).node().__data__;
             vis.link.style("opacity", function (o) {
-                return (d.index==o.source.index | d.index==o.target.index) && o.type==type ? 1 : 0.1;
+                return (d.index==o.source.index | d.index==o.target.index) && o.type==type.toLowerCase() ? 1 : 0.1;
             });
         }
         else {
             vis.link.style("opacity", function(o) {
-                return o.type == type ? 1: 0.1;
+                return o.type == type.toLowerCase() ? 1: 0.1;
             })
         }
     }

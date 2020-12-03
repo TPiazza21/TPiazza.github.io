@@ -8,7 +8,7 @@ class NetworkBarGraph {
 
         let vis = this;
 
-        vis.margin = {top: 10, right: 100, bottom: 10, left: 50};
+        vis.margin = {top: 10, right: 100, bottom: 10, left: 100};
 
         vis.width = $('#' + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $('#' + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
@@ -39,7 +39,8 @@ class NetworkBarGraph {
             .attr("transform", "translate(0," + vis.height + ")");
 
         vis.svg.append("g")
-            .attr("class", "y-axis axis");
+            .attr("class", "y-axis axis")
+            .attr("id", "network-axis");
 
         vis.wrangleData();
 
@@ -68,7 +69,7 @@ class NetworkBarGraph {
             vis.displayData = [];
             vis.data.reduce(function(res, value) {
                 if (!res[value.type]) {
-                    res[value.type] = { type: value.type, qty: 0 };
+                    res[value.type] = { type: value.type.charAt(0).toUpperCase() + value.type.slice(1), qty: 0 };
                     vis.displayData.push(res[value.type])
                 }
                 res[value.type].qty += addValue(value.weight);
@@ -105,8 +106,36 @@ class NetworkBarGraph {
             .attr("class", "bar")
             .attr("height", vis.y.bandwidth())
             .attr("y", d=> vis.y(d.type))
-            .on("mouseover", (d,i) => myNetworkVis.barMouseOver(i.type))
+            .on("mouseover", function(d,i) {
+                myNetworkVis.barMouseOver(i.type);
+                d3.select(this).attr("fill", function() {
+                    if(i.type == "News") {return "#1b9e77"}
+                else if(i.type=="Research") {return "#d95f02"}
+                else if(i.type=="Center") {return "#7570b3"}
+                else if(i.type=="School") {return "#e7298a"}
+                else {return "#082ed0"}});
+                d3.select("#network-axis")
+                    .selectAll('text')
+                    .filter(function(x) { return x == i.type; })
+                    .attr("fill", function() {
+                    if(i.type == "News") {return "#1b9e77"}
+                    else if(i.type=="Research") {return "#d95f02"}
+                    else if(i.type=="Center") {return "#7570b3"}
+                    else if(i.type=="School") {return "#e7298a"}
+                    else {return "#082ed0"}});
+                d3.select("#barLabel"+i.type).style("fill", function() {
+                    if(i.type == "News") {return "#1b9e77"}
+                    else if(i.type=="Research") {return "#d95f02"}
+                    else if(i.type=="Center") {return "#7570b3"}
+                    else if(i.type=="School") {return "#e7298a"}
+                    else {return "#082ed0"}})
+
+            })
             .on("mouseout", function() {
+                d3.select(this).attr("fill", "black");
+                d3.select("#network-axis")
+                    .selectAll('text').attr("fill", "black");
+                vis.svg.selectAll(".label").style("fill", "black");
                 if (selectedFacultyNetworkViz==0) {
                     myNetworkVis.link.style("opacity", 1);
                 }
@@ -132,6 +161,7 @@ class NetworkBarGraph {
 
         vis.texts.enter().append("text")
             .attr("class", "label")
+            .attr("id", d => "barLabel"+d.type)
             .merge(vis.texts)
             .style("fill", "black")
             .attr("y", function (d) {

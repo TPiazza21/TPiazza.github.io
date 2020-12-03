@@ -125,7 +125,7 @@ function networkTableSelector() {
     $(".table").empty();
     myNetworkVis.updateVis();
     if (selectedFacultyNetworkViz>0) {
-        $("#network-table").append('<table style="width:100%"> <tr> <td>Title</td> <td id="network-title" class="table" ></td> </tr>'+
+        $("#network-table").append('<table style="width: auto;"> <tr> <td>Title</td> <td id="network-title" class="table" ></td> </tr>'+
             '<tr> <td>Research Interests</td><td id="network-research-interests" class="table" ></td> </tr>'+
             '<tr><td>Teaching Areas</td> <td id="network-teaching-areas" class="table" ></td> </tr>'+
             '<tr><td>Location</td><td id="network-location" class="table" ></td></tr> </table>');
@@ -136,7 +136,7 @@ function networkTableSelector() {
         $("#network-location").text(tableData.location)
         $('#network-pic').prepend('<a href="http://seasdrupalstg.prod.acquia-sites.com/node/'
             +selectedFacultyNetworkViz.toString()+'" target="_blank">'+
-            '<img src='+tableData.image +' title="Click for more information" width=200 height=300/>' +
+            '<img src='+tableData.image +' title="Click to go to my card" width=200 height=300/>' +
             '</a>')
     }
 }

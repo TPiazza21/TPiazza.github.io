@@ -316,29 +316,33 @@
 						<svg width="600" height="50" padding="10px">
 							<rect width="20" height="20" x=0 style="fill:#1b9e77;" />
 							<rect width="20" height="20" x = 100 style="fill:#d95f02;" />
-							<rect width="20" height="20" x = 225 style="fill:#7570b3;" />
-							<rect width="20" height="20" x = 400 style="fill:#e7298a;" />
-							<rect width="20" height="20" x = 500 style="fill:#082ed0;" />
+							<rect width="20" height="20" x = 200 style="fill:#7570b3;" />
+							<rect width="20" height="20" x = 300 style="fill:#e7298a;" />
+							<rect width="20" height="20" x = 400 style="fill:#082ed0;" />
 							<text x = 25 y=15>News</text>
 							<text x = 125 y=15>Research</text>
-							<text x = 250 y=15>Center/Initiative</text>
-							<text x = 425 y=15>School</text>
-							<text x = 525 y=15>Course</text>
+							<text x = 225 y=15>Center</text>
+							<text x = 325 y=15>School</text>
+							<text x = 425 y=15>Course</text>
 						</svg>
 					</div>
 					<div id="network-graph" class="row justify-content-center"></div>
 				</div>
-				<div id='network-summary' class="col-6">
-					<select id="network-selector" onchange="networkTableSelector()">
-						<option value=0>All Faculty</option>
-					</select>
+				<div class="col-6">
 					<div class="row">
+						<select id="network-selector" onchange="networkTableSelector()">
+							<option value=0>All Faculty</option>
+						</select>
+					</div>
+
+					<div id='network-summary' class="row">
 						<div id="network-pic" class="table col"></div>
 						<div id="network-table" class="table col"></div>
 					</div>
 
-					<div id="network-counts" style="height:200px"></div>
+					<div id="network-counts" class="row" style="height:200px;"></div>
 				</div>
+
 			</div>
 		</div>
 	</section>
@@ -356,17 +360,17 @@
 	<section id="section-7" class="section row">
 		<div class="container-fluid">
 			<div class="row justify content center">
-				<div class="col">
+				<div class="col-4">
 					<form id="map-form" autocomplete="off">
 					<!--Make sure the form has the autocomplete function switched off:-->
-						<div class="autocomplete" style="width:300px;">
+						<div class="autocomplete" style="width:80%;padding:20px;">
 							<input id="myInput" type="text" name="search" placeholder="Faculty">
 						</div>
 						<input type="submit" onclick="zoomMap()">
 					</form>
 				</div>
-				<div class="col">
-					<div id="faculty-map" style="height:500px"></div>
+				<div class="col-8">
+					<div id="faculty-map" style="height:100vh; width:100%"></div>
 				</div>
 			</div>
 		</div>

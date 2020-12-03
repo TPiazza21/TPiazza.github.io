@@ -244,3 +244,31 @@ input[type=submit] {
 	color: #fff;
 	cursor: pointer;
 }
+
+#network-counts {
+	margin: auto;
+	font-size: 20px;
+}
+
+#network-axis {
+	font-size: 16px;
+}
+
+#network-summary {
+	height:350px;
+}
+
+#network-pic {
+	margin: auto;
+	padding-left: 100px;
+}
+
+#network-table {
+	margin:auto;
+	padding-right: 100px;
+}
+
+#network-selector {
+	font-size: 20px;
+	margin:auto;
+}
