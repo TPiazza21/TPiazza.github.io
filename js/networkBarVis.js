@@ -160,9 +160,9 @@ class NetworkBarGraph {
         vis.texts = vis.svg.selectAll(".label").data(vis.displayData);
 
         vis.texts.enter().append("text")
+            .merge(vis.texts)
             .attr("class", "label")
             .attr("id", d => "barLabel"+d.type)
-            .merge(vis.texts)
             .style("fill", "black")
             .attr("y", function (d) {
                 return vis.y(d.type) + vis.y.bandwidth() / 2 + 4;
