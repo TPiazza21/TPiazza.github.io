@@ -105,6 +105,11 @@ section {
 	padding: 0px;
 }
 
+#groupTooltip h2 {
+	font-size: 25px;
+	padding-bottom: 20px;
+}
+
 #groupTooltip img {
 	width: 30px;
 	height: 45px;
