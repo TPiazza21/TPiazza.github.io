@@ -5,11 +5,12 @@
 // https://bl.ocks.org/ocarneiro/42286298b683c490ff74cdbf3800241e
 
 class groupDotsVis {
-    constructor(parentElement, peopleInfo, coursesInfo, latestPeopleInfo){
+    constructor(parentElement, peopleInfo, coursesInfo, latestPeopleInfo, nodeInfo){
         this.parentElement = parentElement;
         this.peopleInfo = peopleInfo;
         this.coursesInfo = coursesInfo;
         this.latestPeopleInfo = latestPeopleInfo;
+        this.nodeInfo = nodeInfo;
 
         this.initVis();
     }
@@ -18,7 +19,7 @@ class groupDotsVis {
     initVis(){
         let vis = this;
 
-        vis.margin = {top: 40, right: 60, bottom: 60, left: 60};
+        vis.margin = {top: 40, right: 80, bottom: 60, left: 60};
         vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
 
@@ -29,8 +30,6 @@ class groupDotsVis {
             .attr("height", vis.height + vis.margin.top + vis.margin.bottom)
             .append('g')
             .attr('transform', `translate (${vis.margin.left}, ${vis.margin.top})`);
-
-        vis.svg.append("text").text("This is in progress. See https://bl.ocks.org/ocarneiro/42286298b683c490ff74cdbf3800241e to know what I'm trying to do").attr("x",50).attr("y",50);
 
         vis.latestAllFaculty = vis.latestPeopleInfo.map((x) => x.Title);
         vis.allFaculty = vis.peopleInfo.map((x) => x.Title).filter((x) => vis.latestAllFaculty.includes(x));
@@ -48,10 +47,20 @@ class groupDotsVis {
             vis.departmentMap[x["Title"]] = {'researchInterests': x["Research Interests"], 'teachingAreas': x["Teaching Areas"]};
         });
 
+        vis.allInfoMap = {};
+        vis.peopleInfo.forEach((x) => {
+            vis.allInfoMap[x["Title"]] = x;
+        });
+
         vis.officeMap = {};
         vis.peopleInfo.forEach((x) => {
             vis.officeMap[x["Title"]] = x["Office"];
-        })
+        });
+
+        vis.picMap = {};
+        vis.nodeInfo.nodes.forEach((node) => {
+            vis.picMap[node.name] = node.image;
+        });
 
         vis.color = d3.scaleOrdinal(d3.schemeCategory10);
         vis.departmentColors = {
@@ -67,10 +76,16 @@ class groupDotsVis {
         };
 
 
-        vis.circleRadius = 15;
+        vis.circleRadius = 7;
         vis.displayFaculty = vis.allFaculty;
 
         vis.circleDiv = vis.svg.append("g").attr("class","nodes");
+
+        // tooltip
+        vis.tooltip = d3.select("body").append('div')
+            .attr('class', "tooltip")
+            .attr('id', 'groupTooltip')
+            .attr("opacity", 0.0);
 
 
         vis.wrangleData();
@@ -214,6 +229,26 @@ class groupDotsVis {
                 };
             })};
 
+        // make objects for making a label
+        vis.labelObjects = [];
+        i = 0;
+        vis.labels.forEach((label) => {
+            let tempObj = {};
+            tempObj.label = label;
+            let objColor = "";
+            if (selectedFacultyDotGrouping == "teachingAreas") {
+                objColor = vis.departmentColors[label];
+            }
+            else {
+                objColor = vis.color(vis.groupFirstIdMap[label]); // yeah, maybe
+            }
+            tempObj.color = objColor;
+            tempObj.i = i;
+
+            vis.labelObjects.push(tempObj);
+            i += 1;
+        });
+
         vis.updateVis();
 
     }
@@ -229,7 +264,7 @@ class groupDotsVis {
                 .distance(20)) // .distance(20))
             .force("collide",d3.forceCollide(vis.circleRadius + 2)) // originally just vis.circleRadius
             .force("charge", d3.forceManyBody())
-            .force("center", d3.forceCenter(vis.width / 2, vis.height / 2))
+            .force("center", d3.forceCenter(vis.width / 2 - 100, vis.height / 2))
             .force("y", d3.forceY(0))
             .force("x", d3.forceX(0));
 
@@ -239,6 +274,52 @@ class groupDotsVis {
             .selectAll("circle")
             .data(vis.data.nodes, (d) => d.name) // can I do a smooth transition?
             .enter().append("circle")
+            .on('mouseover', function(event, d){
+                // highlight this circle
+                d3.select(this)
+                    .attr('stroke-width', '2px')
+                    .attr('stroke', 'black');
+
+                // update tooltip
+                vis.tooltip
+                    .style("opacity", 1)
+                    //.style("left", event.pageX + 20 + "px")
+                    //.style("top", (event.pageY - 100) + "px")
+                    .html(`
+                     <div style="border: thin solid grey; border-radius: 5px; background: lightgrey; padding: 2px">
+                        
+                        <h2 style="text-align: center">${d.name}</h2>
+                        <p><b>Teaching Area:</b> ${vis.allInfoMap[d.name]["Teaching Areas"]} 
+                        <br>
+                        <b>Research Interests:</b> ${vis.allInfoMap[d.name]["Research Interests"]}
+                        <br>
+                        <b>Office Location:</b> ${vis.allInfoMap[d.name]["Office"]}
+                        <br>
+                        <b>Email:</b> ${vis.allInfoMap[d.name]["Email"]}
+                        <br>
+                        <b>Phone:</b> ${vis.allInfoMap[d.name]["Phone"]}
+                        <br>
+                        <b>Website:</b> ${vis.allInfoMap[d.name]["Website Link"]}
+                        </p>
+                        <img src = "${vis.picMap[d.name]}" style="position: absolute; top: 10px; left:10px; ">
+                     </div>`);
+
+                vis.tooltip
+                    .style("left", (event.pageX - $("#groupTooltip").width()/2) + "px")
+                    .style("top", (event.pageY - $("#groupTooltip").height() - 2*vis.circleRadius) + "px")
+
+            })
+            .on('mouseout', function(event, d){
+                d3.select(this)
+                    .attr('stroke-width', '0px');
+
+                vis.tooltip
+                    .style("opacity", 0)
+                    .style("left", 0)
+                    .style("top", 0)
+                    .html(``);
+
+            })
             .attr("r", vis.circleRadius)
             .style("fill", function(d, i) {
                 // for special colors
@@ -250,94 +331,66 @@ class groupDotsVis {
                 }
             });
 
-        // there used to be rectangles all around
-
-        let textG = vis.svg.append("g")
-            .attr("class", "labels");
-
-        let texts = textG
-            .selectAll("text")
-            .data(vis.data.nodes, (d) => d.name)
-            .enter().append("text")
-            .attr("class", "group-labels")
-            .style("font-size", 12)
-            .attr("dx", 12)
-            .attr("dy", ".35em")
-            .text(function(d) {
-                return vis.labels[d.id];
-            });
-
-
-        let titleTexts = textG
-            .selectAll(".title-labels")
-            .data(vis.data.nodes, (d) => d.name)
-            .enter().append("text")
-            .attr("class", "title-labels")
-            .attr("id", (d) => d.id+"_title-text")
-            .on("mouseover", function(event, d) {
-                // show the faculty name
-                textG
-                    .selectAll(".title-labels")
-                    .data(vis.data.nodes, (d2) => d2.name)
-                    .attr("opacity", (d2) => {
-                        if (d.name == d2.name){
-                            // if this is the one we hovered over, set it to 1.0
-                            return 1.0;
-                        }
-                        else {
-                            return 0.0;
-                        }
-                    });
-
-                // make the group labels less opaque, so that we see titles better
-                textG
-                    .selectAll(".group-labels")
-                    .data(vis.data.nodes, (d2) => d2.name)
-                    .attr("opacity", (d2) => {
-                        return 0.2;
-                    });
-            })
-            .on("mouseout", function(event, d) {
-                // hide the faculty name, show the group label
-                textG
-                    .selectAll(".title-labels")
-                    .data(vis.data.nodes, (d2) => d2.name)
-                    .attr("opacity",0.0);
-
-                textG
-                    .selectAll(".group-labels")
-                    .data(vis.data.nodes, (d2) => d2.name)
-                    .attr("opacity", (d2) => {
-                        return 1.0;
-                    });
-            })
-            .style("font-size", 12)
-            .attr("dx", 12)
-            .attr("dy", ".35em")
-            .attr("opacity", 0.0)
-            .text(function(d) {
-                return d.name;
-            });
-
-
         // I believe this controls movement
         function ticked() {
             circles
-                .attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; });
-            texts
-                .attr("x", function(d) { return d.x - 30; })
-                .attr("y", function(d) { return d.y; });
-            titleTexts
-                .attr("x", function(d) { return d.x-40; })
-                .attr("y", function(d) { return d.y; });
-
+                .attr("cx", function(d) {
+                    //
+                    return Math.max(vis.circleRadius, Math.min(vis.width - vis.circleRadius, d.x));
+                })
+                .attr("cy", function(d) {
+                    //
+                    return Math.max(vis.circleRadius, Math.min(vis.height - vis.circleRadius, d.y));
+                });
+                //.attr("cx", function(d) { return d.x; })
+                //.attr("cy", function(d) { return d.y; });
         }
 
         vis.simulation.nodes(vis.data.nodes).on("tick", ticked);
 
         //ties the circles together
         vis.simulation.force("link").links(vis.data.links);
+
+        // for the labels
+        vis.labelCircles = vis.svg.selectAll(".label-circle").data(vis.labelObjects, (d) => d["label"]);
+
+        // remove
+        vis.labelCircles.exit()
+            .transition()
+            .remove();
+
+        vis.labelCircles.enter().append("circle")
+            .attr("r",vis.circleRadius)
+            .attr("cx", (d,i) => vis.width)
+            .merge(vis.labelCircles)
+            .transition()
+            .duration(750)
+            .attr("cx", (d,i) => vis.width)
+            .attr("cy", (d,i) => i * 2 * vis.circleRadius + 20)
+            .attr("fill", function(d) {
+                return d.color;
+            })
+            .attr("class","label-circle");
+
+        // for the labels
+        vis.labelCirclesText = vis.svg.selectAll(".label-circle-text").data(vis.labelObjects, (d) => d["label"]);
+
+        // remove
+        vis.labelCirclesText.exit()
+            .transition()
+            .remove();
+
+        vis.labelCirclesText.enter().append("text")
+            .attr("x", (d,i) => vis.width -  vis.circleRadius - 5)
+            .merge(vis.labelCircles)
+            .transition()
+            .duration(750)
+            .attr("x", (d,i) => vis.width -  vis.circleRadius - 5)
+            .attr("y", (d,i) => i * 2 * vis.circleRadius + 20)
+            .attr("class","label-circle-text")
+            .attr("text-anchor", "end")
+            .text((d) => d.label);
+
     }
 
     killAll() {
