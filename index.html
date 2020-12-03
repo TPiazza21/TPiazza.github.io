@@ -364,7 +364,8 @@
 					<form id="map-form" autocomplete="off">
 					<!--Make sure the form has the autocomplete function switched off:-->
 						<div class="autocomplete" style="width:80%;padding:20px;">
-							<input id="myInput" type="text" name="search" placeholder="Faculty">
+							<!-- Search form -->
+							<input id="myInput" type="text" name="search" placeholder="Faculty" onkeydown="zoomMap()">
 						</div>
 						<input type="submit" onclick="zoomMap()">
 					</form>

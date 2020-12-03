@@ -10,7 +10,7 @@ class MapVis {
         let vis = this;
 
         // Initialize map layer
-        vis.map = L.map(vis.parentElement).setView(vis.center, 12);
+        vis.map = L.map(vis.parentElement).setView(vis.center, 13);
 
         // Add tile layer to map - initialize with light mode map
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {

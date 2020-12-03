@@ -75,7 +75,7 @@ class NetworkGraph {
                     .html(`
                      <div style="border: thin solid grey; border-radius: 5px; background: lightgrey; padding: 2px">
                         
-                        <h6 style="text-align: center">${d.name}</h6>
+                        <h6 style="text-align: center;font-size:20px;">${d.name}</h6>
                         <p>
                          <b>Click my node for more information!</b>
                          <br>

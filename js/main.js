@@ -246,6 +246,11 @@ var faculty = nodeData.nodes.map(d=>d.name)
 autocomplete(document.getElementById("myInput"), faculty);
 
 function zoomMap() {
+    /* stop search input form from default refreshing*/
+    $("#map-form").submit(function(e) {
+        e.preventDefault();
+    });
+
     let myFaculty = document.getElementById('myInput').value;
     if (myFaculty) {
         let myMapView = nodeData.nodes.find(obj => {
@@ -256,12 +261,9 @@ function zoomMap() {
         myMapVis.updateVis();
     }
     else {
-        myMapVis.map.setView([42.378784,-71.116824],12);
+        myMapVis.map.setView([42.378784,-71.116824],13);
         myMapVis.wrangleData()
     }
 }
 
-/* stop search input form from default refreshing*/
-$("#map-form").submit(function(e) {
-    e.preventDefault();
-});
+console.log(nodeData.links)
