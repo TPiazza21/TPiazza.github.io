@@ -32,7 +32,7 @@ class NetworkGraph {
             )
             .force("forceX", d3.forceX().strength(.4).x(vis.width/2))
             .force("forceY", d3.forceY().strength(.4).y(vis.height/2))
-            .force("charge", d3.forceManyBody().strength(-300))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+            .force("charge", d3.forceManyBodyReuse().strength(-300))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
             .force("center", d3.forceCenter(vis.width / 2, vis.height / 2))     // This force attracts nodes to the center of the svg area
             .on("end", ticked);
 
@@ -164,7 +164,7 @@ class NetworkGraph {
                 $("#network-location").text(d.location)
                 $('#network-pic').prepend('<a href="http://seasdrupalstg.prod.acquia-sites.com/node/'
                     +selectedFacultyNetworkViz.toString()+'" target="_blank">'+
-                    '<img src='+d.image +' title="Click to go to my card" width=200 height=300/>' +
+                    '<img id="faculty-image" src='+d.image +' title="Click to go to my card" width=200 height=300/>' +
                     '</a>')
             }
         }

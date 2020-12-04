@@ -149,9 +149,9 @@ h1 {
 	background-size: cover;
 }
 
-/*******************************
-** VISUALIZATION SPECIFIC CSS **
-********************************/
+/******************************************
+** INDIVIDUAL VISUALIZATION SPECIFIC CSS **
+*******************************************/
 #network-graph {
 	height: 700px;
 }
@@ -348,6 +348,10 @@ input[type=submit] {
 #network-pic {
 	margin: auto;
 	padding-left: 100px;
+}
+
+#faculty-image:hover {
+	opacity: 60%;
 }
 
 #network-table {
