@@ -360,17 +360,18 @@
 	<section id="section-7" class="section row">
 		<div class="container-fluid">
 			<div class="row justify content center">
-				<div class="col-4">
+				<div class="col-6">
 					<form id="map-form" autocomplete="off">
-					<!--Make sure the form has the autocomplete function switched off:-->
+						<!--Make sure the form has the autocomplete function switched off:-->
 						<div class="autocomplete" style="width:80%;padding:20px;">
 							<!-- Search form -->
 							<input id="myInput" type="text" name="search" placeholder="Faculty" onkeydown="zoomMap()">
 						</div>
 						<input type="submit" onclick="zoomMap()">
 					</form>
+					<div id="location-chord" style="height:700px"></div>
 				</div>
-				<div class="col-8">
+				<div class="col-6">
 					<div id="faculty-map" style="height:100vh; width:100%"></div>
 				</div>
 			</div>
@@ -427,6 +428,7 @@
 	<script src="js/network.js"></script>
 	<script src="js/networkBarVis.js"></script>
 	<script src="js/mapVis.js"></script>
+	<script src="js/chordViz.js"></script>
 	<!-- Main file (put visualization classes above this) -->
 	<script src="js/main.js"></script>
 </body>

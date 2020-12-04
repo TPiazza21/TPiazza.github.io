@@ -46,6 +46,7 @@ function initMainPage(dataArray) {
     myNetworkVis = new NetworkGraph("network-graph", nodeData, myFacultyDotsVis.allInfoMap);
     myNetworkBarVis = new NetworkBarGraph("network-counts", nodeData.links);
     myMapVis = new MapVis("faculty-map", nodeData.nodes, latestPeopleData, [42.378784,-71.116824])
+    myChordVis = new ChordVis("location-chord", nodeData)
 }
 
 // handle buttons, sorting, selecting etc. down here
@@ -259,11 +260,11 @@ function zoomMap() {
         let myCoordinates = myMapView.coordinates
         myMapVis.map.setView(myCoordinates, 20);
         myMapVis.updateVis();
+        //
+        // myChordVis.fade(0.02)
     }
     else {
         myMapVis.map.setView([42.378784,-71.116824],13);
         myMapVis.wrangleData()
     }
 }
-
-console.log(nodeData.links)
