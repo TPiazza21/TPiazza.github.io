@@ -11,9 +11,46 @@ body {
 
 #bannerimage {
 	width: 100%;
-	background-image: url(https://hwpi.harvard.edu/files/styles/os_files_xxlarge/public/commencement/files/hc-017_-_copy.jpg);
+	background-image: url('../img/banner.jpg');
 	height: 500px;
 	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.container-caption {
+	position: relative;
+}
+
+.text-block {
+	width:75%;
+	position: absolute;
+	background-color: rgba(255, 0, 0, 0.8);
+	color: white;
+	padding: 20px;
+	font-size: 28px;
+}
+
+.text-student {
+	width:50%;
+	position: absolute;
+	background-color: rgba(255, 0, 0, 0.8);
+	color: white;
+	padding: 20px;
+	font-size: 12px;
+	bottom: 20px;
+	right: 20px;
+}
+
+.image-student {
+	position: absolute;
+	bottom: 20px;
+	right: 50%;
+}
+
+.button-student {
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
 }
 
 h1, h3, p {
@@ -153,11 +190,12 @@ rect {
 
 .repressNode {
 	fill: #CCC;
+	stroke: #CCC;
 }
 
 .repressLink {
 	stroke: #CCC;
-	stroke-width: 1px;
+	stroke-width: 0px;
 }
 
 #faculty-adj-matrix .colorscale-label {

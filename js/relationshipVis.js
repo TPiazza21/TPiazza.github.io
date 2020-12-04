@@ -225,8 +225,9 @@ class RelationshipVis {
 
         //vis.colors = ["#e41a1c","#377eb8","#4daf4a","#984ea3","#f781bf"];
         vis.colors = ["#ed1b34", "#00aaad", "#cbdb2a", "#fcb315", "#4e88c7", "#ffde2d", "#77ced9", "#bb89ca"]
+        vis.colors2 = ["darkgrey", "dimgrey"]
         vis.colorAreas = d3.scaleOrdinal().domain(vis.listAreas).range(vis.colors)
-        vis.colorCenters = d3.scaleOrdinal().domain(vis.listCenters).range(vis.colors)
+        vis.colorCenters = d3.scaleOrdinal().domain(vis.listCenters).range(vis.colors2)
 
         vis.areaCount = vis.listAreas.length;
         vis.facultyCount = vis.listFaculty.length;
@@ -258,14 +259,17 @@ class RelationshipVis {
 
         vis.boxHeight = 12;
         vis.boxHeightArea = (vis.height - vis.areaCount*vis.gap.height) / vis.areaCount;
-        vis.boxHeightCenter = (vis.height - vis.centerCount*vis.gap.height) / vis.centerCount;
+        //vis.boxHeightCenter = (vis.height - vis.centerCount*vis.gap.height) / vis.centerCount;
+        vis.boxHeightCenter = 12;
 
         if(vis.height < 850){
-            vis.facultyOffset1 = 10;
-            vis.facultyOffset2 = 10;
+            vis.facultyOffset1 = 0;
+            vis.facultyOffset2 = 0;
+            vis.centerOffset = 0;
         }else{
             vis.facultyOffset1 = (vis.height - (vis.facultyHalfCount * vis.boxHeight)) / 2;
             vis.facultyOffset2 = (vis.height - ((vis.facultyCount - vis.facultyHalfCount) * vis.boxHeight)) / 2;
+            vis.centerOffset = (vis.height - (vis.centerCount * vis.boxHeightCenter)) / 2;
         }
 
         vis.Nodes.forEach(function (d, i) {
@@ -281,7 +285,8 @@ class RelationshipVis {
                 count[d.lvl] += 1;
             }else if(d.lvl === 2){
                 d.x = vis.boxWidthArea + vis.boxWidth + d.lvl*vis.gap.width;
-                d.y = (vis.boxHeightCenter + vis.gap.height) * count[d.lvl];
+                //d.y = (vis.boxHeightCenter + vis.gap.height) * count[d.lvl];
+                d.y = vis.centerOffset + (vis.boxHeightCenter + vis.gap.height) * count[d.lvl];
                 d.id = "n" + i;
                 count[d.lvl] += 1;
             }else if(d.lvl === 1){
@@ -341,14 +346,17 @@ class RelationshipVis {
             .attr("class", "node")
             .attr("rx", 6)
             .attr("ry", 6)
-            .on("mouseover", function () {
+            .on("click", function () {
                 vis.repress(true);
                 vis.mouse_action(d3.select(this).datum(), true, d3.select(this).datum().lvl);
-            })
+            });
+            /*
             .on("mouseout", function () {
                 vis.repress(false)
                 vis.mouse_action(d3.select(this).datum(), false, d3.select(this).datum().lvl);
             });
+
+             */
 
         node.append("text")
             .attr("class", "label")

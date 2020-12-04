@@ -28,6 +28,12 @@
 	<!-- one page scroll -->
 	<script type="text/javascript" src="js/libraries/jquery.onepage-scroll.js"></script>
 
+	<script type="text/javascript">
+		function removeDiv(btn){
+			((btn.parentNode).parentNode).removeChild(btn.parentNode);
+		}
+	</script>
+
 	<!-- Our style sheet -->
 	<link rel="stylesheet" href="css/styles.css">
 
@@ -45,8 +51,16 @@
 		</div>
 	</section>
 
-	<section id="section-faculty-dots-blurb" class="section row blurb-row">
-		<div class="container-fluid center-blurb">
+	<section id="section-faculty-dots-blurb" class="section row">
+		<div class="container-fluid center-blurb container-caption">
+			<img src="img/caption1.jpg" style="width:100%; height:100vh; opacity:80%;">
+			<div class="text-block">
+				<p>
+					Harvard John A. Paulson School of Engineering and Applied Sciences (SEAS) consists of 148 faculty
+					engaged in teaching and research across eight academic areas and 47 research areas.
+				</p>
+			</div>
+			<!--
 			<div class="row justify-content-center" >
 				<div class="col-xs-10 align-self-center">
 					<p style="font-size: 24px; color: white;">The Harvard School of Engineering and Applied Sciences, or
@@ -56,6 +70,7 @@
 					</p>
 				</div>
 			</div>
+			-->
 		</div>
 	</section>
 
@@ -102,16 +117,47 @@
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
 
 		</div>
 
+		<div class="student">
+			<div class="text-student">
+				<p style="text-align: justify">
+					A typical graduate student, Rachel Zoll, recently graduated from UC Berkley College of Engineering.
+					She has experience in electrical engineering, computer science, and mechanical engineering.
+					She wants to find a way to combine her knowledge and she thinks that robotics might be a good option.
+					<br><br>
+					Rachel notices from the academic clusters that Harvard SEAS has a large cluster of faculty in computer science
+					(included electrical engineering), and faculty clusters in materials science and mechanical engineering
+					and applied physics. This is encouraging.
+					<br><br>
+					Through the office location dropdown she notices the faculty clusters in two buildings, Maxwell Dworkin
+					and Pierce Hall and makes a mental note to learn more about these locations.
+				</p>
+			</div>
+			<div class="image-student">
+				<img src="img/girl.png" style="height: 150px; width: 150px;">
+			</div>
+			<div class="button-student">
+				<button class="remove" onclick="removeDiv(this);">x</button>
+			</div>
+		</div>
+
 	</section>
 
-	<section id="section-faculty-interest-table-blurb" class="section row blurb-row">
-		<div class="container-fluid center-blurb">
+	<section id="section-faculty-interest-table-blurb" class="section row">
+		<div class="container-fluid center-blurb container-caption">
+			<img src="img/caption2.jpg" style="width:100%; height:100vh; opacity:80%;">
+			<div class="text-block">
+				<p>
+					At Harvard SEAS, we have academic areas instead of a traditional academic departments structure.
+					Our faculty have a diversity of research interests within their academic areas. More importantly,
+					however, they frequently conduct research across the boundaries of a wide range of academic areas.
+				</p>
+			</div>
+			<!--
 			<div class="row justify-content-center">
 				<div class="col-xs-10 align-self-center">
 					<p style="font-size: 24px; color: white;">
@@ -121,6 +167,7 @@
 					</p>
 				</div>
 			</div>
+			-->
 		</div>
 	</section>
 
@@ -189,10 +236,43 @@
 			</div>
 
 		</div>
+
+		<div class="student">
+			<div class="text-student">
+				<p style="text-align: justify">
+					From the filter dropdown menu, Rachel selects the research interest Bioinspired Robotics and Computing.
+					She compares the ten faculty in the results, and makes note of the four faculty who are also researching
+					artificial intelligence, Robert Wood, Cengiz Pehlevan, Demba Ba, and Radhika Nagpal. She hovers over their
+					red grid elements and notes their web address and full lists of research interests.
+					<br><br>
+					Next she filters the faculty by Computer Science and notes the large number of Computer Science faculty
+					researching artificial intelligence.
+				</p>
+			</div>
+			<div class="image-student">
+				<img src="img/girl.png" style="height: 150px; width: 150px;">
+			</div>
+			<div class="button-student">
+				<button class="remove" onclick="removeDiv(this);">x</button>
+			</div>
+		</div>
+
 	</section>
 
-	<section id="relationship-blurb" class="section row blurb-row">
-		<div class="container-fluid center-blurb">
+	<section id="relationship-blurb" class="section row">
+		<div class="container-fluid center-blurb container-caption">
+			<img src="img/caption3.jpg" style="width:100%; height:100vh; opacity:80%;">
+			<div class="text-block">
+				<p>
+					Faculty are SEAS collaborate with, or are members of, seven of Harvard’s professional schools,
+					Harvard’s Faculty of Arts and Sciences, and other local universities such as MIT.
+					They are also affiliated with a large number of local institutes, centers, and initiatives.
+					These complex relationships create a highly interdisciplinary environment, allowing for insight
+					and innovation.
+				</p>
+			</div>
+
+			<!--
 			<div class="row justify-content-center">
 				<div class="col-xs-10 align-self-center">
 					<p style="font-size: 24px; color: white;">In addition to the teaching areas, there are a variety of multidisciplinary
@@ -201,6 +281,7 @@
 					</p>
 				</div>
 			</div>
+			-->
 		</div>
 	</section>
 
@@ -210,10 +291,43 @@
 				<div id="relationshipDiv" style="height: 100vh; width: 100%; text-align:center;"></div>
 			</div>
 		</div>
+
+		<div class="student">
+			<div class="text-student">
+				<p style="text-align: justify">
+					Rachel searches the list of faculty for the four faculty that caught her attention in previously,
+					and compares their affiliations. She notices that, of the four, Rob Wood and Radhika Nagpal have
+					affiliations with several centers and institutes. She looks to see which other faculty are also affiliated
+					with those same centers and institutes. She has heard of the Wyss Institute and makes a note of it for
+					future reference.
+					<br><br>
+					Rachel selects Computer Science from the side menu and is surprised and excited by how highly connected
+					that academic areas is with other schools and centers at Harvard.
+					<br><br>
+					Rachel hovers over robotics at Harvard and notes the three academic areas affiliated with that initiative.
+				</p>
+			</div>
+			<div class="image-student">
+				<img src="img/girl.png" style="height: 150px; width: 150px;">
+			</div>
+			<div class="button-student">
+				<button class="remove" onclick="removeDiv(this);">x</button>
+			</div>
+		</div>
+
 	</section>
 
-	<section id="section-faculty-adj-blurb" class="section row blurb-row">
-		<div class="container-fluid center-blurb">
+	<section id="section-faculty-adj-blurb" class="section row">
+		<div class="container-fluid center-blurb container-caption">
+			<img src="img/caption4.jpg" style="width:100%; height:100vh; opacity:80%;">
+			<div class="text-block">
+				<p>
+					The interdisciplinary work at Harvard SEAS is evident if the co-authorship of publications both
+					within and across academic areas.
+				</p>
+			</div>
+
+			<!--
 			<div class="row justify-content-center">
 				<div class="col-xs-10 align-self-center">
 					<p style="font-size: 24px; color: white;">The Harvard SEAS faculty also have important collaborations with each other.
@@ -221,6 +335,7 @@
 						Click on the square to see more information, like the number of papers co-written.</p>
 				</div>
 			</div>
+			-->
 		</div>
 	</section>
 
@@ -287,15 +402,43 @@
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
-
 		</div>
+
+		<div class="student">
+			<div class="text-student">
+				<p style="text-align: justify">
+					Rachel selects the Robotics and Control from the filter dropdown menu.
+					She notices that Rob Wood has published papers with both Conor Walsh and David Clarke.
+					She clicks on the highlighted squares to see the number of papers they’ve published together, notes the
+					words that appeared most frequently in those articles.
+					<br><br>
+					By selecting the dark blue color at the intersection of Rob Woods’s name she can see that this faculty
+					member has published at least 201 papers.
+				</p>
+			</div>
+			<div class="image-student">
+				<img src="img/girl.png" style="height: 150px; width: 150px;">
+			</div>
+			<div class="button-student">
+				<button class="remove" onclick="removeDiv(this);">x</button>
+			</div>
+		</div>
+
 	</section>
 
-	<section id="network-blurb" class="section row blurb-row">
-		<div class="container-fluid center-blurb">
+	<section id="network-blurb" class="section row">
+		<div class="container-fluid center-blurb container-caption">
+			<img src="img/caption5.jpg" style="width:100%; height:100vh; opacity:80%;">
+			<div class="text-block">
+				<p>
+					The collaborations between faculty at SEAS take place both formally and informally in the form of
+					joint teaching, research, publications, and group research efforts.
+				</p>
+			</div>
+
+			<!--
 			<div class="row justify-content-center">
 				<div class="col-xs-10 align-self-center">
 					<p style="font-size: 24px; color: white;">SEAS faculty collaborate together on research, paper writing,
@@ -305,6 +448,7 @@
 					they are likely to have more connections with other SEAS faculty members?</p>
 				</div>
 			</div>
+			-->
 		</div>
 	</section>
 
@@ -345,15 +489,43 @@
 
 			</div>
 		</div>
+
+		<div class="student">
+			<div class="text-student">
+				<p style="text-align: justify">
+					Rachel uses the network diagram to explore the relationships between Rob Wood, Radhika Nagpal,
+					Conor Walsh, and David Clark. She notices how well-connected Rob Wood is to other faculty through joint
+					membership in initiatives as well as through joint research efforts. She decides to apply to a
+					PhD program at Harvard SEAS with Rob Wood as her faculty advisor. She clicks his photo and is directed
+					to this professor’s contact information on the school website.
+				</p>
+			</div>
+			<div class="image-student">
+				<img src="img/girl.png" style="height: 150px; width: 150px;">
+			</div>
+			<div class="button-student">
+				<button class="remove" onclick="removeDiv(this);">x</button>
+			</div>
+		</div>
+
 	</section>
 
-	<section id="map-blurb" class="section row blurb-row">
+	<section id="map-blurb" class="section row">
 		<div class="container-fluid center-blurb">
+			<img src="img/caption6.jpg" style="width:100%; height:100vh; opacity:80%;">
+			<div class="text-block">
+				<p>
+					Find your professor on the map!
+				</p>
+			</div>
+
+			<!--
 			<div class="row justify-content-center">
 				<div class="col-xs-10 align-self-center">
 					<p style="font-size: 24px; color: white;">Find your professor on the map!</p>
 				</div>
 			</div>
+			-->
 		</div>
 	</section>
 
@@ -375,6 +547,7 @@
 				</div>
 			</div>
 		</div>
+
 	</section>
 
 	<section id="end-blurb" class="section row blurb-row">
