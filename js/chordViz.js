@@ -99,8 +99,8 @@ class ChordVis {
                 .innerRadius(200)
                 .outerRadius(210)
             )
-            .on("mouseover", (d, i) => vis.fade(.02, i))
-            .on("mouseout", (d, i) => vis.fade(.7, i));
+            // .on("mouseover", (d, i) => vis.fade(.02, i))
+            // .on("mouseout", (d, i) => vis.fade(.7, i));
 
         // Add the links between groups
         vis.svg
@@ -131,13 +131,13 @@ class ChordVis {
             })
             .text(function(d,i) { return vis.locationArray[i]; });
     }
-
-    fade(opacity, i) {
-        let vis = this;
-            vis.svg.selectAll("path.chord")
-                .filter(function(d) { return d.source.index != i.index && d.target.index != i.index; })
-                .transition()
-                .style("stroke-opacity", opacity)
-                .style("fill-opacity", opacity);
-    };
+    //
+    // fade(opacity, i) {
+    //     let vis = this;
+    //         vis.svg.selectAll("path.chord")
+    //             .filter(function(d) { return d.source.index != i.index && d.target.index != i.index; })
+    //             .transition()
+    //             .style("stroke-opacity", opacity)
+    //             .style("fill-opacity", opacity);
+    // };
 }
