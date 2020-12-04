@@ -317,7 +317,7 @@ class manyTableVis {
                     return 0.0;
                 }
             })
-            .attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
+            .attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + (vis.yShift - 5) + ")")
             .text((d) => d);
 
         let relationSquares = vis.svg
@@ -378,7 +378,7 @@ class manyTableVis {
             .transition(trans)
             .attr("fill", function(d) {
                 if (d.isInterested) {
-                    return "#a51c30"; // harvard crimson. used to be purple here
+                    return "#ed1b34"; // SEAS red //"#a51c30"; // harvard crimson. used to be purple here
                 } else {
                     return "gray";
                 }

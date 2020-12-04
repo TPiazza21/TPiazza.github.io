@@ -13,7 +13,7 @@ class wordBarVis {
     initVis(){
         let vis = this;
 
-        vis.margin = {top: 60, right: 45, bottom: 80, left: 60};
+        vis.margin = {top: 60, right: 55, bottom: 80, left: 60};
         vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
 

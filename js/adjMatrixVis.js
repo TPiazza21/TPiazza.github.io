@@ -115,9 +115,9 @@ class adjMatrixVis {
             .style("fill", function(d, i ) { return vis.oneAuthorColorScale(d); });
 
         vis.authorText = vis.svg.append("text")
-            .text("Papers By An Author")
+            .text("Total Papers By One Person")
             .attr("class", "colorscale-label")
-            .attr("x", -15)
+            .attr("x", -40)
             .attr("y", -25);
 
 
@@ -126,7 +126,7 @@ class adjMatrixVis {
             .range([0, vis.colorBarWidth]);
 
         vis.coauthorAxis = d3.axisBottom()
-            .scale(vis.coauthorLinearScale).ticks(2);
+            .scale(vis.coauthorLinearScale).ticks(3);
 
         vis.coauthorGroup = vis.svg.append("g")
             .attr("class", "axis coauthor-axis")
@@ -149,7 +149,7 @@ class adjMatrixVis {
         vis.coauthorText = vis.svg.append("text")
             .text("Papers By Two Faculty")
             .attr("class", "colorscale-label")
-            .attr("x", -15)
+            .attr("x", -25)
             .attr("y", 45);
 
         vis.svg.append("text")
@@ -473,7 +473,7 @@ class adjMatrixVis {
                 }
             })
             //.attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
-            .attr("transform", (d,i) => "rotate(270," + (vis.cellScale(i) + vis.xShift + vis.cellScale.bandwidth()) +  "," + vis.yShift + ")")
+            .attr("transform", (d,i) => "rotate(270," + (vis.cellScale(i) + vis.xShift + vis.cellScale.bandwidth()) +  "," + (vis.yShift-5) + ")")
             .text(d => d);
 
         // update axis of color labels
