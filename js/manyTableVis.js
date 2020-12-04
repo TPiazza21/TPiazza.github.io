@@ -71,6 +71,8 @@ class manyTableVis {
         //vis.cellWidth = 2;
         vis.yShift = 100;
         vis.xShift = 240;
+        vis.originalYShift = vis.yShift;
+        vis.originalXShift = vis.xShift;
 
         vis.cellScalar = 0.95; //0.85;
         vis.cellPadding = 1;
@@ -228,11 +230,19 @@ class manyTableVis {
 
         // update the cell widths so it scales, and maybe update whether or not text is shown
 
-        let tempScaleShift = vis.cellScalar * d3.min([((vis.width - vis.xShift) / vis.displayFaculty.length), ((vis.height - vis.yShift) / vis.displayResearchInterests.length)]);
+        //let tempScaleShift = vis.cellScalar * d3.min([((vis.width - vis.xShift) / vis.displayFaculty.length), ((vis.height - vis.yShift) / vis.displayResearchInterests.length)]);
         if (vis.displayFaculty.length == vis.allFaculty.length) {
             //tempScaleShift = vis.cellScalar * d3.min([((vis.width) / vis.displayFaculty.length), ((vis.height) / vis.displayResearchInterests.length)]);
+            vis.xShift = -0.8 * vis.margin.left;
+            //vis.yShift = -0.8 * vis.margin.top;
+        } else {
+            vis.xShift = vis.originalXShift;
+            vis.yShift = vis.originalYShift;
+
         }
-        vis.cellWidth = d3.max([tempScaleShift,4]); // can I just increase the max?
+        let tempScaleShift = vis.cellScalar * d3.min([((vis.width - vis.xShift) / vis.displayFaculty.length), ((vis.height - vis.yShift) / vis.displayResearchInterests.length)]);
+
+        vis.cellWidth = d3.max([tempScaleShift,5]); // can I just increase the max?
         vis.displayLabelsBoolean = (vis.displayFaculty.length <= vis.displayLabelsThreshold);
 
     }
@@ -252,6 +262,15 @@ class manyTableVis {
 
         let trans = d3.transition()
             .duration(800);
+
+
+        vis.tooltip
+            .style("opacity", 0)
+            .style("left", 0)
+            .style("top", 0)
+            .html(``);
+
+
 
         // rows are for research interests
         let rowLabels = vis.svg
@@ -333,6 +352,8 @@ class manyTableVis {
             .enter() // ENTER
             .append("rect")
             .attr("class","matrix-relation-squares")
+            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * d.xpos + vis.xShift)
+            .attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * d.ypos + vis.yShift)
             .on('mouseover', function(event, d){
 
                 // highlight this square
@@ -373,6 +394,8 @@ class manyTableVis {
                     .style("top", 0)
                     .html(``);
 
+
+
             })
             .merge(relationSquares) // ENTER + UPDATE
             .transition(trans)
@@ -391,20 +414,8 @@ class manyTableVis {
                     return 0.5;
                 }
             })
-            .attr("x", (d,i) => {
-                let usualX = (vis.cellPadding + vis.cellWidth) * d.xpos + vis.xShift;
-                if (vis.displayFaculty == vis.allFaculty) {
-                    //usualX -= vis.xShift;
-                }
-                return usualX;
-            })
-            .attr("y", (d,i) => {
-                let usualY = (vis.cellPadding + vis.cellWidth) * d.ypos + vis.yShift;
-                if (vis.displayFaculty == vis.allFaculty) {
-                    //usualY -= vis.yShift;
-                }
-                return usualY;
-            })
+            .attr("x", (d,i) => (vis.cellPadding + vis.cellWidth) * d.xpos + vis.xShift)
+            .attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * d.ypos + vis.yShift)
             //.attr("y", (d,i) => (vis.cellPadding + vis.cellWidth) * d.ypos + vis.yShift)
             .attr("width", vis.cellWidth)
             .attr("height", vis.cellWidth);

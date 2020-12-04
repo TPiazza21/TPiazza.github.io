@@ -283,6 +283,7 @@ class adjMatrixVis {
         }
         else {
             vis.yShift = vis.originalYShift;
+            vis.xShift = vis.originalXShift;
             vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift])]);
             //vis.cellScale.paddingInner(0.1);
             //vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift])]);
