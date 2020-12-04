@@ -260,8 +260,14 @@ function zoomMap() {
         let myCoordinates = myMapView.coordinates
         myMapVis.map.setView(myCoordinates, 20);
         myMapVis.updateVis();
-        //
-        // myChordVis.fade(0.02)
+
+        let myLocation = myMapView.location;
+        let myIndex = myChordVis.locationArray.indexOf(myLocation);
+        myChordVis.svg.selectAll("path.chord")
+            .filter(function(d) { return d.source.index != myIndex && d.target.index != myIndex; })
+            .transition()
+            .style("stroke-opacity", 0.02)
+            .style("fill-opacity", 0.02);
     }
     else {
         myMapVis.map.setView([42.378784,-71.116824],13);
