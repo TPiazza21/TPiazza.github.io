@@ -1,19 +1,5 @@
-body {
-	margin:0;
-	padding:0;
-	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-	box-sizing: border-box;
-}
+* {
 
-*, *:before, *:after {
-  box-sizing: inherit;
-}
-
-#bannerimage {
-	width: 100%;
-	background-image: url(https://hwpi.harvard.edu/files/styles/os_files_xxlarge/public/commencement/files/hc-017_-_copy.jpg);
-	height: 500px;
-	background-position: center;
 }
 
 h1, h3, p {
@@ -22,59 +8,229 @@ h1, h3, p {
 
 h1 {
 	font-size:52px;
-	margin-top:0;	
+	font-family: 'Russo One';
+	margin-top:0;
 }
 
-section {
-	margin:0;
+/***************
+** TITLE PAGE **
+****************/
+#section-1 h1 {
+	margin-top:50px;
+	margin-left: 50px;
+	margin-right: 700px;
+	color: #A51C30; /* Harvard Crimson */
+	font-family: 'Russo One', sans-serif;
+	position: relative;
+	z-index: 2;
 }
 
-.blurb-row {
-	height: 200px;
-	background-color: #ed1b34;
+#section-1 h3 {
+	margin-left: 50px;
+	margin-right: 700px;
+	margin-bottom:100px;
+	font-family: 'Russo One', sans-serif;
+	position: relative;
+	z-index: 2;
 }
 
+#section-1:after {
+	position: absolute;
+	width: 99%;
+	height: 100%;
+	z-index: 1;
+	opacity: 0.6;
+	background-image: url('../img/banner.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+/********************
+** RED TEXT BLOCKS **
+*********************/
 .center-blurb {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
 
-#section-1 h1 {
-	margin-top:50px;
-	color: #ed1b34;
+.text-block {
+	position: relative;
+	z-index: 2;
+	width:75%;
+	background-color: #A51C30; /* Harvard Crimson */
+	color: white;
+	font-size: 28px;
+	padding: 20px;
+	font-family: 'Russo One', sans-serif;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
-#section-1 h3 {
-	margin-bottom:100px;
+/***********************
+** FACULTY DOTS BLURB **
+************************/
+#section-faculty-dots-blurb:after {
+	position: absolute;
+	width: 99%;
+	height: 100%;
+	z-index: 1;
+	opacity:0.6;
+	background-image: url('../img/caption1.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
 }
 
-#section-1{
-	height: 100vh;
+/*********************************
+** FACULTY INTEREST TABLE BLURB **
+**********************************/
+#section-faculty-interest-table-blurb:after {
+	position: absolute;
+	width: 99%;
+	height: 100%;
+	z-index: 1;
+	opacity:0.6;
+	background-image: url('../img/caption2.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
-#section-2 p {
-	margin-top:150px;
-	margin-bottom:150px;
-	font-size:14px;
-	line-height:32px;
+/***********************
+** RELATIONSHIP BLURB **
+************************/
+#relationship-blurb:after {
+	position: absolute;
+	width: 99%;
+	height: 100%;
+	z-index: 1;
+	opacity:0.6;
+	background-image: url('../img/caption3.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
-#section-3 p {
-	margin-top:50px;
-	margin-bottom:100px;
-	font-size:14px;
-	line-height:32px;
-	background-color: rgba(255,255,255,.5);
-    border-radius: 10px;
-	margin-top:100px;
-	float:left;
+/***************************
+** ADJACENCY MATRIX BLURB **
+****************************/
+#section-faculty-adj-blurb:after {
+	position: absolute;
+	width: 99%;
+	height: 100%;
+	z-index: 1;
+	opacity:0.6;
+	background-image: url('../img/caption4.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
-#network-graph {
-	height: 700px;
+/************************
+** NETWORK GRAPH BLURB **
+*************************/
+#network-blurb:after {
+	position: absolute;
+	width: 99%;
+	height: 100%;
+	z-index: 1;
+	opacity:0.6;
+	background-image: url('../img/caption5.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
+/**************
+** MAP BLURB **
+***************/
+#map-blurb:after {
+	position: absolute;
+	width: 99%;
+	height: 100%;
+	z-index: 1;
+	opacity:0.6;
+	background-image: url('../img/caption6.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+/**************
+** END BLURB **
+***************/
+#end-blurb:after {
+	position: absolute;
+	width: 99%;
+	height: 100%;
+	z-index: 1;
+	opacity:0.6;
+	background-image: url('../img/end.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.profile-row {
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.profile {
+	text-align: center;
+}
+
+.profile-info {
+	line-height: 0.75;
+	padding-top: 10px;
+}
+
+.end-text {
+	font-size: 20px;
+}
+
+/********************
+** STORYLINE POPUP **
+********************/
+
+.student {
+	background-color: #A51C30; /* Harvard Crimson */
+	display: block;
+	padding: 10px;
+	box-sizing: border-box;
+	text-decoration: none;
+
+	width: 50%;
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+}
+
+.student:hover {
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.student img {
+	float: left;
+	margin-right: 10px;
+}
+
+.student p {
+	margin: 0;
+	padding-left: 160px;
+	padding-right: 25px;
+	text-align: left;
+
+	font-family: 'Russo One', sans-serif;
+	font-size: 12px;
+	color: white;
+}
+
+#close {
+	float: right;
+	display: inline-block;
+	padding: 2px 5px;
+
+	background: white;
+}
+
+/******************************************
+** INDIVIDUAL VISUALIZATION SPECIFIC CSS **
+*******************************************/
 #word-frequency-chart {
 	height: 800px;
 	width: 30%; /* more? */
@@ -105,10 +261,21 @@ section {
 	padding: 0px;
 }
 
+#groupTooltip h2 {
+	font-size: 25px;
+	padding-bottom: 20px;
+}
+
 #groupTooltip img {
 	width: 30px;
 	height: 45px;
 }
+
+#faculty-dots .label-circle-text {
+	font-size: 10px;
+}
+
+
 
 #relationship-section {
 	margin-top: 5px;
@@ -121,7 +288,6 @@ rect {
 
 .label {
 	fill: white;
-	font-family: sans-serif;
 	pointer-events: none;
 }
 
@@ -142,11 +308,12 @@ rect {
 
 .repressNode {
 	fill: #CCC;
+	stroke: #CCC;
 }
 
 .repressLink {
 	stroke: #CCC;
-	stroke-width: 1px;
+	stroke-width: 0px;
 }
 
 #faculty-adj-matrix .colorscale-label {
@@ -154,11 +321,11 @@ rect {
 }
 
 #faculty-adj-matrix .matrix-column-labels {
-	font-size: 12px;
+	font-size: 9px;
 }
 
 #faculty-adj-matrix .matrix-row-labels {
-	font-size: 12px;
+	font-size: 9px;
 }
 
 #word-frequency-chart .axis-label {
@@ -169,8 +336,12 @@ rect {
 	font-size: 13px;
 }
 
-#word-frequency-chart .subtitle {
-	font-size: 10px;
+#word-frequency-chart .subtitle-top {
+	font-size: 11px;
+}
+
+#word-frequency-chart .subtitle-bottom {
+	font-size: 9px;
 }
 
 #faculty-interest-table .matrix-row-labels {
@@ -213,7 +384,7 @@ rect {
 
 /*when navigating through the items using the arrow keys:*/
 .autocomplete-active {
-	background-color: DodgerBlue !important;
+	background-color: #A51C30 !important;
 	color: #ffffff;
 }
 
@@ -230,7 +401,61 @@ input[type=text] {
 }
 
 input[type=submit] {
-	background-color: DodgerBlue;
+	background-color: #A51C30;
 	color: #fff;
 	cursor: pointer;
+}
+
+#network-counts {
+	margin: auto;
+	font-size: 20px;
+}
+
+#network-axis {
+	font-size: 16px;
+}
+
+#network-summary {
+	height:350px;
+}
+
+#network-pic {
+	margin: auto;
+	padding-left: 100px;
+}
+
+#faculty-image:hover {
+	opacity: 60%;
+}
+
+#network-table {
+	margin:auto;
+	padding-right: 100px;
+}
+
+#network-selector {
+	font-size: 20px;
+	margin:auto;
+}
+
+#network-graph-wrapper {
+	position: relative;
+}
+
+#network-graph {
+	height: 700px;
+}
+
+#network-clicker {
+	display: flex;
+	margin: auto;
+	align-items: center;
+	justify-content: center;
+	height: 600px;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #737373;
+	opacity: 0.9;
 }

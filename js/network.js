@@ -10,7 +10,7 @@ class NetworkGraph {
 
         let vis = this;
 
-        vis.margin = {top: 10, right: 10, bottom: 10, left: 10};
+        vis.margin = {top: 10, right: 10, bottom: 100, left: 10};
 
         vis.width = $('#' + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $('#' + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
@@ -32,7 +32,7 @@ class NetworkGraph {
             )
             .force("forceX", d3.forceX().strength(.4).x(vis.width/2))
             .force("forceY", d3.forceY().strength(.4).y(vis.height/2))
-            .force("charge", d3.forceManyBody().strength(-300))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+            .force("charge", d3.forceManyBodyReuse().strength(-300))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
             .force("center", d3.forceCenter(vis.width / 2, vis.height / 2))     // This force attracts nodes to the center of the svg area
             .on("end", ticked);
 
@@ -48,7 +48,7 @@ class NetworkGraph {
             else if(d.type=="research") {return "#d95f02"}
             else if(d.type=="center") {return "#7570b3"}
             else if(d.type=="school") {return "#e7298a"}
-            else {return "#082ed0"};
+            else {return "#4e88c7"};
             })
             .attr("stroke-width", 2);
 
@@ -61,6 +61,7 @@ class NetworkGraph {
             .attr("class", "network-node")
             .attr("id", d => "node"+d.id)
             .attr("r", 5)
+            .attr("fill", "#121212")
             .on("click", connectedNodes)
             .on('mouseover', function(event, d){
                 // highlight this circle
@@ -75,9 +76,9 @@ class NetworkGraph {
                     .html(`
                      <div style="border: thin solid grey; border-radius: 5px; background: lightgrey; padding: 2px">
                         
-                        <h6 style="text-align: center">${d.name}</h6>
+                        <h6 style="text-align: center;font-size:20px;">${d.name}</h6>
                         <p>
-                         <b>Click my node for more information!</b>
+                         <b>Click on me to see my picture!</b>
                          <br>
                         <b>Teaching Area:</b> ${vis.allInfoMap[d.name]["Teaching Areas"]} 
                         <br>
@@ -136,8 +137,8 @@ class NetworkGraph {
         }
         function connectedNodes() {
             let d = d3.select(this).node().__data__;
-            vis.node.attr("fill", "black");
-            d3.select(this).attr("fill","brown");
+            vis.node.attr("fill", "#121212");
+            d3.select(this).attr("fill","#C4C4C4").attr("stroke", "black");
                 //Reduce the opacity of all but the neighbouring nodes
                 vis.node.style("opacity", function (o) {
                     return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
@@ -154,7 +155,7 @@ class NetworkGraph {
             selectedFacultyNetworkViz = $("#network-selector").val();
             $(".table").empty();
             if (selectedFacultyNetworkViz>0) {
-                $("#network-table").append('<table style="width:100%"> <tr> <td>Title</td> <td id="network-title" class="table" ></td> </tr>'+
+                $("#network-table").append('<table style="width:auto"> <tr> <td>Title</td> <td id="network-title" class="table" ></td> </tr>'+
                     '<tr> <td>Research Interests</td><td id="network-research-interests" class="table" ></td> </tr>'+
                     '<tr><td>Teaching Areas</td> <td id="network-teaching-areas" class="table" ></td> </tr>'+
                     '<tr><td>Location</td><td id="network-location" class="table" ></td></tr> </table>');
@@ -164,7 +165,7 @@ class NetworkGraph {
                 $("#network-location").text(d.location)
                 $('#network-pic').prepend('<a href="http://seasdrupalstg.prod.acquia-sites.com/node/'
                     +selectedFacultyNetworkViz.toString()+'" target="_blank">'+
-                    '<img src='+d.image +' title="Click to go to my card" width=200 height=300/>' +
+                    '<img id="faculty-image" src='+d.image +' title="Click to go to my card" width=200 height=300/>' +
                     '</a>')
             }
         }
@@ -178,7 +179,7 @@ class NetworkGraph {
         // from http://coppelia.io/2014/07/an-a-to-z-of-extra-features-for-the-d3-force-layout/
 
         if(selectedFacultyNetworkViz==0) {
-            vis.node.attr("fill", "black");
+            vis.node.attr("fill", "#121212");
             vis.node.style("opacity", 1);
             vis.link.style("opacity", 1);
         }
@@ -199,8 +200,8 @@ class NetworkGraph {
 
             //Reduce the opacity of all but the neighbouring nodes
             let d = d3.select("#node"+selectedFacultyNetworkViz).node().__data__;
-            vis.node.attr("fill", "black");
-            d3.select("#node"+selectedFacultyNetworkViz).attr("fill","brown");
+            vis.node.attr("fill", "#121212");
+            d3.select("#node"+selectedFacultyNetworkViz).attr("fill","#C4C4C4").attr("stroke", "#121212");
             vis.node.style("opacity", function (o) {
                 return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
             });
@@ -217,12 +218,12 @@ class NetworkGraph {
         if(selectedFacultyNetworkViz>0) {
             let d = d3.select("#node"+selectedFacultyNetworkViz).node().__data__;
             vis.link.style("opacity", function (o) {
-                return (d.index==o.source.index | d.index==o.target.index) && o.type==type ? 1 : 0.1;
+                return (d.index==o.source.index | d.index==o.target.index) && o.type==type.toLowerCase() ? 1 : 0.1;
             });
         }
         else {
             vis.link.style("opacity", function(o) {
-                return o.type == type ? 1: 0.1;
+                return o.type == type.toLowerCase() ? 1: 0.1;
             })
         }
     }

@@ -87,7 +87,6 @@ class groupDotsVis {
             .attr('id', 'groupTooltip')
             .attr("opacity", 0.0);
 
-
         vis.wrangleData();
 
     }

@@ -10,7 +10,7 @@ class MapVis {
         let vis = this;
 
         // Initialize map layer
-        vis.map = L.map(vis.parentElement).setView(vis.center, 12);
+        vis.map = L.map(vis.parentElement).setView(vis.center, 13);
 
         // Add tile layer to map - initialize with light mode map
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
@@ -66,10 +66,14 @@ class MapVis {
             })
 
             vis.myOffice = vis.peopleData.find(obj => {return obj.Title==vis.myFaculty})
+            console.log(vis.myOffice)
 
             vis.facultyOffices.addLayer(L.marker(vis.myMapView.coordinates)
-                .bindPopup(	"<strong>"+vis.myOffice.Office+"</strong>" +
-                    "<br>Faculty: "+ vis.myMapView.name))
+                .bindPopup(	"<strong>"+vis.myMapView.name+"</strong>" +
+                    "<br>Office: "+ vis.myOffice.Office +
+                "<br>Teaching Area: "+ vis.myOffice["Teaching Areas"] +
+                "<br>Email: " + vis.myOffice.Email +
+                "<br>Telephone: " + vis.myOffice.Phone))
         }
 
         else {

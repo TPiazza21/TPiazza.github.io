@@ -16,7 +16,7 @@ class adjMatrixVis {
     initVis(){
         let vis = this;
 
-        vis.margin = {top: 40, right: 5, bottom: 5, left: 20};
+        vis.margin = {top: 40, right: 5, bottom: 5, left: 45};
         vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
 
@@ -115,9 +115,9 @@ class adjMatrixVis {
             .style("fill", function(d, i ) { return vis.oneAuthorColorScale(d); });
 
         vis.authorText = vis.svg.append("text")
-            .text("Papers By An Author")
+            .text("Total Papers By One Person")
             .attr("class", "colorscale-label")
-            .attr("x", -15)
+            .attr("x", -40)
             .attr("y", -25);
 
 
@@ -126,7 +126,7 @@ class adjMatrixVis {
             .range([0, vis.colorBarWidth]);
 
         vis.coauthorAxis = d3.axisBottom()
-            .scale(vis.coauthorLinearScale).ticks(2);
+            .scale(vis.coauthorLinearScale).ticks(3);
 
         vis.coauthorGroup = vis.svg.append("g")
             .attr("class", "axis coauthor-axis")
@@ -149,7 +149,7 @@ class adjMatrixVis {
         vis.coauthorText = vis.svg.append("text")
             .text("Papers By Two Faculty")
             .attr("class", "colorscale-label")
-            .attr("x", -15)
+            .attr("x", -25)
             .attr("y", 45);
 
         vis.svg.append("text")
@@ -274,7 +274,8 @@ class adjMatrixVis {
         vis.allRelatedPapers = allRelatedPapers;
 
         if (vis.displayFaculty.length == vis.allFaculty.length) {
-            vis.yShift = -30;
+            vis.yShift = -40;
+            vis.xShift = 90;
             //vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift]) + 50]);
             //vis.cellScale.paddingInner(0.001);
             // idea is to get it bigger, and plot it bigger
@@ -282,6 +283,7 @@ class adjMatrixVis {
         }
         else {
             vis.yShift = vis.originalYShift;
+            vis.xShift = vis.originalXShift;
             vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift])]);
             //vis.cellScale.paddingInner(0.1);
             //vis.cellScale.rangeRound([0, d3.min([vis.width - vis.xShift, vis.height - vis.yShift])]);
@@ -472,7 +474,7 @@ class adjMatrixVis {
                 }
             })
             //.attr("transform", (d,i) => "rotate(270," + ((vis.cellPadding + vis.cellWidth) * (i+1) + vis.xShift) +  "," + vis.yShift + ")")
-            .attr("transform", (d,i) => "rotate(270," + (vis.cellScale(i) + vis.xShift + vis.cellScale.bandwidth()) +  "," + vis.yShift + ")")
+            .attr("transform", (d,i) => "rotate(270," + (vis.cellScale(i) + vis.xShift + vis.cellScale.bandwidth()) +  "," + (vis.yShift-5) + ")")
             .text(d => d);
 
         // update axis of color labels
@@ -541,11 +543,13 @@ class adjMatrixVis {
         wordBarLongString = sendString;
 
         if (d.name1 == d.name2) {
-            wordBarSubTitle = "" + vis.facultyPapersDict[d.name1][d.name2].length + " Papers by " + d.name1;
+            wordBarSubTitleTop = "" + vis.facultyPapersDict[d.name1][d.name2].length + " Papers by ";
+            wordBarSubTitleBottom = d.name1;
             wordBarColor = vis.oneAuthorColorScale(d.valueLen);
         }
         else {
-            wordBarSubTitle = "" + vis.facultyPapersDict[d.name1][d.name2].length + " Papers coathored by " + d.name1 + " and " + d.name2;
+            wordBarSubTitleTop = "" + vis.facultyPapersDict[d.name1][d.name2].length + " Papers coathored by ";
+            wordBarSubTitleBottom = d.name1 + " and " + d.name2;
             wordBarColor = vis.coauthorColorScale(d.valueLen);
         }
 
@@ -564,14 +568,18 @@ class adjMatrixVis {
         sendString = coolStrings.join(" "); // one big mess of words. Ok, sure, let them parse it
         wordBarLongString = sendString;
         if (selectedFacultyAdjFilter != "All") {
-            wordBarSubTitle = "All " + vis.allRelatedPapers.length + " papers from " + selectedFacultyAdjFilter;
+            wordBarSubTitleTop = "All " + vis.allRelatedPapers.length + " papers from ";
+            wordBarSubTitleBottom = selectedFacultyAdjFilter;
+
         }
         else {
-            wordBarSubTitle = "All " + vis.allRelatedPapers.length + " papers";
+            wordBarSubTitleTop = "All " + vis.allRelatedPapers.length + " papers from";
+            wordBarSubTitleBottom = "all faculty";
         }
 
         if (sendString == "") {
-            wordBarSubTitle = "Uh oh! We couldn't scrape any papers from " + selectedFacultyAdjFilter;
+            wordBarSubTitleTop = "Uh oh! We couldn't scrape any papers from ";
+            wordBarSubTitleBottom = selectedFacultyAdjFilter;
         }
 
         wordBarColor = "purple"; // the generic option

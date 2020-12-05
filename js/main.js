@@ -1,5 +1,6 @@
 let wordBarLongString = ""; // this will be modified with words, if we do new things with the bar graph
-let wordBarSubTitle = "";
+let wordBarSubTitleTop = "";
+let wordBarSubTitleBottom = "";
 let wordBarColor = ""; // send over the color of the selected box
 let selectedFacultyAdjFilter = "";
 let selectedFacultyTableFilter = "";
@@ -45,6 +46,7 @@ function initMainPage(dataArray) {
     myNetworkVis = new NetworkGraph("network-graph", nodeData, myFacultyDotsVis.allInfoMap);
     myNetworkBarVis = new NetworkBarGraph("network-counts", nodeData.links);
     myMapVis = new MapVis("faculty-map", nodeData.nodes, latestPeopleData, [42.378784,-71.116824])
+    myChordVis = new ChordVis("location-chord", nodeData)
 }
 
 // handle buttons, sorting, selecting etc. down here
@@ -124,7 +126,7 @@ function networkTableSelector() {
     $(".table").empty();
     myNetworkVis.updateVis();
     if (selectedFacultyNetworkViz>0) {
-        $("#network-table").append('<table style="width:100%"> <tr> <td>Title</td> <td id="network-title" class="table" ></td> </tr>'+
+        $("#network-table").append('<table style="width: auto;"> <tr> <td>Title</td> <td id="network-title" class="table" ></td> </tr>'+
             '<tr> <td>Research Interests</td><td id="network-research-interests" class="table" ></td> </tr>'+
             '<tr><td>Teaching Areas</td> <td id="network-teaching-areas" class="table" ></td> </tr>'+
             '<tr><td>Location</td><td id="network-location" class="table" ></td></tr> </table>');
@@ -135,7 +137,7 @@ function networkTableSelector() {
         $("#network-location").text(tableData.location)
         $('#network-pic').prepend('<a href="http://seasdrupalstg.prod.acquia-sites.com/node/'
             +selectedFacultyNetworkViz.toString()+'" target="_blank">'+
-            '<img src='+tableData.image +' title="Click for more information" width=200 height=300/>' +
+            '<img id="faculty-image" src='+tableData.image +' title="Click to go to my card" width=200 height=300/>' +
             '</a>')
     }
 }
@@ -245,6 +247,11 @@ var faculty = nodeData.nodes.map(d=>d.name)
 autocomplete(document.getElementById("myInput"), faculty);
 
 function zoomMap() {
+    /* stop search input form from default refreshing*/
+    $("#map-form").submit(function(e) {
+        e.preventDefault();
+    });
+
     let myFaculty = document.getElementById('myInput').value;
     if (myFaculty) {
         let myMapView = nodeData.nodes.find(obj => {
@@ -253,14 +260,31 @@ function zoomMap() {
         let myCoordinates = myMapView.coordinates
         myMapVis.map.setView(myCoordinates, 20);
         myMapVis.updateVis();
+
+        myChordVis.svg.selectAll("path.chord")
+            .transition()
+            .style("stroke-opacity", 0.7)
+            .style("fill-opacity", 0.7);
+
+        let myLocation = myMapView.location;
+        let myIndex = myChordVis.locationArray.indexOf(myLocation);
+        myChordVis.svg.selectAll("path.chord")
+            .filter(function(d) { return d.source.index != myIndex && d.target.index != myIndex; })
+            .transition()
+            .style("stroke-opacity", 0.02)
+            .style("fill-opacity", 0.02);
     }
     else {
-        myMapVis.map.setView([42.378784,-71.116824],12);
+        myMapVis.map.setView([42.378784,-71.116824],13);
         myMapVis.wrangleData()
+        myChordVis.svg.selectAll("path.chord")
+            .transition()
+            .style("stroke-opacity", 0.7)
+            .style("fill-opacity", 0.7);
     }
 }
 
-/* stop search input form from default refreshing*/
-$("#map-form").submit(function(e) {
-    e.preventDefault();
-});
+function hideClicker() {
+    d3.select("#network-clicker")
+        .style("visibility", "hidden");
+}
