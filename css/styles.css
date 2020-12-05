@@ -8,6 +8,7 @@ h1, h3, p {
 
 h1 {
 	font-size:52px;
+	font-family: 'Russo One';
 	margin-top:0;
 }
 
@@ -152,10 +153,6 @@ h1 {
 /******************************************
 ** INDIVIDUAL VISUALIZATION SPECIFIC CSS **
 *******************************************/
-#network-graph {
-	height: 700px;
-}
-
 #word-frequency-chart {
 	height: 800px;
 	width: 30%; /* more? */
@@ -213,7 +210,6 @@ rect {
 
 .label {
 	fill: white;
-	font-family: sans-serif;
 	pointer-events: none;
 }
 
@@ -310,7 +306,7 @@ rect {
 
 /*when navigating through the items using the arrow keys:*/
 .autocomplete-active {
-	background-color: DodgerBlue !important;
+	background-color: #A51C30 !important;
 	color: #ffffff;
 }
 
@@ -327,7 +323,7 @@ input[type=text] {
 }
 
 input[type=submit] {
-	background-color: DodgerBlue;
+	background-color: #A51C30;
 	color: #fff;
 	cursor: pointer;
 }
@@ -385,4 +381,26 @@ input[type=submit] {
 	position: absolute;
 	bottom: 20px;
 	right: 20px;
+}
+
+#network-graph-wrapper {
+	position: relative;
+}
+
+#network-graph {
+	height: 700px;
+}
+
+#network-clicker {
+	display: flex;
+	margin: auto;
+	align-items: center;
+	justify-content: center;
+	height: 600px;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #737373;
+	opacity: 0.9;
 }

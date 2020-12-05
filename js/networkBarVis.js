@@ -113,7 +113,7 @@ class NetworkBarGraph {
                 else if(i.type=="Research") {return "#d95f02"}
                 else if(i.type=="Center") {return "#7570b3"}
                 else if(i.type=="School") {return "#e7298a"}
-                else {return "#082ed0"}});
+                else {return "#4e88c7"}});
                 d3.select("#network-axis")
                     .selectAll('text')
                     .filter(function(x) { return x == i.type; })
@@ -122,13 +122,13 @@ class NetworkBarGraph {
                     else if(i.type=="Research") {return "#d95f02"}
                     else if(i.type=="Center") {return "#7570b3"}
                     else if(i.type=="School") {return "#e7298a"}
-                    else {return "#082ed0"}});
+                    else {return "#4e88c7"}});
                 d3.select("#barLabel"+i.type).style("fill", function() {
                     if(i.type == "News") {return "#1b9e77"}
                     else if(i.type=="Research") {return "#d95f02"}
                     else if(i.type=="Center") {return "#7570b3"}
                     else if(i.type=="School") {return "#e7298a"}
-                    else {return "#082ed0"}})
+                    else {return "#4e88c7"}})
 
             })
             .on("mouseout", function() {

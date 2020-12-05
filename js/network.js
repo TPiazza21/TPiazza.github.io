@@ -10,7 +10,7 @@ class NetworkGraph {
 
         let vis = this;
 
-        vis.margin = {top: 10, right: 10, bottom: 10, left: 10};
+        vis.margin = {top: 10, right: 10, bottom: 100, left: 10};
 
         vis.width = $('#' + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $('#' + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
@@ -48,7 +48,7 @@ class NetworkGraph {
             else if(d.type=="research") {return "#d95f02"}
             else if(d.type=="center") {return "#7570b3"}
             else if(d.type=="school") {return "#e7298a"}
-            else {return "#082ed0"};
+            else {return "#4e88c7"};
             })
             .attr("stroke-width", 2);
 
@@ -61,6 +61,7 @@ class NetworkGraph {
             .attr("class", "network-node")
             .attr("id", d => "node"+d.id)
             .attr("r", 5)
+            .attr("fill", "#121212")
             .on("click", connectedNodes)
             .on('mouseover', function(event, d){
                 // highlight this circle
@@ -77,7 +78,7 @@ class NetworkGraph {
                         
                         <h6 style="text-align: center;font-size:20px;">${d.name}</h6>
                         <p>
-                         <b>Click my node for more information!</b>
+                         <b>Click on me to see my picture!</b>
                          <br>
                         <b>Teaching Area:</b> ${vis.allInfoMap[d.name]["Teaching Areas"]} 
                         <br>
@@ -136,8 +137,8 @@ class NetworkGraph {
         }
         function connectedNodes() {
             let d = d3.select(this).node().__data__;
-            vis.node.attr("fill", "black");
-            d3.select(this).attr("fill","brown");
+            vis.node.attr("fill", "#121212");
+            d3.select(this).attr("fill","#C4C4C4").attr("stroke", "black");
                 //Reduce the opacity of all but the neighbouring nodes
                 vis.node.style("opacity", function (o) {
                     return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
@@ -178,7 +179,7 @@ class NetworkGraph {
         // from http://coppelia.io/2014/07/an-a-to-z-of-extra-features-for-the-d3-force-layout/
 
         if(selectedFacultyNetworkViz==0) {
-            vis.node.attr("fill", "black");
+            vis.node.attr("fill", "#121212");
             vis.node.style("opacity", 1);
             vis.link.style("opacity", 1);
         }
@@ -199,8 +200,8 @@ class NetworkGraph {
 
             //Reduce the opacity of all but the neighbouring nodes
             let d = d3.select("#node"+selectedFacultyNetworkViz).node().__data__;
-            vis.node.attr("fill", "black");
-            d3.select("#node"+selectedFacultyNetworkViz).attr("fill","brown");
+            vis.node.attr("fill", "#121212");
+            d3.select("#node"+selectedFacultyNetworkViz).attr("fill","#C4C4C4").attr("stroke", "#121212");
             vis.node.style("opacity", function (o) {
                 return neighboring(d, o) | neighboring(o, d) ? 1 : 0.1;
             });
