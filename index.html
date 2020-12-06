@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>SEAS</title>
+	<title>Interdisciplinary @ Harvard SEAS</title>
 
 	<!--including bootstrap for demo purposes only-->
 	<link rel="stylesheet" href="css/bootstrap.css">
@@ -34,6 +34,7 @@
 	<!-- fade effects -->
 	<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
+
 	<script type="text/javascript">
 		function removeDiv(btn){
 			((btn.parentNode).parentNode).removeChild(btn.parentNode);
@@ -51,7 +52,7 @@
 <div class="main">
 	<section id="section-1" class="section row">
 		<div class="col-xs-12">
-			<h1 data-aos="fade" data-aos-duration="1000">Harvard Engineering School: Faculty Connections</h1>
+			<h1 data-aos="fade" data-aos-duration="1000">Interdisciplinary @ Harvard SEAS</h1>
 			<h3 data-aos="fade" data-aos-duration="1000">A tool for prospective students, industry, and academic collaborators</h3>
 		</div>
 	</section>
@@ -62,6 +63,18 @@
 				<p>
 					Harvard John A. Paulson School of Engineering and Applied Sciences (SEAS) consists of 148 faculty
 					engaged in teaching and research across eight academic areas and 47 research areas.
+				</p>
+			</div>
+
+			<div class="student student-intro">
+				<img src="img/girl.png" style="height: 150px; width: 150px;">
+				<p>
+					This is Rachel. She recently graduated from the UC Berkley College of Engineering.
+					<br><br>
+					She has experience in electrical engineering, computer science, and mechanical engineering and
+					she wants to do research at Harvard that combines all these areas.
+					<br><br>
+					Follow along as she uses this tool to find a faculty advisor!
 				</p>
 			</div>
 		</div>
@@ -115,28 +128,18 @@
 
 		</div>
 
-<!--		<div class="student">-->
-<!--			<div class="text-student">-->
-<!--				<p style="text-align: justify">-->
-<!--					A typical graduate student, Rachel Zoll, recently graduated from UC Berkley College of Engineering.-->
-<!--					She has experience in electrical engineering, computer science, and mechanical engineering.-->
-<!--					She wants to find a way to combine her knowledge and she thinks that robotics might be a good option.-->
-<!--					<br><br>-->
-<!--					Rachel notices from the academic clusters that Harvard SEAS has a large cluster of faculty in computer science-->
-<!--					(included electrical engineering), and faculty clusters in materials science and mechanical engineering-->
-<!--					and applied physics. This is encouraging.-->
-<!--					<br><br>-->
-<!--					Through the office location dropdown she notices the faculty clusters in two buildings, Maxwell Dworkin-->
-<!--					and Pierce Hall and makes a mental note to learn more about these locations.-->
-<!--				</p>-->
-<!--			</div>-->
-<!--			<div class="image-student">-->
-<!--				<img src="img/girl.png" style="height: 150px; width: 150px;">-->
-<!--			</div>-->
-<!--			<div class="button-student">-->
-<!--				<button class="remove" onclick="removeDiv(this);">x</button>-->
-<!--			</div>-->
-<!--		</div>-->
+		<div class="student">
+			<button id='close' onclick='this.parentNode.parentNode.removeChild(this.parentNode); return false;'>x</button>
+			<img src="img/girl.png" style="height: 150px; width: 150px;">
+			<p>
+				From the dot visualization, Rachel notices from the academic clusters that Harvard SEAS has a large cluster
+				of faculty in computer science (included electrical engineering), and faculty clusters in materials science
+				and mechanical engineering and applied physics. This is encouraging.
+				<br><br>
+				Through the office location dropdown she notices the faculty clusters in two buildings, Maxwell Dworkin
+				and Pierce Hall, and makes a mental note to learn more about these locations.
+			</p>
+		</div>
 
 	</section>
 
@@ -218,26 +221,19 @@
 
 		</div>
 
-<!--		<div class="student">-->
-<!--			<div class="text-student">-->
-<!--				<p style="text-align: justify">-->
-<!--					From the filter dropdown menu, Rachel selects the research interest Bioinspired Robotics and Computing.-->
-<!--					She compares the ten faculty in the results, and makes note of the four faculty who are also researching-->
-<!--					artificial intelligence, Robert Wood, Cengiz Pehlevan, Demba Ba, and Radhika Nagpal. She hovers over their-->
-<!--					red grid elements and notes their web address and full lists of research interests.-->
-<!--					<br><br>-->
-<!--					Next she filters the faculty by Computer Science and notes the large number of Computer Science faculty-->
-<!--					researching artificial intelligence.-->
-<!--				</p>-->
-<!--			</div>-->
-<!--			<div class="image-student">-->
-<!--				<img src="img/girl.png" style="height: 150px; width: 150px;">-->
-<!--			</div>-->
-<!--			<div class="button-student">-->
-<!--				<button class="remove" onclick="removeDiv(this);">x</button>-->
-<!--			</div>-->
-<!--		</div>-->
-
+		<div class="student">
+			<button id='close' onclick='this.parentNode.parentNode.removeChild(this.parentNode); return false;'>x</button>
+			<img src="img/girl.png" style="height: 150px; width: 150px;">
+			<p>
+				From the filter dropdown menu, Rachel selects the research interest Bioinspired Robotics and Computing.
+				She compares the ten faculty in the results, and makes note of the four faculty who are also researching
+				artificial intelligence, Robert Wood, Cengiz Pehlevan, Demba Ba, and Radhika Nagpal. She hovers over their
+				red grid elements and notes their web address and full lists of research interests.
+				<br><br>
+				Next she filters the faculty by Computer Science and notes the large number of Computer Science faculty
+				researching artificial intelligence.
+			</p>
+		</div>
 	</section>
 
 	<section id="relationship-blurb" class="section row">
@@ -261,28 +257,22 @@
 			</div>
 		</div>
 
-<!--		<div class="student">-->
-<!--			<div class="text-student">-->
-<!--				<p style="text-align: justify">-->
-<!--					Rachel searches the list of faculty for the four faculty that caught her attention in previously,-->
-<!--					and compares their affiliations. She notices that, of the four, Rob Wood and Radhika Nagpal have-->
-<!--					affiliations with several centers and institutes. She looks to see which other faculty are also affiliated-->
-<!--					with those same centers and institutes. She has heard of the Wyss Institute and makes a note of it for-->
-<!--					future reference.-->
-<!--					<br><br>-->
-<!--					Rachel selects Computer Science from the side menu and is surprised and excited by how highly connected-->
-<!--					that academic areas is with other schools and centers at Harvard.-->
-<!--					<br><br>-->
-<!--					Rachel hovers over robotics at Harvard and notes the three academic areas affiliated with that initiative.-->
-<!--				</p>-->
-<!--			</div>-->
-<!--			<div class="image-student">-->
-<!--				<img src="img/girl.png" style="height: 150px; width: 150px;">-->
-<!--			</div>-->
-<!--			<div class="button-student">-->
-<!--				<button class="remove" onclick="removeDiv(this);">x</button>-->
-<!--			</div>-->
-<!--		</div>-->
+		<div class="student">
+			<button id='close' onclick='this.parentNode.parentNode.removeChild(this.parentNode); return false;'>x</button>
+			<img src="img/girl.png" style="height: 150px; width: 150px;">
+			<p>
+				Rachel searches the list of faculty for the four faculty that caught her attention in previously,
+				and compares their affiliations. She notices that, of the four, Robert Wood and Radhika Nagpal have
+				affiliations with several centers and institutes. She looks to see which other faculty are also affiliated
+				with those same centers and institutes. She has heard of the Wyss Institute and makes a note of it for
+				future reference.
+				<br><br>
+				Rachel selects Computer Science from the side menu and is surprised and excited by how highly connected
+				that academic areas is with other schools and centers at Harvard.
+				<br><br>
+				Rachel clicks on Robotics at Harvard and notes the four academic areas affiliated with that initiative.
+			</p>
+		</div>
 
 	</section>
 
@@ -364,25 +354,19 @@
 			</div>
 		</div>
 
-<!--		<div class="student">-->
-<!--			<div class="text-student">-->
-<!--				<p style="text-align: justify">-->
-<!--					Rachel selects the Robotics and Control from the filter dropdown menu.-->
-<!--					She notices that Rob Wood has published papers with both Conor Walsh and David Clarke.-->
-<!--					She clicks on the highlighted squares to see the number of papers they’ve published together, notes the-->
-<!--					words that appeared most frequently in those articles.-->
-<!--					<br><br>-->
-<!--					By selecting the dark blue color at the intersection of Rob Woods’s name she can see that this faculty-->
-<!--					member has published at least 201 papers.-->
-<!--				</p>-->
-<!--			</div>-->
-<!--			<div class="image-student">-->
-<!--				<img src="img/girl.png" style="height: 150px; width: 150px;">-->
-<!--			</div>-->
-<!--			<div class="button-student">-->
-<!--				<button class="remove" onclick="removeDiv(this);">x</button>-->
-<!--			</div>-->
-<!--		</div>-->
+		<div class="student">
+			<button id='close' onclick='this.parentNode.parentNode.removeChild(this.parentNode); return false;'>x</button>
+			<img src="img/girl.png" style="height: 150px; width: 150px;">
+			<p>
+				Rachel selects the Robotics and Control from the filter dropdown menu.
+				She notices that Robert Wood has published papers with both Conor Walsh and David Clarke.
+				She clicks on the highlighted squares to see the number of papers they’ve published together, notes the
+				words that appeared most frequently in those articles.
+				<br><br>
+				By selecting the dark blue color at the intersection of Robert Woods’s name she can see that this faculty
+				member has published at least 201 papers.
+			</p>
+		</div>
 
 	</section>
 
@@ -448,30 +432,24 @@
 						<div id="network-table" class="table col"></div>
 					</div>
 
-					<div id="network-counts" class="row" style="height:200px;"></div>
+					<div id="network-counts" class="row"></div>
 				</div>
 
 			</div>
 		</div>
 
-<!--		<div class="student">-->
-<!--			<div class="text-student">-->
-<!--				<p style="text-align: justify">-->
-<!--					Rachel uses the network diagram to explore the relationships between Rob Wood, Radhika Nagpal,-->
-<!--					Conor Walsh, and David Clark. She notices how well-connected Rob Wood is to other faculty through joint-->
-<!--					membership in initiatives as well as through joint research efforts. She decides to apply to a-->
-<!--					PhD program at Harvard SEAS with Rob Wood as her faculty advisor. She clicks his photo and is directed-->
-<!--					to this professor’s contact information on the school website.-->
-<!--				</p>-->
-<!--			</div>-->
-<!--			<div class="image-student">-->
-<!--				<img src="img/girl.png" style="height: 150px; width: 150px;">-->
-<!--			</div>-->
-<!--			<div class="button-student">-->
-<!--				<button class="remove" onclick="removeDiv(this);">x</button>-->
-<!--			</div>-->
-<!--		</div>-->
-
+		<div class="student">
+			<button id='close' onclick='this.parentNode.parentNode.removeChild(this.parentNode); return false;'>x</button>
+			<img src="img/girl.png" style="height: 150px; width: 150px;">
+			<p>
+				Rachel uses the network diagram to explore the relationships between Robert Wood, Radhika Nagpal,
+				Conor Walsh, and David Clark. She notices how well-connected Robert Wood is to other faculty through joint
+				membership in initiatives as well as through joint research efforts.
+				<br><br>
+				She decides to apply to a  PhD program at Harvard SEAS with Robert Wood as her faculty advisor!
+				She clicks his photo and is directed to this professor’s contact information on the school website.
+			</p>
+		</div>
 	</section>
 
 	<section id="map-blurb" class="section row">
@@ -480,15 +458,9 @@
 				<p>
 					Find your professor on the map!
 				</p>
+
 			</div>
 
-			<!--
-			<div class="row justify-content-center">
-				<div class="col-xs-10 align-self-center">
-					<p style="font-size: 24px; color: white;">Find your professor on the map!</p>
-				</div>
-			</div>
-			-->
 		</div>
 	</section>
 
@@ -496,7 +468,9 @@
 		<div class="container-fluid">
 			<div class="row justify content center">
 				<div class="col-6">
-					<p style="margin-top: 10px; font-size:16px;">Search For a Faculty and Click Go to Office!</p>
+					<p style="margin-top: 10px; font-size:14px;font-family: 'Russo One'">
+						Search For a Faculty and Click Go to Office!
+					</p>
 					<form id="map-form" autocomplete="off">
 						<!--Make sure the form has the autocomplete function switched off:-->
 						<div class="autocomplete" style="width:80%;padding-left:40px;">
@@ -517,13 +491,89 @@
 
 	<section id="end-blurb" class="section row blurb-row">
 		<div class="container-fluid center-blurb">
-			<div class="row justify-content-center">
-				<div class="col-xs-10 align-self-center">
-					<p>Fin!</p>
+			<div class="text-block">
+				<h1>
+					Fin! Thank you for reading!
+				</h1>
+				<div class="row profile-row">
+					<div class="col profile">
+						<img src="img/NhanHuynh.jpg">
+						<div class="profile-info">
+							<span style="font-size:24px;">Nhan Huynh</span>
+							<br>
+							<span style="font-size:14px;">Research Assistant at MIT</span>
+						</div>
+					</div>
+					<div class="col profile">
+						<img src="img/TylerPiazza.jpg">
+						<div class="profile-info">
+							<span style="font-size:24px;">Tyler Piazza</span>
+							<br>
+							<span style="font-size:14px;">Math and Computer Science '21</span>
+						</div>
+					</div>
+					<div class="col profile">
+						<img src="img/BarbaraBai.jpg">
+						<div class="profile-info">
+							<span style="font-size:24px;">Barbara Bai</span>
+							<br>
+							<span style="font-size:14px;">Data Scientist at HMS</span>
+						</div>
+					</div>
+					<div class="col profile">
+						<img src="img/ElizaGrinnell.jpg">
+						<div class="profile-info">
+							<span style="font-size:24px;">Eliza Grinnell</span>
+							<br>
+							<span style="font-size:14px;">Director of Visual Communications <br>and New Media at Harvard SEAS</span>
+						</div>
+					</div>
+				</div>
+				<div class="end-text">
+					<p>
+						We created this data story for Harvard's COMPSCI 171: Visualization course in Fall 2020.
+						All the code and data can be found in our <a href="https://github.com/TPiazza21/CS171FinalProject">
+						GitHub repo</a>. We would like to thank Jeff Licht for providing a dataset of faculty information
+						from the <a href="https://www.seas.harvard.edu/">Harvard SEAS website</a>. Data for faculty publications
+						were scraped from <a href="https://pubmed.ncbi.nlm.nih.gov/">PubMed</a>. Photos are courtesy of
+						the <a href="https://www.flickr.com/photos/grinnell/">Harvard SEAS Flickr account</a>.
+					</p>
+					<p style="font-size: 12px;">
+						P.S. As you can see in the background pic, the new campus in Allston looks amazing...
+						<a href="https://www.google.com/maps/dir//112-108+Western+Ave+Boston+MA+02163">
+							go check it out!
+						</a>
+					</p>
 				</div>
 			</div>
 		</div>
 	</section>
+</div>
+
+
+	<!-- instantiate fullpage scroll -->
+	<script>
+		$(".main").onepage_scroll({
+			sectionContainer: "section",     // sectionContainer accepts any kind of selector in case you don't want to use section
+			easing: "ease",                  // Easing options accepts the CSS3 easing animation such "ease", "linear", "ease-in",
+											 // "ease-out", "ease-in-out", or even cubic bezier value such as "cubic-bezier(0.175, 0.885, 0.420, 1.310)"
+			animationTime: 1000,             // AnimationTime let you define how long each section takes to animate
+			pagination: true,                // You can either show or hide the pagination. Toggle true for show, false for hide.
+			updateURL: false,                // Toggle this true if you want the URL to be updated automatically when the user scroll to each page.
+			beforeMove: function(index) {},  // This option accepts a callback function. The function will be called before the page moves.
+			afterMove: function(index) {},   // This option accepts a callback function. The function will be called after the page moves.
+			loop: false,                     // You can have the page loop back to the top/bottom when the user navigates at up/down on the first/last page.
+			keyboard: true,                  // You can activate the keyboard controls
+			responsiveFallback: false,        // You can fallback to normal page scroll by defining the width of the browser in which
+			// you want the responsive fallback to be triggered. For example, set this to 600 and whenever
+			// the browser's width is less than 600, the fallback will kick in.
+			direction: "vertical"            // You can now define the direction of the One Page Scroll animation. Options available are "vertical" and "horizontal". The default value is "vertical".
+		});
+	</script>
+
+	<script>
+		AOS.init();
+	</script>
 
 </div>
 
