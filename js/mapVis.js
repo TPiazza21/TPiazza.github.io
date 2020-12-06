@@ -66,10 +66,14 @@ class MapVis {
             })
 
             vis.myOffice = vis.peopleData.find(obj => {return obj.Title==vis.myFaculty})
+            console.log(vis.myOffice)
 
             vis.facultyOffices.addLayer(L.marker(vis.myMapView.coordinates)
-                .bindPopup(	"<strong>"+vis.myOffice.Office+"</strong>" +
-                    "<br>Faculty: "+ vis.myMapView.name))
+                .bindPopup(	"<strong>"+vis.myMapView.name+"</strong>" +
+                    "<br>Office: "+ vis.myOffice.Office +
+                "<br>Teaching Area: "+ vis.myOffice["Teaching Areas"] +
+                "<br>Email: " + vis.myOffice.Email +
+                "<br>Telephone: " + vis.myOffice.Phone))
         }
 
         else {

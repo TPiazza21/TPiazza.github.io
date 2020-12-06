@@ -19,6 +19,7 @@ class RelationshipVis {
         })
 
         vis.Links.forEach(function(d){
+            d3.select("#" + d.id).classed("activeLink", false);
             d3.select("#" + d.id).classed("repressLink", stat);
         })
     }
@@ -98,7 +99,7 @@ class RelationshipVis {
     initVis(){
         let vis = this;
 
-        vis.margin = {top: 0, right: 10, bottom: 0, left: 10};
+        vis.margin = {top: 10, right: 10, bottom: 0, left: 10};
         vis.width = $("#" + vis.parentElement).width() - vis.margin.left - vis.margin.right;
         vis.height = $("#" + vis.parentElement).height() - vis.margin.top - vis.margin.bottom;
 
@@ -106,6 +107,14 @@ class RelationshipVis {
             .attr("width", vis.width)
             .attr("height", vis.height)
             .append("g");
+
+        vis.svg.append("rect")
+            .attr("width", vis.width)
+            .attr("height", vis.height)
+            .style("fill", "white")
+            .on("click", function () {
+                vis.repress(false);
+            });
 
         vis.wrangleData();
     }
@@ -213,7 +222,7 @@ class RelationshipVis {
         });
 
         vis.Nodes.sort(function(a,b){
-            if (a.lvl === b.lvl){
+            if (a.lvl === b.lvl && a.lvl !== 2){
                 return a.name.localeCompare(b.name);
             }
             return a.lvl - b.lvl;
@@ -221,11 +230,11 @@ class RelationshipVis {
 
         vis.listAreas.sort(function(a,b){ return a.localeCompare(b) });
         vis.listFaculty.sort(function(a,b){ return a.localeCompare(b) });
-        vis.listCenters.sort(function(a,b){ return a.localeCompare(b) });
+        //vis.listCenters.sort(function(a,b){ return a.localeCompare(b) });
 
         //vis.colors = ["#e41a1c","#377eb8","#4daf4a","#984ea3","#f781bf"];
         vis.colors = ["#ed1b34", "#00aaad", "#cbdb2a", "#fcb315", "#4e88c7", "#ffde2d", "#77ced9", "#bb89ca"]
-        vis.colors2 = ["darkgrey", "dimgrey"]
+        vis.colors2 = ["#808080", "#696969"]
         vis.colorAreas = d3.scaleOrdinal().domain(vis.listAreas).range(vis.colors)
         vis.colorCenters = d3.scaleOrdinal().domain(vis.listCenters).range(vis.colors2)
 
@@ -252,26 +261,28 @@ class RelationshipVis {
         });
         vis.lvlCount = count.length;
 
-        vis.boxWidth = 130;
+        vis.boxWidth = 150;
         vis.boxWidthArea = 220;
-        vis.boxWidthCenter = 350;
-        vis.gap = {width: (vis.width - (2*vis.boxWidthArea + 2*vis.boxWidth + vis.boxWidthCenter)) / (vis.lvlCount-1), height: 0.5};
+        vis.boxWidthCenter = 300;
+        vis.gap = {width: (vis.width - (2*vis.boxWidthArea + 2*vis.boxWidth + vis.boxWidthCenter)) / (vis.lvlCount-1), height: 0};
 
-        vis.boxHeight = 12;
+        vis.boxHeight = 10;
         vis.boxHeightArea = (vis.height - vis.areaCount*vis.gap.height) / vis.areaCount;
         //vis.boxHeightCenter = (vis.height - vis.centerCount*vis.gap.height) / vis.centerCount;
-        vis.boxHeightCenter = 12;
+        vis.boxHeightCenter = 14;
 
-        if(vis.height < 850){
+        vis.schoolOffset = 18;
+        if(vis.height < vis.facultyHalfCount * (vis.boxHeight + vis.gap.height)){
             vis.facultyOffset1 = 0;
             vis.facultyOffset2 = 0;
             vis.centerOffset = 0;
         }else{
             vis.facultyOffset1 = (vis.height - (vis.facultyHalfCount * vis.boxHeight)) / 2;
             vis.facultyOffset2 = (vis.height - ((vis.facultyCount - vis.facultyHalfCount) * vis.boxHeight)) / 2;
-            vis.centerOffset = (vis.height - (vis.centerCount * vis.boxHeightCenter)) / 2;
+            vis.centerOffset = (vis.height - (vis.centerCount * vis.boxHeightCenter) - vis.schoolOffset) / 2;
         }
 
+        vis.schoolCount = 0;
         vis.Nodes.forEach(function (d, i) {
             if(d.lvl === 0) {
                 d.x = 0;
@@ -286,9 +297,14 @@ class RelationshipVis {
             }else if(d.lvl === 2){
                 d.x = vis.boxWidthArea + vis.boxWidth + d.lvl*vis.gap.width;
                 //d.y = (vis.boxHeightCenter + vis.gap.height) * count[d.lvl];
-                d.y = vis.centerOffset + (vis.boxHeightCenter + vis.gap.height) * count[d.lvl];
                 d.id = "n" + i;
                 count[d.lvl] += 1;
+                if(vis.schoolCount < 7){
+                    d.y = vis.centerOffset + (vis.boxHeightCenter + vis.gap.height) * count[d.lvl];
+                    vis.schoolCount = vis.schoolCount + 1;
+                }else{
+                    d.y = vis.schoolOffset + vis.centerOffset + (vis.boxHeightCenter + vis.gap.height) * count[d.lvl];
+                }
             }else if(d.lvl === 1){
                 d.x = vis.boxWidthArea + vis.gap.width;
                 d.y = vis.facultyOffset1 + (vis.boxHeight + vis.gap.height) * count[d.lvl];
@@ -350,13 +366,12 @@ class RelationshipVis {
                 vis.repress(true);
                 vis.mouse_action(d3.select(this).datum(), true, d3.select(this).datum().lvl);
             });
-            /*
-            .on("mouseout", function () {
-                vis.repress(false)
-                vis.mouse_action(d3.select(this).datum(), false, d3.select(this).datum().lvl);
-            });
-
-             */
+        /*
+        .on("mouseout", function () {
+            vis.repress(false)
+            vis.mouse_action(d3.select(this).datum(), false, d3.select(this).datum().lvl);
+        });
+         */
 
         node.append("text")
             .attr("class", "label")
@@ -367,7 +382,7 @@ class RelationshipVis {
                 }else if(d.lvl === 2){
                     return d.y + vis.boxHeightCenter/2+3;
                 }else{
-                    return d.y + vis.boxHeight-3;
+                    return d.y + vis.boxHeight-2;
                 }
             })
             .style("font-size", function(d){
@@ -429,5 +444,18 @@ class RelationshipVis {
                     else{ return vis.colorCenters(li.target.name); }
                 });
         });
+
+        vis.svg.append("text")
+            .attr("x", function(){
+                let gap = (vis.width - 2*vis.boxWidthArea - 2*vis.boxWidth - vis.boxHeightCenter) / 4;
+                return vis.boxWidthArea + vis.boxWidth + 2*gap;
+            })
+            .attr("y", function(){
+                return vis.centerOffset + (vis.boxHeightCenter + vis.gap.height) - 10;
+            })
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
+            .style("font-weight", "bold")
+            .text("Click on any node to highlight the connections!");
     }
 }

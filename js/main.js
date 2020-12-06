@@ -137,7 +137,7 @@ function networkTableSelector() {
         $("#network-location").text(tableData.location)
         $('#network-pic').prepend('<a href="http://seasdrupalstg.prod.acquia-sites.com/node/'
             +selectedFacultyNetworkViz.toString()+'" target="_blank">'+
-            '<img src='+tableData.image +' title="Click to go to my card" width=200 height=300/>' +
+            '<img id="faculty-image" src='+tableData.image +' title="Click to go to my card" width=200 height=300/>' +
             '</a>')
     }
 }
@@ -282,4 +282,9 @@ function zoomMap() {
             .style("stroke-opacity", 0.7)
             .style("fill-opacity", 0.7);
     }
+}
+
+function hideClicker() {
+    d3.select("#network-clicker")
+        .style("visibility", "hidden");
 }
