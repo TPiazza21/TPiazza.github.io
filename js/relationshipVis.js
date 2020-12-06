@@ -234,7 +234,7 @@ class RelationshipVis {
 
         //vis.colors = ["#e41a1c","#377eb8","#4daf4a","#984ea3","#f781bf"];
         vis.colors = ["#ed1b34", "#00aaad", "#cbdb2a", "#fcb315", "#4e88c7", "#ffde2d", "#77ced9", "#bb89ca"]
-        vis.colors2 = ["navy", "dimgrey"]
+        vis.colors2 = ["#808080", "#696969"]
         vis.colorAreas = d3.scaleOrdinal().domain(vis.listAreas).range(vis.colors)
         vis.colorCenters = d3.scaleOrdinal().domain(vis.listCenters).range(vis.colors2)
 
@@ -266,13 +266,13 @@ class RelationshipVis {
         vis.boxWidthCenter = 300;
         vis.gap = {width: (vis.width - (2*vis.boxWidthArea + 2*vis.boxWidth + vis.boxWidthCenter)) / (vis.lvlCount-1), height: 0};
 
-        vis.boxHeight = 12;
+        vis.boxHeight = 10;
         vis.boxHeightArea = (vis.height - vis.areaCount*vis.gap.height) / vis.areaCount;
         //vis.boxHeightCenter = (vis.height - vis.centerCount*vis.gap.height) / vis.centerCount;
-        vis.boxHeightCenter = 18;
+        vis.boxHeightCenter = 14;
 
         vis.schoolOffset = 18;
-        if(vis.height < vis.facultyHalfCount * vis.boxHeight){
+        if(vis.height < vis.facultyHalfCount * (vis.boxHeight + vis.gap.height)){
             vis.facultyOffset1 = 0;
             vis.facultyOffset2 = 0;
             vis.centerOffset = 0;
@@ -383,7 +383,7 @@ class RelationshipVis {
                 }else if(d.lvl === 2){
                     return d.y + vis.boxHeightCenter/2+3;
                 }else{
-                    return d.y + vis.boxHeight-3;
+                    return d.y + vis.boxHeight-2;
                 }
             })
             .style("font-size", function(d){
@@ -452,10 +452,10 @@ class RelationshipVis {
                 return vis.boxWidthArea + vis.boxWidth + 2*gap;
             })
             .attr("y", function(){
-                return vis.centerOffset + (vis.boxHeightCenter + vis.gap.height) - 20;
+                return vis.centerOffset + (vis.boxHeightCenter + vis.gap.height) - 10;
             })
             .attr("text-anchor", "middle")
-            .style("font-size", "18px")
+            .style("font-size", "16px")
             .style("font-weight", "bold")
             .text("Click on any node to highlight the connections!");
     }
