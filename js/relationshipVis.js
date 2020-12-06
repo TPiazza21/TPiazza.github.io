@@ -261,9 +261,9 @@ class RelationshipVis {
         });
         vis.lvlCount = count.length;
 
-        vis.boxWidth = 140;
-        vis.boxWidthArea = 215;
-        vis.boxWidthCenter = 290;
+        vis.boxWidth = 150;
+        vis.boxWidthArea = 220;
+        vis.boxWidthCenter = 300;
         vis.gap = {width: (vis.width - (2*vis.boxWidthArea + 2*vis.boxWidth + vis.boxWidthCenter)) / (vis.lvlCount-1), height: 0};
 
         vis.boxHeight = 12;
